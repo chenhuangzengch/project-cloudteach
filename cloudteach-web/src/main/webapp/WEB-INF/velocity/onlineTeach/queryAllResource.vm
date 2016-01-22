@@ -1,0 +1,72 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="http://a.xuele.net/v2/css/style.css?version=${version}" />
+    <script src="http://a.xuele.net/pan/v2/lib/seajs/2.1.0/sea.js?version=${version}"></script>
+    <script src="http://a.xuele.net/pan/v2/lib/config.js?version=${version}"></script>
+    <title>添加网络课件</title>
+    <style>
+        body{ background: url(http://a.xuele.net/v2/imgs/container-bg.gif); }
+        .xiframe{ width: 720px; }
+        .discussiframe{ width: 862px; }
+        .discussiframe .bd{ padding: 0; }
+        .wrapper{ width: 1000px; height: 628px; margin: 15px auto 0; line-height: 628px; overflow: hidden; }
+        #kejian{ background: #efefef; text-align: center; width: 100%; height: 100%; }
+    </style>
+    <script>
+        seajs.use(['jQuery', 'module/swfobject'], function($, swfobject) {
+            window.show = function(url) {
+                var d = $.xuele.iframe;
+                d.show({
+                    title: '预览',
+                    url: url,
+                    width: 720,
+                    height: 480,
+                    onClose: function() {
+                        $('#xiframe').attr('src', 'about:blank;')
+                    },
+                    classPx: 'xiframe'
+                });
+                return false;
+            };
+            window.showdiscuss = function(id) {
+                $.xuele.iframe.show({ title: '讨论详情', url: '/pops/gl/discussinfo?id=' + id, width: 862, height: 542, classPx: 'discussiframe' });
+                return false;
+            }
+            $(function() {
+                var flashvars = {
+                    FlashVars: 'userid=1030610004&kcid=010005001001001007002&kcname=22%e3%80%81%e7%8b%bc%e7%89%99%e5%b1%b1%e4%ba%94%e5%a3%ae%e5%a3%ab&id=0&type=1'
+                };
+                var params = {
+                    'menu': 'false',
+                    'wmode': 'transparent',
+                    'allowFullScreen': true,
+                    'allowFullScreenInteractive': true
+                };
+                swfobject.embedSWF(
+                        '/cloudteach-web/tch/CloudTeachTest.swf',
+                        'kejian',
+                        '1000',
+                        '628',
+                        '7.0.0',
+                        'expressInstall.swf',
+                        flashvars,
+                        params
+                );
+            });
+        });
+        function previewflv(url) {
+            var url = '/pops/courseware-fs?url=' + url + '';
+            show(url);
+            return false;
+        }
+    </script>
+</head>
+<body>
+<div class="wrapper">
+    <div id="kejian">加载中...</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.TeacherWorkManageMapper">
+
+    <resultMap id="EffectiveWorkViewResultMap" type="net.xuele.cloudteach.view.EffectiveWorkView">
+        <id column="work_id" property="workId" jdbcType="VARCHAR"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="publish_time" property="publishTime" jdbcType="TIMESTAMP"/>
+        <result column="end_time" property="endTime" jdbcType="TIMESTAMP"/>
+        <result column="subject_name" property="subjectName" jdbcType="VARCHAR"/>
+        <result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
+        <result column="context" property="context" jdbcType="VARCHAR"/>
+        <result column="voiceContext" property="voiceContext" jdbcType="VARCHAR"/>
+        <result column="files" property="files" jdbcType="VARCHAR"/>
+        <result column="work_type" property="workType" jdbcType="INTEGER"/>
+        <result column="work_item_num" property="workItemNum" jdbcType="INTEGER"/>
+        <result column="work_class_num" property="workClassNum" jdbcType="INTEGER"/>
+        <result column="work_class_json" property="workClassJson" jdbcType="VARCHAR"/>
+        <result column="work_student_num" property="workStudentNum" jdbcType="INTEGER"/>
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="work_sub_student_num" property="workSubStudentNum" jdbcType="INTEGER"/>
+        <result column="work_correct_student_num" property="workCorrectStudentNum" jdbcType="INTEGER"/>
+        <result column="tapeFileUrl" property="tapeFileUrl" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="AfterClassWorkViewResultMap" type="net.xuele.cloudteach.view.AfterClassWorkView">
+        <id column="work_id" property="workId" jdbcType="VARCHAR"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="publish_time" property="publishTime" jdbcType="TIMESTAMP"/>
+        <result column="end_time" property="endTime" jdbcType="TIMESTAMP"/>
+        <result column="subject_name" property="subjectName" jdbcType="VARCHAR"/>
+        <result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
+        <result column="context" property="context" jdbcType="VARCHAR"/>
+        <result column="voiceContext" property="voiceContext" jdbcType="VARCHAR"/>
+        <result column="files" property="files" jdbcType="VARCHAR"/>
+        <result column="work_type" property="workType" jdbcType="INTEGER"/>
+        <result column="work_item_num" property="workItemNum" jdbcType="INTEGER"/>
+        <result column="work_class_num" property="workClassNum" jdbcType="INTEGER"/>
+        <result column="work_class_json" property="workClassJson" jdbcType="VARCHAR"/>
+        <result column="work_student_num" property="workStudentNum" jdbcType="INTEGER"/>
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="work_sub_student_num" property="workSubStudentNum" jdbcType="INTEGER"/>
+        <result column="work_correct_student_num" property="workCorrectStudentNum" jdbcType="INTEGER"/>
+        <result column="tapeFileUrl" property="tapeFileUrl" jdbcType="VARCHAR"/>
+        <result column="workStatusType" property="workStatusType" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <resultMap id="GuidanceWorkViewResultMap" type="net.xuele.cloudteach.view.GuidanceWorkView">
+        <id column="work_id" property="workId" jdbcType="VARCHAR"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="publish_time" property="publishTime" jdbcType="TIMESTAMP"/>
+        <result column="end_time" property="endTime" jdbcType="TIMESTAMP"/>
+        <result column="subject_name" property="subjectName" jdbcType="VARCHAR"/>
+        <result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
+        <result column="context" property="context" jdbcType="VARCHAR"/>
+        <result column="voiceContext" property="voiceContext" jdbcType="VARCHAR"/>
+        <result column="files" property="files" jdbcType="VARCHAR"/>
+        <result column="work_type" property="workType" jdbcType="INTEGER"/>
+        <result column="work_item_num" property="workItemNum" jdbcType="INTEGER"/>
+        <result column="work_class_num" property="workClassNum" jdbcType="INTEGER"/>
+        <result column="work_class_json" property="workClassJson" jdbcType="VARCHAR"/>
+        <result column="work_student_num" property="workStudentNum" jdbcType="INTEGER"/>
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="work_sub_student_num" property="workSubStudentNum" jdbcType="INTEGER"/>
+        <result column="work_correct_student_num" property="workCorrectStudentNum" jdbcType="INTEGER"/>
+        <result column="tapeFileUrl" property="tapeFileUrl" jdbcType="VARCHAR"/>
+        <result column="workStatusType" property="workStatusType" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <select id="queryEffectiveWork" resultMap="EffectiveWorkViewResultMap">
+        select a.*,b.work_sub_student_num,b.work_correct_student_num,IFNULL(c.url,'') tapeFileUrl
+        from ct_work_gather as a
+        inner join ct_work_statistics as b on a.work_id=b.work_id
+        <if test="classId!=null">
+            INNER JOIN ct_work_class_gather as d on d.work_id=a.work_id AND d.class_id=#{classId,jdbcType=VARCHAR} and
+            d.status=1
+        </if>
+        left join ct_work_tape_files as c on c.work_id=a.work_id
+        where a.school_id=#{schoolId,jdbcType=VARCHAR} and a.user_id=#{userId,jdbcType=VARCHAR} and a.status=1
+        <![CDATA[
+              and a.end_time>now() and a.publish_time<#{publishTime,jdbcType=VARCHAR}
+              ]]>
+        <if test="subjectId!=null">
+            and a.subject_id=#{subjectId,jdbcType=INTEGER}
+        </if>
+        <if test="workType!=null">
+            and a.work_type=#{workType,jdbcType=INTEGER}
+        </if>
+        <if test="workType==null">
+            and a.work_type in(1,2,3,4,7,8)
+        </if>
+        ORDER BY a.publish_time DESC
+        limit #{pageSize}
+    </select>
+
+    <select id="queryAllEffectiveWorkByUserId" resultMap="EffectiveWorkViewResultMap">
+        select work_id,work_type
+        from ct_work_gather
+        <![CDATA[
+        where school_id=#{schoolId,jdbcType=VARCHAR} and user_id=#{userId,jdbcType=VARCHAR} and status=1
+              and publish_time<now() and end_time>now()
+              and work_type in(1,2,3,4,7,8)
+
+
+        ]]>
+    </select>
+
+    <select id="queryAfterClassWork" resultMap="AfterClassWorkViewResultMap">
+        select a.*,b.work_sub_student_num,b.work_correct_student_num,IFNULL(c.url,'') tapeFileUrl
+        from ct_work_gather as a
+        inner join ct_work_statistics as b on a.work_id=b.work_id
+        <if test="classId!=null">
+            INNER JOIN ct_work_class_gather as d on d.work_id=a.work_id AND d.class_id=#{classId,jdbcType=VARCHAR} and
+            d.status=1
+        </if>
+        left join ct_work_tape_files as c on c.work_id=a.work_id
+        where a.school_id=#{schoolId,jdbcType=VARCHAR} and a.user_id=#{userId,jdbcType=VARCHAR} and a.status=1
+        <![CDATA[and a.publish_time<#{publishTime,jdbcType=VARCHAR}]]>
+        <if test="subjectId!=null">
+            and a.subject_id=#{subjectId,jdbcType=INTEGER}
+        </if>
+        <if test="workType!=null">
+            and a.work_type=#{workType,jdbcType=INTEGER}
+        </if>
+        <if test="workType==null">
+            and a.work_type in(2,3,4,7,8)
+        </if>
+        ORDER BY a.publish_time desc
+        limit #{pageSize}
+    </select>
+
+    <select id="queryGuidanceWork" resultMap="GuidanceWorkViewResultMap">
+        select a.*,b.work_sub_student_num,b.work_correct_student_num,IFNULL(c.url,'') tapeFileUrl
+        from ct_work_gather as a
+        inner join ct_work_statistics as b on a.work_id=b.work_id
+        <if test="classId!=null">
+            INNER JOIN ct_work_class_gather as d on d.work_id=a.work_id AND d.class_id=#{classId,jdbcType=VARCHAR} and
+            d.status=1
+        </if>
+        left join ct_work_tape_files as c on c.work_id=a.work_id
+        where a.school_id=#{schoolId,jdbcType=VARCHAR} and a.user_id=#{userId,jdbcType=VARCHAR} and a.status=1
+        <![CDATA[and a.publish_time<#{publishTime,jdbcType=VARCHAR}]]>
+        <if test="subjectId!=null">
+            and a.subject_id=#{subjectId,jdbcType=INTEGER}
+        </if>
+        and a.work_type=1
+        ORDER BY a.publish_time desc
+        limit #{pageSize}
+    </select>
+
+    <select id="selectExtraWorkListCount" resultType="java.lang.Long">
+        select count(1)
+        from ct_work_gather as a
+        <if test="classId!=null">
+            INNER JOIN ct_work_class_gather as d on d.work_id=a.work_id AND d.class_id=#{classId,jdbcType=VARCHAR} and
+            d.status=1
+        </if>
+        where a.school_id=#{schoolId,jdbcType=VARCHAR} and a.user_id=#{userId,jdbcType=VARCHAR} and a.status=1
+        and a.work_type in(8)
+    </select>
+
+    <select id="selectExtraWorkList" resultMap="AfterClassWorkViewResultMap">
+        select a.*,b.work_sub_student_num,b.work_correct_student_num,IFNULL(c.url,'') tapeFileUrl
+        from ct_work_gather as a
+        inner join ct_work_statistics as b on a.work_id=b.work_id
+        <if test="classId!=null">
+            INNER JOIN ct_work_class_gather as d on d.work_id=a.work_id AND d.class_id=#{classId,jdbcType=VARCHAR} and
+            d.status=1
+        </if>
+        left join ct_work_tape_files as c on c.work_id=a.work_id
+        where a.school_id=#{schoolId,jdbcType=VARCHAR} and a.user_id=#{userId,jdbcType=VARCHAR} and a.status=1
+        <![CDATA[and a.publish_time<#{publishTime,jdbcType=VARCHAR}]]>
+        and a.work_type in(8)
+        ORDER BY a.publish_time desc
+        limit #{pageSize}
+    </select>
+</mapper>

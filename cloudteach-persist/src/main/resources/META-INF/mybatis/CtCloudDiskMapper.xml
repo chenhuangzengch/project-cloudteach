@@ -1,0 +1,933 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtCloudDiskMapper">
+    <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtCloudDisk">
+        <id column="disk_id" property="diskId" jdbcType="VARCHAR"/>
+        <result column="creator" property="creator" jdbcType="VARCHAR"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="unit_id" property="unitId" jdbcType="VARCHAR"/>
+        <result column="file_pk" property="filePk" jdbcType="VARCHAR"/>
+        <result column="file_uri" property="fileUri" jdbcType="VARCHAR"/>
+        <result column="file_type" property="fileType" jdbcType="INTEGER"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="description" property="description" jdbcType="VARCHAR"/>
+        <result column="extension" property="extension" jdbcType="VARCHAR"/>
+        <result column="ext_type" property="extType" jdbcType="INTEGER"/>
+        <result column="ext_icon_type" property="extIconType" jdbcType="VARCHAR"/>
+        <result column="size" property="size" jdbcType="INTEGER"/>
+        <result column="add_time" property="addTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="sticky_status" property="stickyStatus" jdbcType="INTEGER"/>
+        <result column="share_status" property="shareStatus" jdbcType="INTEGER"/>
+        <result column="share_time" property="shareTime" jdbcType="TIMESTAMP"/>
+        <result column="audit_instructions" property="auditInstructions" jdbcType="VARCHAR"/>
+        <result column="collect_status" property="collectStatus" jdbcType="INTEGER"/>
+        <result column="pid" property="pid" jdbcType="VARCHAR"/>
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <resultMap id="SRResourceSharedViewResultMap" type="net.xuele.cloudteach.view.SRResourceSharedView">
+        <result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
+        <result column="subject_name" property="subjectName" jdbcType="VARCHAR"/>
+        <result column="grade" property="grade" jdbcType="INTEGER"/>
+        <result column="real_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="school_name" property="schoolName" jdbcType="VARCHAR"/>
+        <result column="position_name" property="userDutyName" jdbcType="VARCHAR"/>
+        <result column="share_time" property="shareTime" jdbcType="TIMESTAMP"/>
+        <result column="file_type" property="fileType" jdbcType="INTEGER"/>
+        <result column="file_uri" property="fileUri" jdbcType="VARCHAR"/>
+        <result column="extension" property="extention" jdbcType="VARCHAR"/>
+        <result column="ext_type" property="extType" jdbcType="INTEGER"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="SRResourceStatisticsNumViewResultMap" type="net.xuele.cloudteach.view.SRResourceStatisticsNumView">
+        <result column="typeCode" property="typeCode" jdbcType="INTEGER"/>
+        <result column="typeNum" property="typeNum" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <resultMap id="SRSchoolResourceStatisticsViewResultMap"
+               type="net.xuele.cloudteach.view.SRSchoolResourceStatisticsView">
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+        <result column="school_name" property="schoolName" jdbcType="VARCHAR"/>
+        <result column="real_name" property="schoolMaster" jdbcType="VARCHAR"/>
+        <result column="teacherNum" property="teacherAmount" jdbcType="INTEGER"/>
+        <result column="resourceNum" property="resourceAmount" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <resultMap id="SRTeacherResourceStatisticsViewResultMap"
+               type="net.xuele.cloudteach.view.SRTeacherResourceStatisticsView">
+        <result column="user_id" property="teacherId" jdbcType="VARCHAR"/>
+        <result column="real_name" property="teacherName" jdbcType="VARCHAR"/>
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+        <result column="school_name" property="schoolName" jdbcType="VARCHAR"/>
+        <result column="subject_name" property="subjectName" jdbcType="VARCHAR"/>
+        <result column="position_name" property="dutyName" jdbcType="VARCHAR"/>
+        <result column="resourceNum" property="resourceAmount" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <resultMap id="AmountMapper" type="net.xuele.cloudteach.domain.CtCloudDiskAmount">
+        <result column="file_type" property="fileType" jdbcType="INTEGER"/>
+        <result column="num" property="num" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtCloudDisk">
+        insert into ct_cloud_disk (disk_id, creator, user_id,
+        unit_id, file_pk, file_uri,
+        file_type, name, description,
+        extension,ext_type,ext_icon_type, size, add_time,
+        update_time, sticky_status, share_status,
+        share_time, audit_instructions, collect_status,
+        pid, school_id, status)
+        values (#{diskId,jdbcType=VARCHAR}, #{creator,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR},
+        #{unitId,jdbcType=VARCHAR}, #{filePk,jdbcType=VARCHAR}, #{fileUri,jdbcType=VARCHAR},
+        #{fileType,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR},
+        #{extension,jdbcType=VARCHAR},#{extType,jdbcType=INTEGER},#{extIconType,jdbcType=VARCHAR},
+        #{size,jdbcType=INTEGER}, #{addTime,jdbcType=TIMESTAMP},
+        #{updateTime,jdbcType=TIMESTAMP}, #{stickyStatus,jdbcType=INTEGER}, #{shareStatus,jdbcType=INTEGER},
+        #{shareTime,jdbcType=TIMESTAMP}, #{auditInstructions,jdbcType=VARCHAR}, #{collectStatus,jdbcType=INTEGER},
+        #{pid,jdbcType=VARCHAR}, #{schoolId,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER})
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtCloudDisk">
+        update ct_cloud_disk
+        set creator = #{creator,jdbcType=VARCHAR},
+        user_id = #{userId,jdbcType=VARCHAR},
+        unit_id = #{unitId,jdbcType=VARCHAR},
+        file_pk = #{filePk,jdbcType=VARCHAR},
+        file_uri = #{fileUri,jdbcType=VARCHAR},
+        file_type = #{fileType,jdbcType=INTEGER},
+        name = #{name,jdbcType=VARCHAR},
+        description = #{description,jdbcType=VARCHAR},
+        extension = #{extension,jdbcType=VARCHAR},
+        ext_type = #{extType,jdbcType=VARCHAR},
+        ext_icon_type = #{extIconType,jdbcType=VARCHAR},
+        size = #{size,jdbcType=INTEGER},
+        add_time = #{addTime,jdbcType=TIMESTAMP},
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+        sticky_status = #{stickyStatus,jdbcType=INTEGER},
+        share_status = #{shareStatus,jdbcType=INTEGER},
+        share_time = #{shareTime,jdbcType=TIMESTAMP},
+        audit_instructions = #{auditInstructions,jdbcType=VARCHAR},
+        collect_status = #{collectStatus,jdbcType=INTEGER},
+        pid = #{pid,jdbcType=VARCHAR},
+        status = #{status,jdbcType=INTEGER}
+        where school_id = #{schoolId,jdbcType=VARCHAR} AND disk_id = #{diskId,jdbcType=VARCHAR}
+    </update>
+
+    <update id="shareUpdate" parameterType="map">
+        update ct_cloud_disk
+        set
+        share_status = #{shareStatus,jdbcType=INTEGER},
+        share_time = now()
+        where school_id = #{schoolId,jdbcType=VARCHAR} and disk_id = #{diskId,jdbcType=VARCHAR}
+    </update>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+        SELECT
+          disk_id,
+          creator,
+          user_id,
+          unit_id,
+          file_pk,
+          file_uri,
+          file_type,
+          name,
+          description,
+          extension,
+          ext_type,
+          ext_icon_type,
+          size,
+          add_time,
+          update_time,
+          sticky_status,
+          share_status,
+          share_time,
+          audit_instructions,
+          collect_status,
+          pid,
+          school_id,
+          status
+        FROM
+          ct_cloud_disk
+        WHERE school_id = #{schoolId,jdbcType=VARCHAR}
+        AND disk_id = #{diskId,jdbcType=VARCHAR}
+        AND status = 1
+    </select>
+
+    <!-- 查询一行并取锁-->
+    <select id="selectByPrimaryKeyForUpdate" resultMap="BaseResultMap">
+        SELECT
+        disk_id,
+        creator,
+        user_id,
+        unit_id,
+        file_pk,
+        file_uri,
+        file_type,
+        name,
+        description,
+        extension,
+        ext_type,
+        ext_icon_type,
+        size,
+        add_time,
+        update_time,
+        sticky_status,
+        share_status,
+        share_time,
+        audit_instructions,
+        collect_status,
+        pid,
+        school_id,
+        status
+        FROM
+        ct_cloud_disk
+        WHERE school_id = #{schoolId,jdbcType=VARCHAR}
+        AND disk_id = #{diskId,jdbcType=VARCHAR}
+        AND status = 1
+        FOR UPDATE
+    </select>
+
+    <!--判断资源是否属于指定的用户-->
+    <select id="isMyFile" resultType="long">
+        SELECT
+        COUNT(1)
+        FROM
+        ct_cloud_disk ccd
+        WHERE school_id = #{schoolId,jdbcType=VARCHAR}
+        AND ccd.disk_id = #{diskId}
+        AND ccd.user_id = #{userId}
+    </select>
+
+    <!--查询符合条件的资源总数-->
+    <select id="selectCount" resultType="long">
+        SELECT
+        COUNT(1)
+        FROM
+        ct_cloud_disk ccd
+        WHERE
+        ccd.school_id = #{schoolId}
+        AND ccd.status = 1
+        AND ccd.unit_id = #{unitId}
+        AND ccd.user_id = #{userId}
+        <if test="fileType!=null and fileType!=0">
+            AND ccd.file_type = #{fileType}
+        </if>
+        <if test="extType!=null and extType!=0">
+            AND ccd.ext_type = #{extType}
+        </if>
+    </select>
+
+    <select id="selectPage" resultMap="net.xuele.cloudteach.persist.CtCloudDiskMapper.BaseResultMap">
+        SELECT
+        disk_id,
+        creator,
+        user_id,
+        unit_id,
+        file_pk,
+        file_uri,
+        file_type,
+        name,
+        description,
+        extension,
+        ext_type,
+        ext_icon_type,
+        size,
+        add_time,
+        update_time,
+        sticky_status,
+        share_status,
+        share_time,
+        audit_instructions,
+        collect_status,
+        pid,
+        status
+        FROM
+        ct_cloud_disk ccd
+        WHERE
+        ccd.school_id = #{ctCloudDisk.schoolId}
+        AND ccd.status = 1
+        AND ccd.unit_id = #{ctCloudDisk.unitId}
+        AND ccd.user_id = #{ctCloudDisk.userId}
+        <if test="ctCloudDisk.fileType!=null and ctCloudDisk.fileType!=0">
+            AND ccd.file_type = #{ctCloudDisk.fileType}
+        </if>
+        <if test="ctCloudDisk.extType!=null and ctCloudDisk.extType!=0">
+            AND ccd.ext_type = #{ctCloudDisk.extType}
+        </if>
+        ORDER BY ccd.sticky_status desc,ccd.add_time desc
+        LIMIT #{page.start},
+        #{pageSize}
+
+    </select>
+
+    <!--查询用户符合条件的所有资源，不分页-->
+    <select id="selectAll" resultMap="net.xuele.cloudteach.persist.CtCloudDiskMapper.BaseResultMap">
+        SELECT
+        disk_id,
+        creator,
+        user_id,
+        unit_id,
+        file_pk,
+        file_uri,
+        file_type,
+        name,
+        description,
+        extension,
+        ext_type,
+        ext_icon_type,
+        size,
+        add_time,
+        update_time,
+        sticky_status,
+        share_status,
+        share_time,
+        audit_instructions,
+        collect_status,
+        pid,
+        status
+        FROM
+        ct_cloud_disk ccd
+        WHERE
+        ccd.school_id = #{schoolId}
+        AND ccd.status = 1
+        AND ccd.unit_id = #{unitId}
+        AND ccd.user_id = #{userId}
+        <if test="fileType!=null and fileType!=0">
+            AND ccd.file_type = #{fileType}
+        </if>
+        <if test="extType!=null and extType!=0">
+            AND ccd.ext_type = #{extType}
+        </if>
+        ORDER BY ccd.sticky_status desc,ccd.add_time desc
+    </select>
+
+    <!--查询我收藏的云盘文件，不分页-->
+    <select id="selectMyCollect" resultMap="net.xuele.cloudteach.persist.CtCloudDiskMapper.BaseResultMap">
+        SELECT
+        disk_id,
+        creator,
+        user_id,
+        unit_id,
+        file_pk,
+        file_uri,
+        file_type,
+        name,
+        description,
+        extension,
+        ext_type,
+        ext_icon_type,
+        size,
+        add_time,
+        update_time,
+        sticky_status,
+        share_status,
+        share_time,
+        audit_instructions,
+        collect_status,
+        pid,
+        status
+        FROM
+        ct_cloud_disk ccd
+        WHERE
+        ccd.school_id = #{schoolId}
+        AND ccd.status = 1
+        AND ccd.unit_id = #{unitId}
+        AND ccd.user_id = #{userId}
+        AND ccd.collect_status=#{collectStatus}
+        <if test="fileType!=null and extType!=0">
+            AND ccd.file_type = #{fileType}
+        </if>
+    </select>
+
+    <!--移动资源-->
+    <update id="moveFile">
+        UPDATE ct_cloud_disk
+        SET
+        file_type = #{fileType,jdbcType=INTEGER}
+        <if test="unitId!=null">
+            ,unit_id = #{unitId,jdbcType=VARCHAR}
+        </if>
+        WHERE school_id = #{schoolId,jdbcType=VARCHAR}
+        AND disk_id = #{diskId,jdbcType=VARCHAR}
+        AND user_id = #{userId,jdbcType=VARCHAR}
+    </update>
+
+    <!--重命名资源-->
+    <update id="renameFile">
+        UPDATE ct_cloud_disk
+        SET
+        name = #{name,jdbcType=VARCHAR}
+        WHERE
+        school_id = #{schoolId,jdbcType=VARCHAR}
+        AND disk_id = #{diskId,jdbcType=VARCHAR}
+        AND user_id = #{userId,jdbcType=VARCHAR}
+    </update>
+
+    <!--删除资源-->
+    <update id="removeFile">
+        UPDATE ct_cloud_disk
+        SET
+        status = 0
+        WHERE school_id = #{schoolId,jdbcType=VARCHAR}
+        AND  disk_id = #{diskId,jdbcType=VARCHAR}
+        AND user_id = #{userId,jdbcType=VARCHAR}
+    </update>
+
+    <!--置顶我的资源-->
+    <update id="stickyFile">
+        UPDATE ct_cloud_disk
+        SET
+        sticky_status = 1
+        WHERE school_id = #{schoolId,jdbcType=VARCHAR}
+        AND  disk_id = #{diskId,jdbcType=VARCHAR}
+        AND user_id = #{userId,jdbcType=VARCHAR}
+    </update>
+
+    <!--取消置顶我的资源-->
+    <update id="cancelStickyFile">
+        UPDATE ct_cloud_disk
+        SET
+        sticky_status = 0
+        WHERE school_id = #{schoolId,jdbcType=VARCHAR}
+        AND  disk_id = #{diskId,jdbcType=VARCHAR}
+        AND user_id = #{userId,jdbcType=VARCHAR}
+    </update>
+
+    <!--批量移动资源-->
+    <update id="batchMoveFiles">
+        UPDATE ct_cloud_disk
+        SET file_type = #{fileType},
+        unit_id = #{unitId,jdbcType=VARCHAR}
+        WHERE school_id = #{schoolId,jdbcType=VARCHAR}
+        AND disk_id IN
+        <foreach collection="diskIds" item="diskId" open="(" separator="," close=")">
+            #{diskId}
+        </foreach>
+        AND user_id = #{userId}
+    </update>
+
+    <!--批量删除资源-->
+    <update id="batchRemoveFiles">
+        UPDATE ct_cloud_disk
+        SET status = 0
+        WHERE school_id = #{schoolId,jdbcType=VARCHAR}
+        AND disk_id IN
+        <foreach collection="diskIds" item="diskId" open="(" separator="," close=")">
+            #{diskId}
+        </foreach>
+        AND user_id = #{userId}
+    </update>
+
+    <!--查询是否我收藏的-->
+    <select id="isMyCollect" resultType="long">
+        SELECT COUNT(1)
+        FROM ct_cloud_disk
+        WHERE school_id = #{schoolId,jdbcType=VARCHAR}
+        AND user_id = #{userId,jdbcType=VARCHAR}
+        AND pid = #{shareId,jdbcType=VARCHAR}
+        AND (collect_status in(1,2))
+        AND status = 1
+    </select>
+
+    <!--查询我的收藏-->
+    <select id="queryMyCollect" resultMap="BaseResultMap">
+        SELECT
+          disk_id,
+          creator,
+          user_id,
+          unit_id,
+          file_pk,
+          file_uri,
+          file_type,
+          name,
+          description,
+          extension,
+          ext_type,
+          ext_icon_type,
+          size,
+          add_time,
+          update_time,
+          sticky_status,
+          share_status,
+          share_time,
+          audit_instructions,
+          collect_status,
+          pid,
+          school_id,
+          status
+        FROM
+          ct_cloud_disk
+        WHERE school_id = #{schoolId,jdbcType=VARCHAR}
+        AND user_id = #{userId,jdbcType=VARCHAR}
+        AND pid = #{shareId,jdbcType=VARCHAR}
+        AND (collect_status in (1,2))
+        AND status = 1
+    </select>
+
+    <!--根据ID获取一批云盘资源-->
+    <select id="queryFilesByIds" resultMap="BaseResultMap">
+        SELECT
+        disk_id,
+        creator,
+        user_id,
+        unit_id,
+        file_pk,
+        file_uri,
+        file_type,
+        name,
+        description,
+        extension,
+        ext_type,
+        ext_icon_type,
+        size,
+        add_time,
+        update_time,
+        sticky_status,
+        share_status,
+        share_time,
+        audit_instructions,
+        collect_status,
+        pid,
+        status
+        FROM
+        ct_cloud_disk ccd
+        WHERE school_id = #{schoolId,jdbcType=VARCHAR}
+        AND ccd.disk_id IN
+        <foreach collection="diskIds" item="diskId" open="(" separator="," close=")">
+            #{diskId}
+        </foreach>
+    </select>
+
+    <!--学区资源统计-->
+    <!--查询某个区域下的资源数-->
+    <select id="getAreaUnderResourceAmount" resultType="int">
+        select count(a.disk_id) as resourceAmount
+        from ct_cloud_disk as a
+        inner join m_school on m_school.id = a.school_id and m_school.area like concat(#{areaId,jdbcType=VARCHAR},'%')
+        where a.status=1 and a.collect_status=0
+        <if test="begTime!=null">
+            and <![CDATA[a.add_time>=#{begTime,jdbcType=VARCHAR}]]>
+        </if>
+        <if test="endTime!=null">
+            and <![CDATA[a.add_time<=#{endTime,jdbcType=VARCHAR}]]>
+        </if>
+    </select>
+
+    <!--查询某个区域下某个学校的教师数-->
+    <select id="getTeacherAmount" resultType="int">
+        select count(1)
+        from m_users
+        where status>0 and identity_id='TEACHER'
+        <if test="areaId!=null">
+            and area like concat(#{areaId,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="schoolId!=null">
+            and school_id = #{schoolId,jdbcType=VARCHAR}
+        </if>
+    </select>
+
+    <!--查询某个学校下的资源数-->
+    <select id="getSchoolUnderResourceAmount" resultType="int">
+        select count(a.disk_id) as resourceAmount
+        from ct_cloud_disk as a
+        where a.status=1 and a.collect_status=0
+        and a.school_id=#{schoolId,jdbcType=VARCHAR}
+        <if test="begTime!=null">
+            and <![CDATA[a.add_time>=#{begTime,jdbcType=VARCHAR}]]>
+        </if>
+        <if test="endTime!=null">
+            and <![CDATA[a.add_time<=#{endTime,jdbcType=VARCHAR}]]>
+        </if>
+    </select>
+
+    <!--查询某个教师的资源数-->
+    <select id="getTeacherUnderResourceAmount" resultType="int">
+        select count(a.disk_id) as resourceAmount
+        from ct_cloud_disk as a
+        inner join m_users as b on a.user_id=b.user_id
+        where a.status=1 and a.collect_status=0
+        and a.school_id=#{schoolId,jdbcType=VARCHAR}
+        and a.user_id=#{userId,jdbcType=VARCHAR}
+        <if test="begTime!=null">
+            and <![CDATA[a.add_time>=#{begTime,jdbcType=VARCHAR}]]>
+        </if>
+        <if test="endTime!=null">
+            and <![CDATA[a.add_time<=#{endTime,jdbcType=VARCHAR}]]>
+        </if>
+    </select>
+
+    <!--查询某个教师的分享的资源数-->
+    <select id="getTeacherUnderShareResourceAmount" resultType="int">
+        select count(a.disk_id) as resourceAmount
+        from ct_cloud_disk as a
+        inner join m_users as b on a.user_id=b.user_id
+        where a.status=1 and a.collect_status=0 and a.share_status=2
+        and a.school_id=#{schoolId,jdbcType=VARCHAR}
+        and a.user_id=#{userId,jdbcType=VARCHAR}
+        <if test="begTime!=null">
+            and <![CDATA[a.share_time>=#{begTime,jdbcType=VARCHAR}]]>
+        </if>
+        <if test="endTime!=null">
+            and <![CDATA[a.share_time<=#{endTime,jdbcType=VARCHAR}]]>
+        </if>
+    </select>
+
+    <!--获取某个范围内的有分享资源的学校数-->
+    <select id="getShareResourceSchoolAmount" resultType="int">
+        SELECT count(DISTINCT(a.school_id))
+        FROM ct_cloud_disk as a
+        INNER JOIN m_users as c on c.user_id=a.user_id
+            <if test="areaId!=null">
+                and c.area like concat(#{areaId,jdbcType=VARCHAR},'%')
+            </if>
+        WHERE a.status=1 and a.collect_status=0 and a.share_status=2
+        <if test="begTime!=null">
+            and <![CDATA[a.share_time>=#{begTime,jdbcType=VARCHAR}]]>
+        </if>
+        <if test="endTime!=null">
+            and <![CDATA[a.share_time<=#{endTime,jdbcType=VARCHAR}]]>
+        </if>
+    </select>
+    <!--获取某个范围内的有分享资源的教师数-->
+    <select id="getShareResourceTeacherAmount" resultType="int">
+        SELECT count(DISTINCT(a.user_id))
+        FROM ct_cloud_disk as a
+        INNER JOIN m_users as c on c.user_id=a.user_id
+            <if test="areaId!=null">
+                and c.area like concat(#{areaId,jdbcType=VARCHAR},'%')
+            </if>
+        WHERE a.status=1 and a.collect_status=0 and a.share_status=2
+        <if test="schoolId!=null">
+            and a.school_id = #{schoolId,jdbcType=VARCHAR}
+        </if>
+        <if test="begTime!=null">
+            and <![CDATA[a.share_time>=#{begTime,jdbcType=VARCHAR}]]>
+        </if>
+        <if test="endTime!=null">
+            and <![CDATA[a.share_time<=#{endTime,jdbcType=VARCHAR}]]>
+        </if>
+    </select>
+
+    <!--获取某个范围内的最新分享资源数量-->
+    <select id="getSharedResourceCount" resultType="int">
+        SELECT count(a.disk_id)
+        FROM ct_cloud_disk as a
+        INNER JOIN m_teacher as b on b.user_id=a.user_id
+        INNER JOIN m_users as c on c.user_id=a.user_id
+            <if test="areaId!=null">
+                and c.area like concat(#{areaId,jdbcType=VARCHAR},'%')
+            </if>
+        INNER JOIN ct_units as d on d.unit_id=a.unit_id
+        INNER JOIN ct_book as e on e.book_id=d.book_id
+        WHERE a.status=1 and a.collect_status=0 and a.share_status=2
+        <if test="schoolId!=null">
+            and a.school_id = #{schoolId,jdbcType=VARCHAR}
+        </if>
+        <if test="userId!=null">
+            and a.user_id = #{userId,jdbcType=VARCHAR}
+        </if>
+        <if test="begTime!=null">
+            and <![CDATA[a.share_time>=#{begTime,jdbcType=VARCHAR}]]>
+        </if>
+        <if test="endTime!=null">
+            and <![CDATA[a.share_time<=#{endTime,jdbcType=VARCHAR}]]>
+        </if>
+    </select>
+    <!--获取某个范围内的最新分享资源（分页请求）-->
+    <select id="getSharedResource" resultMap="SRResourceSharedViewResultMap">
+        SELECT d.unit_name,e.subject_name,e.grade,c.real_name,b.school_name,b.position_name,
+        a.share_time,a.file_type,a.file_uri,a.extension,a.ext_type,a.name
+        FROM ct_cloud_disk as a
+        INNER JOIN m_teacher as b on b.user_id=a.user_id
+        INNER JOIN m_users as c on c.user_id=a.user_id
+            <if test="areaId!=null">
+                and c.area like concat(#{areaId,jdbcType=VARCHAR},'%')
+            </if>
+        INNER JOIN ct_units as d on d.unit_id=a.unit_id
+        INNER JOIN ct_book as e on e.book_id=d.book_id
+        WHERE a.status=1 and a.collect_status=0 and a.share_status=2
+        <if test="schoolId!=null">
+            and a.school_id = #{schoolId,jdbcType=VARCHAR}
+        </if>
+        <if test="userId!=null">
+            and a.user_id = #{userId,jdbcType=VARCHAR}
+        </if>
+        <if test="begTime!=null">
+            and <![CDATA[a.share_time>=#{begTime,jdbcType=VARCHAR}]]>
+        </if>
+        <if test="endTime!=null">
+            and <![CDATA[a.share_time<=#{endTime,jdbcType=VARCHAR}]]>
+        </if>
+        ORDER BY a.share_time desc
+        limit #{page.start},#{pageSize}
+    </select>
+
+    <!--获取某个范围内按文件类型分类对应的资源数量-->
+    <select id="getResourceSortFileType" resultMap="SRResourceStatisticsNumViewResultMap">
+        SELECT a.file_type typeCode,count(a.disk_id) typeNum
+        FROM ct_cloud_disk as a
+        INNER JOIN m_users as b on b.user_id=a.user_id
+            <if test="areaId!=null">
+                and b.area like concat(#{areaId,jdbcType=VARCHAR},'%')
+            </if>
+        WHERE a.status=1 and a.collect_status=0
+        <if test="schoolId!=null">
+            and a.school_id = #{schoolId,jdbcType=VARCHAR}
+        </if>
+        <if test="userId!=null">
+            and a.user_id = #{userId,jdbcType=VARCHAR}
+        </if>
+        <if test="begTime!=null">
+            and <![CDATA[a.add_time>=#{begTime,jdbcType=VARCHAR}]]>
+        </if>
+        <if test="endTime!=null">
+            and <![CDATA[a.add_time<=#{endTime,jdbcType=VARCHAR}]]>
+        </if>
+        group by a.file_type
+    </select>
+
+    <!--获取某个范围内按文件后缀类型分类对应的资源数量-->
+    <select id="getResourceSortExtType" resultMap="SRResourceStatisticsNumViewResultMap">
+        SELECT a.ext_type typeCode,count(a.disk_id) typeNum
+        FROM ct_cloud_disk as a
+        INNER JOIN m_users as b on b.user_id=a.user_id
+            <if test="areaId!=null">
+                and b.area like concat(#{areaId,jdbcType=VARCHAR},'%')
+            </if>
+        WHERE a.status=1 and a.collect_status=0
+        <if test="schoolId!=null">
+            and a.school_id = #{schoolId,jdbcType=VARCHAR}
+        </if>
+        <if test="userId!=null">
+            and a.user_id = #{userId,jdbcType=VARCHAR}
+        </if>
+        <if test="begTime!=null">
+            and <![CDATA[a.add_time>=#{begTime,jdbcType=VARCHAR}]]>
+        </if>
+        <if test="endTime!=null">
+            and <![CDATA[a.add_time<=#{endTime,jdbcType=VARCHAR}]]>
+        </if>
+        group by a.ext_type
+    </select>
+
+    <!--获取区划下学校总数-->
+    <select id="getSchoolResourceStatisticsCount" resultType="int">
+        SELECT count(1)
+        FROM m_school
+        where status=1
+        <if test="areaId!=null">
+            and m_school.area like concat(#{areaId,jdbcType=VARCHAR},'%')
+        </if>
+    </select>
+    <!--获取区划下学校资源统计-->
+    <select id="getSchoolResourceStatistics" resultMap="SRSchoolResourceStatisticsViewResultMap">
+        select school_id,sum(teacherNum) teacherNum,sum(resourceNum) resourceNum ,max(school_name)
+        school_name,max(real_name) real_name
+        FROM
+        (select a.school_id,0 as teacherNum,count(a.disk_id) resourceNum,'' school_name,'' real_name
+        from ct_cloud_disk as a
+        inner join m_school on m_school.id = a.school_id
+            <if test="areaId!=null">
+                and m_school.area like concat(#{areaId,jdbcType=VARCHAR},'%')
+            </if>
+        where 1=1
+        <if test="begTime!=null">
+            and <![CDATA[a.add_time>=#{begTime,jdbcType=VARCHAR}]]>
+        </if>
+        <if test="endTime!=null">
+            and <![CDATA[a.add_time<=#{endTime,jdbcType=VARCHAR}]]>
+        </if>
+        and a.status=1 and a.collect_status=0
+        group by a.school_id
+
+        union all
+
+        select school_id,count(1) teacherNum,0 as resourceNum,'' school_name,'' real_name
+        from m_users
+        where 1=1
+        <if test="areaId!=null">
+            and area like concat(#{areaId,jdbcType=VARCHAR},'%')
+        </if>
+        and status>0 and identity_id='TEACHER'
+        group by school_id
+
+        union all
+
+        select m_school.id as school_id,0 as teacherNum,0 as resourceNum,'' school_name,m_users.real_name
+        from m_school
+        inner join m_teacher on m_teacher.school_id=m_school.id and m_teacher.position_id='PRINCIPAL'
+        inner join m_users on m_users.user_id=m_teacher.user_id and m_users.status>0
+        where 1=1
+        <if test="areaId!=null">
+            and m_school.area like concat(#{areaId,jdbcType=VARCHAR},'%')
+        </if>
+        and m_school.status=1
+        group by m_school.id
+
+        union all
+
+        select m_school.id as school_id,0 as teacherNum,0 as resourceNum,m_school.name school_name,'' real_name
+        from m_school
+        where 1=1
+        <if test="areaId!=null">
+            and m_school.area like concat(#{areaId,jdbcType=VARCHAR},'%')
+        </if>
+        and m_school.status=1
+        ) rsNumDB2
+        group by school_id
+        order by resourceNum DESC
+        <if test="pageSize != -1">
+            limit #{page.start},#{pageSize}
+        </if>
+    </select>
+
+    <!--获取某个范围内的教师资源记录数-->
+    <select id="getTeacherResourceStatisticsCount" resultType="int">
+        select count(1)
+        from(select a.user_id
+        from ct_cloud_disk as a
+        inner join m_school on m_school.id = a.school_id
+            <if test="areaId!=null">
+                and m_school.area like concat(#{areaId,jdbcType=VARCHAR},'%')
+            </if>
+        where 1=1
+        <if test="schoolId!=null">
+            and a.school_id = #{schoolId,jdbcType=VARCHAR}
+        </if>
+        <if test="begTime!=null">
+            and <![CDATA[a.add_time>=#{begTime,jdbcType=VARCHAR}]]>
+        </if>
+        <if test="endTime!=null">
+            and <![CDATA[a.add_time<=#{endTime,jdbcType=VARCHAR}]]>
+        </if>
+        and a.status=1 and a.collect_status=0
+        group by a.user_id) rsNumDB
+    </select>
+
+    <!--获取某个范围内的教师资源统计-->
+    <select id="getTeacherResourceStatistics" resultMap="SRTeacherResourceStatisticsViewResultMap">
+        select rsNumDB2.* from
+        (select
+        rsNumDB.*,m_users.real_name,m_teacher.school_id,m_teacher.school_name,m_teacher.position_name,ct_book.subject_name
+        from(
+        select a.user_id,count(a.disk_id) resourceNum
+        from ct_cloud_disk as a
+        inner join m_school on m_school.id = a.school_id
+            <if test="areaId!=null">
+                and m_school.area like concat(#{areaId,jdbcType=VARCHAR},'%')
+            </if>
+        where 1=1
+        <if test="schoolId!=null">
+            and a.school_id = #{schoolId,jdbcType=VARCHAR}
+        </if>
+        <if test="begTime!=null">
+            and <![CDATA[a.add_time>=#{begTime,jdbcType=VARCHAR}]]>
+        </if>
+        <if test="endTime!=null">
+            and <![CDATA[a.add_time<=#{endTime,jdbcType=VARCHAR}]]>
+        </if>
+        and a.status=1 and a.collect_status=0
+        group by a.user_id) rsNumDB
+        left join m_users on m_users.user_id=rsNumDB.user_id
+        left join m_teacher on m_teacher.user_id=rsNumDB.user_id
+        left join ct_book on ct_book.book_id=m_teacher.book_id) rsNumDB2
+        order by rsNumDB2.resourceNum DESC
+        <if test="pageSize != -1">
+            limit #{page.start},#{pageSize}
+        </if>
+    </select>
+    <!--查询我收藏的资源pid-->
+    <select id="queryMyCollectPid" resultType="String">
+        SELECT pid
+        FROM
+        ct_cloud_disk ccd
+        where ccd.school_id = #{schoolId}
+        AND ccd.unit_id = #{unitId}
+        AND ccd.user_id = #{userId}
+        AND ccd.collect_status=#{collectStatus}
+        <if test="fileType!=null and extType!=0">
+            AND ccd.file_type = #{fileType}
+        </if>
+        <if test="extType!=null and extType!=0">
+            AND ccd.ext_type = #{extType}
+        </if>
+        AND ccd.status = 1
+    </select>
+
+    <!-- 按资源类型分类查询资源数量 -->
+    <select id="countByFileType" resultMap="AmountMapper">
+        SELECT
+            file_type,COUNT(1) num
+        FROM
+            ct_cloud_disk
+        WHERE
+            school_id = #{schoolId}
+        AND user_id = #{userId}
+        AND unit_id = #{unitId}
+        AND status = 1
+        GROUP BY file_type
+    </select>
+
+    <!--查询用户在某个时间段内上传的资源总数-->
+    <select id="selectUploadCount" resultType="long">
+        SELECT
+            COUNT(1) num
+        FROM
+            ct_cloud_disk
+        WHERE
+            school_id = #{schoolId}
+        AND user_id = #{userId}
+        AND collect_status = 0
+        AND status = 1
+        AND add_time BETWEEN #{start} AND #{end}
+    </select>
+
+    <!--查询用户在某个时间段内分享的资源总数-->
+    <select id="selectSharedCount" resultType="long">
+        SELECT
+            COUNT(1) num
+        FROM
+            ct_cloud_disk
+        WHERE
+            school_id = #{schoolId}
+        AND user_id = #{userId}
+        AND share_status = 2
+        AND status = 1
+        AND add_time BETWEEN #{start} AND #{end}
+    </select>
+
+    <select id="selectAllResourceBySubject" resultMap="BaseResultMap">
+        select c.disk_id,
+          c.creator,
+          c.user_id,
+          c.unit_id,
+          c.file_pk,
+          c.file_uri,
+          c.file_type,
+          c.name,
+          c.description,
+          c.extension,
+          c.ext_type,
+          c.ext_icon_type,
+          c.size,
+          c.add_time,
+          c.update_time,
+          c.sticky_status,
+          c.share_status,
+          c.share_time,
+          c.audit_instructions,
+          c.collect_status,
+          c.pid,
+          c.school_id,
+          c.status
+        from ct_units a,ct_book b,ct_cloud_disk c
+        where a.book_id = b.book_id
+        and a.unit_id = c.unit_id
+        and b.subject_id = #{subjectId,jdbcType=VARCHAR}
+        and c.user_id = #{userId,jdbcType=VARCHAR}
+        and c.school_id = #{schoolId,jdbcType=VARCHAR}
+        and c.status = 1;
+    </select>
+</mapper>

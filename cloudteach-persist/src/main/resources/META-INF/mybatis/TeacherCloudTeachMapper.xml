@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.TeacherCloudTeachMapper" >
+
+    <resultMap id="TeacherCloudTeachViewResultMap" type="net.xuele.cloudteach.view.TeacherCloudTeachView" >
+        <id column="work_id" property="workId" jdbcType="VARCHAR" />
+        <result column="user_id" property="userId" jdbcType="VARCHAR" />
+        <result column="publish_time" property="publishTime" jdbcType="TIMESTAMP" />
+        <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+        <result column="subject_id" property="subjectId" jdbcType="VARCHAR" />
+        <result column="subject_name" property="subjectName" jdbcType="VARCHAR" />
+        <result column="unit_id" property="unitId" jdbcType="VARCHAR" />
+        <result column="unit_name" property="unitName" jdbcType="VARCHAR" />
+        <result column="context" property="context" jdbcType="VARCHAR" />
+        <result column="voiceContext" property="voiceContext" jdbcType="VARCHAR" />
+        <result column="files" property="files" jdbcType="VARCHAR" />
+        <result column="work_type" property="workType" jdbcType="INTEGER" />
+        <result column="work_item_num" property="workItemNum" jdbcType="INTEGER" />
+        <result column="work_class_num" property="workClassNum" jdbcType="INTEGER" />
+        <result column="work_class_json" property="workClassJson" jdbcType="VARCHAR" />
+        <result column="work_student_num" property="workStudentNum" jdbcType="INTEGER" />
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR" />
+        <result column="status" property="status" jdbcType="INTEGER" />
+        <result column="work_sub_student_num" property="workSubStudentNum" jdbcType="INTEGER" />
+        <result column="work_correct_student_num" property="workCorrectStudentNum" jdbcType="INTEGER" />
+        <result column="tapeFileUrl" property="tapeFileUrl" jdbcType="VARCHAR" />
+        <result column="tapeFileExt" property="tapeFileExt" jdbcType="VARCHAR" />
+        <result column="userName" property="userName" jdbcType="VARCHAR" />
+        <result column="userIcon" property="userIcon" jdbcType="VARCHAR" />
+        <result column="positionName" property="positionName" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <!--获取云教学内容-->
+    <select id="queryTeacherCloudTeach"  resultMap="TeacherCloudTeachViewResultMap">
+        select a.*,b.work_sub_student_num,b.work_correct_student_num,IFNULL(c.url,'') tapeFileUrl,IFNULL(c.extension,'') tapeFileExt,
+          m_users.real_name userName,m_users.icon userIcon,m_teacher.position_name positionName
+        from ct_work_gather as a
+        inner join ct_work_statistics as b on a.work_id=b.work_id
+        inner join m_users on m_users.user_id=a.user_id
+        inner join m_teacher on m_teacher.user_id=a.user_id
+        <if test="classId!=null">
+            INNER JOIN ct_work_class_gather as d on d.work_id=a.work_id AND d.class_id=#{classId,jdbcType=VARCHAR} and d.status=1
+        </if>
+        left join ct_work_tape_files as c on c.work_id=a.work_id
+        where a.school_id=#{schoolId,jdbcType=VARCHAR}
+        <if test="userId!=null">
+          and a.user_id=#{userId,jdbcType=VARCHAR}
+        </if>
+        <if test="unitId!=null">
+            and a.unit_id=#{unitId,jdbcType=VARCHAR}
+        </if>
+        <if test="subjectId!=null">
+            and a.subject_id=#{subjectId,jdbcType=VARCHAR}
+        </if>
+        <if test="onlyWork==1">
+            and <![CDATA[ a.work_type<>5 and a.work_type<>6 ]]>
+        </if>
+          and <![CDATA[a.publish_time<#{publishTime,jdbcType=VARCHAR}]]> and a.status=1
+        ORDER BY a.publish_time desc
+        limit #{pageSize}
+    </select>
+
+</mapper>

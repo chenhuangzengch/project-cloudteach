@@ -1,0 +1,103 @@
+#set($layout="layout/bodyLayout.vm")
+#set($page_title="口语作业")
+#define($script)
+<link rel="stylesheet" href="$!{asset_host}/css/cloudteach/stu.css?version=${version}" />
+<script src="$!{asset_host}/g/lib/gallery/swfobject.js?version=${version}"></script>
+#end
+<div class="detail-head">
+    <a class="li-whos on" href="javascript:void(0)">写作业</a>
+    <a class="li-whos"
+       href="$!{ctx}/studentcloudwork/parent/voiceWorkCommunication?workId=$!{workDetail.basicWorkInfo.workId}&studentId=$!{studentId}&workType=7">作业交流</a>
+</div>
+<div class="container">
+    <div class="write-wrap">
+        <div class="task-info">
+            <div class="detail-title">
+                <div class="task-title">
+                    <img src="$!{avatar_host}/images/48x48_$!{workDetail.basicWorkInfo.teacherHeadIcon}.jpg" class="portrait"/>
+                    <h3 class="detail-info">
+                        <span class="tch-name">$!{workDetail.basicWorkInfo.teacherName}</span><br/>
+                    </h3>
+                    <ul class="homework-explain">
+                        <li class="subject-name">$!{workDetail.basicWorkInfo.subjectName} </li>
+                        <li class="course-name"> $!{workDetail.basicWorkInfo.unitName} </li>
+                        <li class="homework-num">$!{workDetail.basicWorkInfo.workItemCount}题</li>
+                    </ul>
+                    <p class="p-detail">$!{workDetail.basicWorkInfo.context.replaceAll("\r\n", "<br>").replaceAll("\r", "<br>").replaceAll("\n", "<br>").replaceAll(" ","&nbsp;")}
+                    </p>
+                    <div class="video-wrap" data-url="$!{workDetail.workTapeFilesDTO.url}">
+                        <div id="spoken-detail"></div>
+                    </div>
+                </div>
+            </div>
+##            <div class="attachment-wrap">
+##                <h3>题目附件</h3>
+##                <ul class="ul-attachment">
+##                    #foreach($!{teacherWorkFileDetail} in $!{workDetail.teacherWorkFileDetailViewList})
+##                        <li>
+##                            <img src="$!{asset_host}/g/imgs/icons/$!{teacherWorkFileDetail.extIconType}.png "
+##                                 class="xlpreview img-file-type"
+##                                 data-ext="$!{teacherWorkFileDetail.extension}"
+##                                 data-filekey="$!{teacherWorkFileDetail.url}"
+##                                 alt=""/>
+##                            <span class="file-name">$!{teacherWorkFileDetail.name}.$!{teacherWorkFileDetail.extension}</span>
+##                        </li>
+##                    #end
+##                </ul>
+##            </div>
+        </div>
+        <div class="hand-info">
+            <div class="hand-method method-time">作业上交方式：学乐APP</div>
+            <div class="hand-time method-time">最晚交作业时间：$!{day}天之内 </div>
+
+            <p class="hand-content">$!{workDetail.teacherWorkItemAnswerDTO.context.replaceAll("\r\n", "<br>").replaceAll("\r", "<br>").replaceAll("\n", "<br>").replaceAll(" ","&nbsp;")}</p>
+
+            <div class="audio-wrap">
+                #foreach($teacherWorkItemAnswerFileDTO in $workDetail.ctTeacherWorkItemAnswerFileList)
+                    #if($teacherWorkItemAnswerFileDTO.fileType==2)
+                        <em class="score">获得了$!{workDetail.teacherWorkItemAnswerDTO.sysScore}分！</em>
+
+                        <div class="video-wrap">
+                            <div role="player" class="xlplayer" data-filekey="$!{teacherWorkItemAnswerFileDTO.url}"
+                                 data-ext="$!{teacherWorkItemAnswerFileDTO.extension}"></div>
+                        </div>
+                    ##<div id="spoken-detail2" data-url="http://haha"></div>
+                    #end
+                    #if($teacherWorkItemAnswerFileDTO.fileType==1)
+                        <li><img class="xlpreview img-file-type"
+                                 data-ext="$!{teacherWorkItemAnswerFileDTO.extension}"
+                                 data-filekey="$!{teacherWorkItemAnswerFileDTO.url}"
+                                 src="$!{dl_host}/images/1/100x100_$!{teacherWorkItemAnswerFileDTO.url}.$!{teacherWorkItemAnswerFileDTO.extension}"
+                                 alt=""/>
+                        </li>
+                    #end
+                    #if($teacherWorkItemAnswerFileDTO.fileType==3)
+                        <li><img class="xlpreview img-file-type"
+                                 data-ext="$!{teacherWorkItemAnswerFileDTO.extension}"
+                                 data-filekey="$!{teacherWorkItemAnswerFileDTO.url}"
+                                 src="$!{asset_host}/g/imgs/video.png"
+                                 alt=""/>
+                        </li>
+                    #end
+                #end
+            </div>
+             #if(${workDetail.teacherWorkItemAnswerDTO.subStatus}==1)
+                <div class="finish-time">
+                    作业完成时间:$!{compliteTime}
+                </div>
+
+            #elseif($DateExtend.compareToCurrTime($!{workDetail.basicWorkInfo.endTime}) ==1&&${workDetail.teacherWorkItemAnswerDTO.subStatus}==0)
+                 <div class="child-finish-no">
+                      作业已经过期了
+                </div>
+            #else
+                <div class="before-finish" style="display: block">
+                    <div class="child-finish-no">
+                        学生尚未完成此项作业
+                    </div>
+                </div>
+            #end
+        </div>
+    </div>
+</div>
+

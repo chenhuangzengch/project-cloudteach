@@ -1,0 +1,7 @@
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<link rel="stylesheet" href="$!{asset_host}/g/css/global.min.css?version=${version}" />
+<script src="$!{asset_host}/g/js/global.min.js?version=${version}"></script>
+<script src="$!{asset_host}/cjs/config.js?version=${version}"></script>
+<script  src="$!{asset_host}/js/cloudteach/scrollbar.js?version=${version}"></script>
+
+

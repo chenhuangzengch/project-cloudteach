@@ -1,0 +1,69 @@
+#set($menu=${user.menu})
+#set($lastUrl=$!{session.getAttribute("lastUrl")})
+#set($first=${menu.getFirst(${request.getRequestURI()},"${lastUrl}")})
+${session.setAttribute("lastUrl",$!{menu.lastUrl})}
+#set($second=${menu.getSecond()})
+#set($panel=${user.personPanel})
+<div class="header" url="${request.getRequestURI()}:${lastUrl}">
+    <div class="top">
+        <div class="logo">
+            #if(${sec.anyGranted("STUDENT","PARENT")})
+                <img src="http://asset.xueleyun.com/g/imgs/xllogo.gif" alt="" /><h1>云教学平台</h1>
+            #elseif(${sec.anyGranted("EDUCATION_MANAGER","EDUCATION_STAFF")})
+                <img src="http://asset.xueleyun.com/g/imgs/edulogo.gif" alt="" /><h1>$!{user.educationalName}</h1>
+            #else
+                <img src="http://asset.xueleyun.com/g/imgs/deflogo.gif" alt="" /><h1>$!{user.schoolName}</h1>
+            #end
+        </div>
+        <div class="ctls">
+            <ul>
+                <li><a href="javascript:;" id="J_Msg"><i class="icon-msg"></i>消息</a></li>
+                <li class="av"><img src="${normalSrc}${user.icon}.jpg" alt="" /><a href="javascript:;">设置<i class="icon-idown"></i></a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="nav">
+        <div class="cates-panel">
+            <div class="cates" id="J_Cates">
+                <p class="def">
+                    #if(${sec.anyGranted("SCHOOL_MANAGER")}&&${first.get(0).resourceId}=="MY_MESSAGE")
+                        <a href="javascript:;"><i class="icon-down"></i><i class="icon-${first.get(0).resourceId}"></i>学校信息</a>
+                    #elseif(${sec.anyGranted("EDUCATION_MANAGER")}&&${first.get(0).resourceId}=="MY_MESSAGE")
+                        <a href="javascript:;"><i class="icon-down"></i><i class="icon-${first.get(0).resourceId}"></i>机构信息</a>
+                    #else
+                        <a href="javascript:;"><i class="icon-down"></i><i class="icon-${first.get(0).resourceId}"></i>$!{first.get(0).name}</a>
+                    #end
+                </p>
+                <div class="cates-list">
+                    <ul>
+                        #foreach($r in $first)
+                            #if($foreach.index!=0)
+                                #if(${sec.anyGranted("SCHOOL_MANAGER")}&&${r.resourceId}=="MY_MESSAGE")
+                                    <li #if(!$r.isCurrent) class="on"#end><i class="icon-${r.resourceId}"></i><a href="${r.url}">学校信息</a></li>
+                                #elseif(${sec.anyGranted("EDUCATION_MANAGER")}&&${r.resourceId}=="MY_MESSAGE")
+                                    <li #if($r.isCurrent) class="on"#end><i class="icon-${r.resourceId}"></i><a href="${r.url}">机构信息</a></li>
+                                #else
+                                    <li #if($r.isCurrent) class="on"#end><i class="icon-${r.resourceId}"></i><a href="${r.url}">$!{r.name}</a></li>
+                                #end
+                            #end
+                        #end
+                    </ul>
+                    <div class="copyright"></div>
+                </div>
+            </div>
+        </div>
+        #if(${sec.noneGranted("STUDENT","PARENT")})
+            <p class="notice"><a class="J_Notify" href="javascript:;"><i class="icon-notice"></i>通知</a></p>
+        #end
+        <div class="menu">
+            #foreach($r in $second)
+                #if($r.isCurrent)
+                    <a href="${r.url}" class="on">$!{r.name}</a>
+                #else
+                    <a href="${r.url}">$!{r.name}</a>
+                #end
+
+            #end
+        </div>
+    </div>
+</div>

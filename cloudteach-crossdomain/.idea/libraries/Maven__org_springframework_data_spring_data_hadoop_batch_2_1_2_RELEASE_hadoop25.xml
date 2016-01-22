@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.springframework.data:spring-data-hadoop-batch:2.1.2.RELEASE-hadoop25">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/springframework/data/spring-data-hadoop-batch/2.1.2.RELEASE-hadoop25/spring-data-hadoop-batch-2.1.2.RELEASE-hadoop25.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/springframework/data/spring-data-hadoop-batch/2.1.2.RELEASE-hadoop25/spring-data-hadoop-batch-2.1.2.RELEASE-hadoop25-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/springframework/data/spring-data-hadoop-batch/2.1.2.RELEASE-hadoop25/spring-data-hadoop-batch-2.1.2.RELEASE-hadoop25-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

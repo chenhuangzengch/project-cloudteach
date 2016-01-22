@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtDiskDownloadsMapper">
+    <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtDiskDownloads">
+        <id column="download_id" property="downloadId" jdbcType="VARCHAR"/>
+        <result column="file_id" property="fileId" jdbcType="VARCHAR"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="download_time" property="downloadTime" jdbcType="TIMESTAMP"/>
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+    </resultMap>
+    <delete id="deleteByPrimaryKey" parameterType="map">
+    delete from ct_disk_downloads
+    where file_id = #{fileId,jdbcType=VARCHAR}
+      and user_id = #{userId,jdbcType=VARCHAR}
+  </delete>
+    <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtDiskDownloads">
+    INSERT INTO ct_disk_downloads (download_id,file_id, user_id, download_time,school_id
+      )
+    VALUES (#{downloadId,jdbcType=VARCHAR},#{fileId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR},
+    #{downloadTime,jdbcType=TIMESTAMP}, #{schoolId,jdbcType=VARCHAR}
+      )
+  </insert>
+    <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtDiskDownloads">
+    UPDATE ct_disk_downloads
+    SET download_time = #{downloadTime,jdbcType=TIMESTAMP}
+    WHERE school_id = #{schoolId,jdbcType=VARCHAR}
+      AND file_id = #{fileId,jdbcType=VARCHAR}
+      AND user_id = #{userId,jdbcType=VARCHAR}
+  </update>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="map">
+    SELECT file_id, user_id, download_time
+    FROM ct_disk_downloads
+    WHERE school_id = #{schoolId,jdbcType=VARCHAR}
+      AND file_id = #{fileId,jdbcType=VARCHAR}
+      AND user_id = #{userId,jdbcType=VARCHAR}
+  </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+    SELECT file_id, user_id, download_time,school_id
+    FROM ct_disk_downloads
+  </select>
+
+    <!--查询用户在一定时间内下载的记录数-->
+    <select id="countDownload" resultType="long">
+        SELECT
+        COUNT(*)
+        FROM ct_disk_downloads cdd
+        WHERE school_id = #{schoolId,jdbcType=VARCHAR}
+        AND cdd.user_id = #{userId,jdbcType=VARCHAR}
+        AND cdd.download_time >= #{time}
+    </select>
+</mapper>

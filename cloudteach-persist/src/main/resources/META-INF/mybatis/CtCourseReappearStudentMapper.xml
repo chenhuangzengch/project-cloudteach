@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtCourseReappearStudentMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtCourseReappearStudent" >
+    <id column="rs_id" property="rsId" jdbcType="VARCHAR" />
+    <result column="reappear_id" property="reappearId" jdbcType="VARCHAR" />
+    <result column="school_id" property="schoolId" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="class_id" property="classId" jdbcType="VARCHAR" />
+    <result column="read_status" property="readStatus" jdbcType="INTEGER" />
+    <result column="read_time" property="readTime" jdbcType="TIMESTAMP" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from ct_course_reappear_student
+    where rs_id = #{rsId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtCourseReappearStudent" >
+    insert into ct_course_reappear_student (rs_id, reappear_id,school_id, user_id,class_id,
+      read_status, read_time, status
+      )
+    values (#{rsId,jdbcType=VARCHAR},#{reappearId,jdbcType=VARCHAR},#{schoolId,jdbcType=VARCHAR},#{userId,jdbcType=VARCHAR},
+    #{classId,jdbcType=VARCHAR},#{readStatus,jdbcType=INTEGER}, #{readTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER})
+  </insert>
+
+
+  <!--获取初始化信息-->
+  <select id="getInitInfo" resultMap="BaseResultMap">
+    select REPLACE(UUID(),'-','') rs_id,#{reappearId,jdbcType=VARCHAR} reappear_id,s.user_id,s.school_id,
+    s.class_id,0 read_status,1 status
+    from m_student s
+    inner join m_users  u on s.user_id = u.user_id and u.status != 0
+    where s.school_id = #{schoolId,jdbcType=VARCHAR}
+    and s.class_id in
+    <foreach collection="classList" item="classId" index="index" open="(" close=")" separator=",">
+      #{classId}
+    </foreach>
+    limit 10000
+  </select>
+
+  <insert id="batchInsert" parameterType="java.util.List"  >
+  insert into ct_course_reappear_student (rs_id, reappear_id,school_id, user_id,class_id,
+  read_status, status
+  )
+  values
+  <foreach collection="list" item="item" index="index" separator="," >
+    (#{item.rsId,jdbcType=VARCHAR},#{item.reappearId,jdbcType=VARCHAR},#{item.schoolId,jdbcType=VARCHAR},#{item.userId,jdbcType=VARCHAR},
+    #{item.classId,jdbcType=VARCHAR},#{item.readStatus,jdbcType=INTEGER}, #{item.status,jdbcType=INTEGER})
+  </foreach>
+</insert>
+
+
+  <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtCourseReappearStudent" >
+    update ct_course_reappear_student
+    set reappear_id = #{reappearId,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=VARCHAR},
+      class_id = #{classId,jdbcType=VARCHAR},
+      read_status = #{readStatus,jdbcType=INTEGER},
+      read_time = #{readTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER}
+    where rs_id = #{rsId,jdbcType=VARCHAR} and school_id = #{schoolId,jdbcType=VARCHAR}
+  </update>
+
+  <update id="batchUpdateByClassList" >
+    update ct_course_reappear_student
+    SET
+    status = 0
+    WHERE school_id = #{schoolId,jdbcType=VARCHAR} and class_id in
+    <foreach collection="list" item="classId"  open="(" separator="," close=")">
+      #{classId,jdbcType=VARCHAR}
+    </foreach>
+
+  </update>
+
+
+  <select id="getStudentNumByClassIdList" resultType="int">
+    select count(1)
+    from ct_course_reappear_student
+    where  school_id = #{schoolId,jdbcType=VARCHAR} and status = 1 AND read_status = 1 AND class_id in
+    <foreach collection="list" item="classId"  open="(" separator="," close=")">
+      #{classId,jdbcType=VARCHAR}
+    </foreach>
+  </select>
+
+  <select id="getCountByReappearId" resultType="int"  >
+    select count(1)
+    from ct_course_reappear_student
+    where reappear_id = #{reappearId,jdbcType=VARCHAR} AND  status = 1 and school_id = #{schoolId,jdbcType=VARCHAR}
+  </select>
+
+
+  <update id="updateByRcIdAndUserId"  >
+    update ct_course_reappear_student
+    set
+    read_status = #{reappearStudent.readStatus,jdbcType=INTEGER},
+    read_time = #{reappearStudent.readTime,jdbcType=TIMESTAMP}
+    where read_status = 0 AND  status = 1 AND  user_id = #{reappearStudent.userId,jdbcType=VARCHAR}
+     and school_id = #{schoolId,jdbcType=VARCHAR} AND
+    reappear_id = (select reappear_id from ct_course_reappear_coursewares where rc_id = #{rcId,jdbcType=VARCHAR})
+  </update>
+
+  <update id="updateByReappearId" >
+    update ct_course_reappear_student
+    set
+    status = 0
+    where reappear_id = #{reappearId,jdbcType=VARCHAR} AND  status = 1 and school_id = #{schoolId,jdbcType=VARCHAR}
+  </update>
+
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" >
+    select rs_id, reappear_id, school_id,user_id, class_id, read_status, read_time, status
+    from ct_course_reappear_student
+    where rs_id = #{rsId,jdbcType=VARCHAR} AND  status = 1 and school_id = #{schoolId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select rs_id, reappear_id, school_id,user_id, class_id, read_status, read_time, status
+    from ct_course_reappear_student AND  status = 1 and school_id = #{schoolId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="queryCourseReappearStudentList" resultMap="BaseResultMap">
+    select rs_id, reappear_id,school_id, user_id, class_id, read_status, read_time, status
+    from ct_course_reappear_student
+    where reappear_id #{reappearId,jdbcType=VARCHAR} AND  status = 1 and school_id = #{schoolId,jdbcType=VARCHAR}
+  </select>
+
+</mapper>

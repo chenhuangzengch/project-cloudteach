@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtSynclassWorkClassMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtSynclassWorkClass" >
+    <id column="work_class_id" property="workClassId" jdbcType="VARCHAR" />
+    <result column="work_id" property="workId" jdbcType="VARCHAR" />
+    <result column="class_id" property="classId" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="school_id" property="schoolId" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="WorkClassViewResultMap" type="net.xuele.cloudteach.view.WorkClassView">
+    <id column="work_class_id" property="workClassId" jdbcType="VARCHAR"/>
+    <result column="work_id" property="workId" jdbcType="VARCHAR"/>
+    <result column="class_id" property="classId" jdbcType="VARCHAR"/>
+    <result column="status" property="status" jdbcType="INTEGER"/>
+    <result column="years" property="years" jdbcType="INTEGER"/>
+    <result column="code_sharing" property="codeSharing" jdbcType="INTEGER"/>
+  </resultMap>
+
+  <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtSynclassWorkClass" >
+    insert into ct_synclass_work_class (work_class_id, work_id, class_id, 
+      status,school_id)
+    values (REPLACE(UUID(),'-',''), #{workId,jdbcType=VARCHAR}, #{classId,jdbcType=VARCHAR},
+      #{status,jdbcType=INTEGER},#{schoolId,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtSynclassWorkClass" >
+    update ct_synclass_work_class
+    set work_id = #{workId,jdbcType=VARCHAR},
+      class_id = #{classId,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER}
+    where work_class_id = #{workClassId,jdbcType=VARCHAR} AND school_id = #{schoolId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    select work_class_id, work_id, class_id, status ,school_id
+    from ct_synclass_work_class
+    where work_class_id = #{workClassId,jdbcType=VARCHAR} and school_id = #{schoolId,jdbcType=VARCHAR}
+  </select>
+  <select id="querySynclassWorkClassList" resultMap="WorkClassViewResultMap">
+    select c.work_class_id,c.work_id, c.class_id, c.status,
+    mc.years,mc.code_sharing
+    from ct_synclass_work_class as c
+    inner join m_class as mc on c.class_id=mc.class_id
+    where c.status=1 and c.work_id = #{workId,jdbcType=VARCHAR} and c.school_id = #{schoolId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByWorkId" resultMap="BaseResultMap">
+    select work_class_id, work_id, class_id
+    from ct_synclass_work_class
+    where status =1 and work_id = #{workId,jdbcType=VARCHAR} and school_id = #{schoolId,jdbcType=VARCHAR}
+  </select>
+
+  <update id="updateByWorkId">
+    update ct_synclass_work_class
+    set
+    status = 0
+    where work_id = #{workId,jdbcType=VARCHAR} and school_id = #{schoolId,jdbcType=VARCHAR}
+  </update>
+
+  <update id="batchUpdate" >
+    update ct_synclass_work_class
+    set
+    status = 0
+    where school_id = #{schoolId,jdbcType=VARCHAR} AND class_id in
+    <foreach collection="classList" item="item" index="index" open="(" separator="," close=")">
+      #{item.classId,jdbcType=VARCHAR}
+    </foreach>
+  </update>
+
+  <insert id="batchInsert" parameterType="java.util.List" >
+    insert into ct_synclass_work_class (work_class_id, work_id, class_id,
+    status,school_id)
+    values
+    <foreach collection="list" item="item" index="index" separator="," >
+    (#{item.workClassId,jdbcType=VARCHAR}, #{item.workId,jdbcType=VARCHAR}, #{item.classId,jdbcType=VARCHAR},
+    #{item.status,jdbcType=INTEGER},#{item.schoolId,jdbcType=VARCHAR})
+    </foreach>
+  </insert>
+
+
+</mapper>

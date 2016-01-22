@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtTeachCoursewaresStatisticsMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtTeachCoursewaresStatistics" >
+    <id column="coursewares_id" property="coursewaresId" jdbcType="VARCHAR" />
+    <result column="releases" property="releases" jdbcType="INTEGER" />
+    <result column="school_id" property="schoolId" jdbcType="VARCHAR" />
+    <result column="pack_status" property="packStatus" jdbcType="INTEGER" />
+    <result column="pack_last_update" property="packLastUpdate" jdbcType="TIMESTAMP" />
+    <result column="pack_exp_date" property="packExpDate" jdbcType="TIMESTAMP" />
+    <result column="pack_uri" property="packUri" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from ct_teach_coursewares_statistics
+    where coursewares_id = #{coursewaresId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtTeachCoursewaresStatistics" >
+    insert into ct_teach_coursewares_statistics (coursewares_id, releases, school_id,pack_status)
+    values (#{coursewaresId,jdbcType=VARCHAR}, #{releases,jdbcType=INTEGER}, #{schoolId,jdbcType=VARCHAR}, #{packStatus,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKey" >
+    update ct_teach_coursewares_statistics
+    set releases = releases+1
+    where school_id =#{schoolId,jdbcType=VARCHAR} and coursewares_id =#{coursewaresId,jdbcType=VARCHAR}
+  </update>
+
+  <update id="batchUpdateReduceReleases" >
+    update ct_teach_coursewares_statistics
+    set releases = releases-1
+    where school_id =#{schoolId,jdbcType=VARCHAR}  and coursewares_id in
+    <foreach collection="coursewaresIdList" item="coursewaresId"  open="(" separator="," close=")">
+      #{coursewaresId,jdbcType=VARCHAR}
+    </foreach>
+  </update>
+
+  <update id="batchUpdateIncreaseReleases"   >
+    update ct_teach_coursewares_statistics
+    set releases = releases+1
+    where school_id =#{schoolId,jdbcType=VARCHAR} and coursewares_id in
+    <foreach collection="coursewaresIdList" item="coursewaresId"  open="(" separator="," close=")">
+      #{coursewaresId,jdbcType=VARCHAR}
+    </foreach>
+  </update>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" >
+    select coursewares_id,school_id,releases,pack_status,pack_last_update,pack_exp_date,pack_uri
+    from ct_teach_coursewares_statistics
+    where school_id =#{schoolId,jdbcType=VARCHAR} and coursewares_id = #{coursewaresId,jdbcType=VARCHAR}
+  </select>
+
+  <!--更新打包状态-->
+  <update id="updatePackStatus">
+    update ct_teach_coursewares_statistics
+    set pack_status = #{coursewaresStatistics.packStatus},
+        pack_last_update = #{coursewaresStatistics.packLastUpdate},
+        pack_exp_date = #{coursewaresStatistics.packExpDate},
+        pack_uri = #{coursewaresStatistics.packUri}
+    where school_id =#{coursewaresStatistics.schoolId,jdbcType=VARCHAR}
+    and coursewares_id =#{coursewaresStatistics.coursewaresId,jdbcType=VARCHAR}
+  </update>
+
+  <!--锁定行-->
+  <update id="lockLine">
+    update ct_teach_coursewares_statistics
+    set pack_status = pack_status
+    where school_id =#{schoolId,jdbcType=VARCHAR}
+    and coursewares_id =#{coursewaresId,jdbcType=VARCHAR}
+  </update>
+
+</mapper>

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CTIntegrationMapper">
+
+    <resultMap id="WorkFinishRate" type="net.xuele.cloudteach.view.WorkFinishRateView">
+        <id column="work_id" property="workId" jdbcType="VARCHAR"/>
+        <result column="rate" property="finishRate" jdbcType="FLOAT"/>
+    </resultMap>
+
+    <resultMap id="WorkSubStatus" type="net.xuele.cloudteach.view.WorkSubStatusView">
+        <id column="work_id" property="workId" jdbcType="VARCHAR"/>
+        <result column="sub_status" property="subStatus" jdbcType="INTEGER"/>
+        <result column="score" property="score" jdbcType="INTEGER"/>
+        <result column="sys_score" property="sysScore" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--获取时间段内布置的作业完成率-->
+    <select id="selectWorkFinishRate" resultMap="WorkFinishRate">
+        select a.work_id, cast(a.work_sub_student_num/b.work_student_num as decimal(10,2)) rate
+        from ct_work_statistics a,ct_work_gather b
+        where a.work_id = b.work_id
+        and b.publish_time between #{begin,jdbcType=TIMESTAMP} and #{end,jdbcType=TIMESTAMP}
+        and b.work_type = #{workType,jdbcType=INTEGER}
+        and b.user_id = #{teacherId,jdbcType=VARCHAR}
+        and a.school_id = #{schoolId,jdbcType=VARCHAR}
+        and b.school_id = #{schoolId,jdbcType=VARCHAR}
+        and b.status = 1
+    </select>
+
+    <!--获取时间段内布置的作业提交状态-->
+    <select id="selectWorkSubStatus" resultMap="WorkSubStatus">
+        <if test="workType==1">
+            select a.work_id,b.sub_status,b.score,0 sys_score
+            from ct_teacher_work a,ct_teacher_work_item_answer b
+            where a.work_id = b.work_id
+            and a.work_type = 1
+        </if>
+        <if test="workType==4">
+            select a.work_id,b.sub_status,b.score,0 sys_score
+            from ct_teacher_work a,ct_teacher_work_item_answer b
+            where a.work_id = b.work_id
+            and a.work_type = 4
+        </if>
+        <if test="workType==7">
+            select a.work_id,b.sub_status,0 score,b.sys_score
+            from ct_teacher_work a,ct_teacher_work_item_answer b
+            where a.work_id = b.work_id
+            and a.work_type = 7
+        </if>
+        <if test="workType==2">
+            select a.work_id,b.sub_status,b.score,c.score sys_score
+            from ct_magic_work a,ct_magic_work_answer b,ct_magic_work_challenge c
+            where a.work_id = b.work_id
+            and b.challenge_id = c.challenge_id
+        </if>
+        <if test="workType==3">
+            select a.work_id,b.sub_status,0 score,c.max_score sys_score
+            from ct_synclass_work a,ct_synclass_work_student b,ct_synclass_work_play c
+            where a.work_id = b.work_id
+            and a.work_id = c.work_id
+        </if>
+        and b.sub_time between #{begin,jdbcType=TIMESTAMP} and #{end,jdbcType=TIMESTAMP}
+        and b.user_id = #{studentId,jdbcType=VARCHAR}
+        and a.school_id = #{schoolId,jdbcType=VARCHAR}
+        and b.school_id = #{schoolId,jdbcType=VARCHAR}
+        and b.sub_status = 1
+        and a.status = 1
+        and b.status = 1
+    </select>
+
+    <!--获取时间段内学生的评论次数-->
+    <select id="selectStuCommentTimes" resultType="java.lang.Long">
+        select count(1)
+        from (select a.comment_id,a.user_id,a.user_type,a.comment_time,a.status
+        from ct_teacher_work_item_answer_comment a
+        where a.user_type = 2
+        and a.school_id = #{schoolId,jdbcType=VARCHAR}
+        union all
+        select b.comment_id,b.user_id,b.user_type,b.comment_time,b.status
+        from ct_magic_work_answer_comment b
+        where b.user_type = 2
+        and b.school_id = #{schoolId,jdbcType=VARCHAR}
+        union all
+        select c.comment_id,c.user_id,c.user_type,c.comment_time,c.status
+        from ct_synclass_work_answer_comment c
+        where c.user_type = 2
+        and c.school_id = #{schoolId,jdbcType=VARCHAR}) t
+        where t.user_id = #{studentId,jdbcType=VARCHAR}
+        and t.comment_time between #{begin,jdbcType=TIMESTAMP} and #{end,jdbcType=TIMESTAMP}
+        and t.status = 1
+    </select>
+
+
+    <!--获取时间段内学生的点赞次数-->
+    <select id="selectStuPraiseTimes" resultType="java.lang.Long">
+        select count(1)
+        from (select a.praise_id,a.user_id,a.user_type,a.praise_time,a.status
+        from ct_teacher_work_item_answer_praise a
+        where a.user_type = 2
+        and a.school_id = #{schoolId,jdbcType=VARCHAR}
+        union all
+        select b.praise_id,b.user_id,b.user_type,b.praise_time,b.status
+        from ct_magic_work_answer_praise b
+        where b.user_type = 2
+        and b.school_id = #{schoolId,jdbcType=VARCHAR}
+        union all
+        select c.praise_id,c.user_id,c.user_type,c.praise_time,c.status
+        from ct_synclass_work_answer_praise c
+        where c.user_type = 2
+        and c.school_id = #{schoolId,jdbcType=VARCHAR}) t
+        where t.user_id = #{studentId,jdbcType=VARCHAR}
+        and t.praise_time between #{begin,jdbcType=TIMESTAMP} and #{end,jdbcType=TIMESTAMP}
+        and t.status = 1
+    </select>
+
+    <!--获取云学习端学生提分宝挑战记录信息-->
+    <select id="getMagicWorkChallengeInfo" resultType="net.xuele.cloudteach.domain.CtMagicWorkChallenge">
+        select challenge_id challengeId, work_id workId, user_id userId, bank_id bankId, order_num orderNum, begin_time beginTime, end_time endTime,
+        total_quenum totalQuenum, right_quenum rightQuenum, score score, scorecontext scorecontext, share_status shareStatus, school_id schoolId, status
+        from ct_magic_work_challenge
+        where school_id = #{schoolId,jdbcType=VARCHAR}
+        and user_id = #{studentId,jdbcType=VARCHAR}
+        and work_id = ''
+        and end_time between #{begin,jdbcType=TIMESTAMP} and #{end,jdbcType=TIMESTAMP}
+        and status = 1
+    </select>
+</mapper>

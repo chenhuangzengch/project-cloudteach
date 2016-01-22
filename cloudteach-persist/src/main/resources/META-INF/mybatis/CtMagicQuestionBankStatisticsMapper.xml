@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtMagicQuestionBankStatisticsMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtMagicQuestionBankStatistics" >
+    <id column="bank_id" property="bankId" jdbcType="VARCHAR" />
+    <result column="releases" property="releases" jdbcType="INTEGER" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from ct_magic_question_bank_statistics
+    where bank_id = #{bankId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtMagicQuestionBankStatistics" >
+    insert into ct_magic_question_bank_statistics (bank_id, releases)
+    values (#{bankId,jdbcType=VARCHAR}, #{releases,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtMagicQuestionBankStatistics" >
+    update ct_magic_question_bank_statistics
+    set releases = #{releases,jdbcType=INTEGER}
+    where bank_id = #{bankId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select bank_id, releases
+    from ct_magic_question_bank_statistics
+    where bank_id = #{bankId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select bank_id, releases
+    from ct_magic_question_bank_statistics
+  </select>
+
+  <!--更新发布次数-->
+  <update id="updateReleases" parameterType="net.xuele.cloudteach.domain.CtMagicQuestionBankStatistics" >
+    update ct_magic_question_bank_statistics
+    set releases = #{releases,jdbcType=INTEGER}
+    where bank_id = #{bankId,jdbcType=VARCHAR}
+  </update>
+</mapper>

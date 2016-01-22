@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: net.xuele.member:member-api:1.0-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/net/xuele/member/member-api/1.0-SNAPSHOT/member-api-1.0-20151117.075212-325.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/net/xuele/member/member-api/1.0-SNAPSHOT/member-api-1.0-20151117.075212-325-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/net/xuele/member/member-api/1.0-SNAPSHOT/member-api-1.0-20151117.075212-325-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

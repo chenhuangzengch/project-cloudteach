@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtMagic2WorkChallengeQueAnswerMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtMagic2WorkChallengeQueAnswer" >
+    <id column="cqa_id" property="cqaId" jdbcType="VARCHAR" />
+    <result column="cq_id" property="cqId" jdbcType="VARCHAR" />
+    <result column="challenge_id" property="challengeId" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="que_id" property="queId" jdbcType="VARCHAR" />
+    <result column="a_id" property="aId" jdbcType="VARCHAR" />
+    <result column="sort" property="sort" jdbcType="INTEGER" />
+    <result column="iscorrect" property="iscorrect" jdbcType="INTEGER" />
+    <result column="isstuans" property="isstuans" jdbcType="INTEGER" />
+    <result column="school_id" property="schoolId" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="LONGVARCHAR" />
+    <result column="scontent" property="scontent" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from ct_magic2_work_challenge_que_answer
+    where cqa_id = #{cqaId,jdbcType=VARCHAR}
+    and school_id = #{schoolId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtMagic2WorkChallengeQueAnswer" >
+    insert into ct_magic2_work_challenge_que_answer (cqa_id, cq_id, challenge_id,
+      user_id, que_id, a_id, sort,
+      iscorrect, isstuans, school_id, 
+      content,scontent)
+    values (#{cqaId,jdbcType=VARCHAR}, #{cqId,jdbcType=VARCHAR}, #{challengeId,jdbcType=VARCHAR}, 
+      #{userId,jdbcType=VARCHAR}, #{queId,jdbcType=VARCHAR}, #{aId,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER},
+      #{iscorrect,jdbcType=INTEGER}, #{isstuans,jdbcType=INTEGER}, #{schoolId,jdbcType=VARCHAR}, 
+      #{content,jdbcType=LONGVARCHAR},#{scontent,jdbcType=LONGVARCHAR})
+  </insert>
+  <!--批量插入-->
+  <insert id="batchInsert" parameterType="net.xuele.cloudteach.domain.CtMagic2WorkChallengeQueAnswer" >
+    insert into ct_magic2_work_challenge_que_answer (cqa_id, cq_id, challenge_id,
+    user_id, que_id, a_id, sort,
+    iscorrect, isstuans, school_id,
+    content,scontent)
+    values <foreach collection="challengeQuesAns" item="item" index="index" separator=",">
+    (
+    REPLACE(UUID(), '-', ''),
+    #{cqId,jdbcType=VARCHAR},
+    #{challengeId,jdbcType=VARCHAR},
+    #{userId,jdbcType=VARCHAR},
+    #{queId,jdbcType=VARCHAR},
+    #{item.aId},
+    #{item.sortid},
+    #{item.iscorrect},
+    #{item.isstuans},
+    #{schoolId,jdbcType=VARCHAR},
+    #{item.aContent},
+    #{item.scontent}
+    )
+  </foreach>
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtMagic2WorkChallengeQueAnswer" >
+    update ct_magic2_work_challenge_que_answer
+    set cq_id = #{cqId,jdbcType=VARCHAR},
+      challenge_id = #{challengeId,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=VARCHAR},
+      que_id = #{queId,jdbcType=VARCHAR},
+      a_id = #{aId,jdbcType=VARCHAR},
+      sort = #{sort,jdbcType=INTEGER},
+      iscorrect = #{iscorrect,jdbcType=INTEGER},
+      isstuans = #{isstuans,jdbcType=INTEGER},
+      school_id = #{schoolId,jdbcType=VARCHAR},
+      content = #{content,jdbcType=LONGVARCHAR},
+      scontent = #{scontent,jdbcType=LONGVARCHAR}
+    where cqa_id = #{cqaId,jdbcType=VARCHAR}
+    and school_id = #{schoolId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select cqa_id, cq_id, challenge_id, user_id, que_id, a_id, sort, iscorrect, isstuans, school_id,
+    content,scontent
+    from ct_magic2_work_challenge_que_answer
+    where cqa_id = #{cqaId,jdbcType=VARCHAR}
+    and school_id = #{schoolId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select cqa_id, cq_id, challenge_id, user_id, que_id, a_id, sort, iscorrect, isstuans, school_id,
+    content,scontent
+    from ct_magic2_work_challenge_que_answer
+    where school_id = #{schoolId,jdbcType=VARCHAR}
+  </select>
+
+  <!--查询某一题的选项-->
+  <select id="selectQueAnswer" resultMap="BaseResultMap" >
+    select cqa_id, cq_id, challenge_id, user_id, que_id, a_id, sort, iscorrect, isstuans, school_id,
+    content,scontent
+    from ct_magic2_work_challenge_que_answer
+    where school_id = #{schoolId,jdbcType=VARCHAR}
+    and challenge_id = #{challengeId,jdbcType=VARCHAR}
+    and que_id = #{queId,jdbcType=VARCHAR}
+  </select>
+</mapper>

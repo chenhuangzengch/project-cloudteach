@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtCoursewareClassLogMapper">
+    <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtCoursewareClassLog">
+        <id column="ccl_id" property="cclId" jdbcType="VARCHAR"/>
+        <result column="ccl_coursewares_id" property="cclCoursewaresId" jdbcType="VARCHAR"/>
+        <result column="ccl_user_id" property="cclUserId" jdbcType="VARCHAR"/>
+        <result column="ccl_class_id" property="cclClassId" jdbcType="VARCHAR"/>
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+        <result column="ccl_begtime" property="cclBegtime" jdbcType="TIMESTAMP"/>
+        <result column="ccl_endtime" property="cclEndtime" jdbcType="TIMESTAMP"/>
+        <result column="ccl_from_type" property="cclFromType" jdbcType="INTEGER"/>
+    </resultMap>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from ct_courseware_class_log
+    where ccl_id = #{cclId,jdbcType=VARCHAR}
+  </delete>
+    <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtCoursewareClassLog">
+    insert into ct_courseware_class_log (ccl_id, ccl_coursewares_id, ccl_user_id, 
+      ccl_class_id, school_id, ccl_begtime, 
+      ccl_endtime,ccl_from_type)
+    values (#{cclId,jdbcType=VARCHAR}, #{cclCoursewaresId,jdbcType=VARCHAR}, #{cclUserId,jdbcType=VARCHAR}, 
+      #{cclClassId,jdbcType=VARCHAR}, #{schoolId,jdbcType=VARCHAR}, #{cclBegtime,jdbcType=TIMESTAMP}, 
+      #{cclEndtime,jdbcType=TIMESTAMP},#{cclFromType,jdbcType=INTEGER})
+  </insert>
+
+    <!-- 更新记录 -->
+    <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtCoursewareClassLog">
+    update ct_courseware_class_log
+    set ccl_coursewares_id = #{cclCoursewaresId,jdbcType=VARCHAR},
+      ccl_user_id = #{cclUserId,jdbcType=VARCHAR},
+      ccl_class_id = #{cclClassId,jdbcType=VARCHAR},
+      school_id = #{schoolId,jdbcType=VARCHAR},
+      ccl_begtime = #{cclBegtime,jdbcType=TIMESTAMP},
+      ccl_endtime = #{cclEndtime,jdbcType=TIMESTAMP},
+      ccl_from_type = #{cclFromType,jdbcType=INTEGER}
+    where school_id = #{schoolId,jdbcType=VARCHAR}
+    and ccl_id = #{cclId,jdbcType=VARCHAR}
+  </update>
+
+    <!-- 更新记录 -->
+    <update id="updateLogEnd" parameterType="net.xuele.cloudteach.domain.CtCoursewareClassLog">
+        update ct_courseware_class_log
+        set ccl_endtime = #{cclEndtime,jdbcType=TIMESTAMP}
+        where school_id = #{schoolId,jdbcType=VARCHAR}
+        and ccl_id = #{cclId,jdbcType=VARCHAR}
+    </update>
+
+
+    <!--按学校ID和授课记录ID查询单条记录 学校ID为分片参数-->
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select ccl_id, ccl_coursewares_id, ccl_user_id, ccl_class_id, school_id, ccl_begtime, 
+    ccl_endtime, ccl_from_type
+    from ct_courseware_class_log
+    where
+      school_id = #{schoolId,jdbcType=VARCHAR}
+    and ccl_id = #{cclId,jdbcType=VARCHAR}
+  </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+    select ccl_id, ccl_coursewares_id, ccl_user_id, ccl_class_id, school_id, ccl_begtime, 
+    ccl_endtime
+    from ct_courseware_class_log
+  </select>
+
+    <!--查询某个课件相关的所有授课记录-->
+    <select id="selectByCourseware" resultMap="BaseResultMap">
+        SELECT
+        ccl_id,
+        ccl_coursewares_id,
+        ccl_user_id,
+        ccl_class_id,
+        school_id,
+        ccl_begtime,
+        ccl_endtime,
+	    ccl_from_type
+    FROM
+        ct_courseware_class_log
+    WHERE
+        school_id = #{schoolId,jdbcType=VARCHAR}
+    AND ccl_coursewares_id = #{cclCoursewaresId,jdbcType=VARCHAR}
+    ORDER BY ccl_begtime DESC
+  </select>
+
+    <!--查询某个课件某个班级相关的所有授课记录-->
+    <select id="selectByCoursewareAndClass" resultMap="BaseResultMap">
+        SELECT
+        ccl_id,
+        ccl_coursewares_id,
+        ccl_user_id,
+        ccl_class_id,
+        school_id,
+        ccl_begtime,
+        ccl_endtime,
+	    ccl_from_type
+    FROM
+        ct_courseware_class_log
+    WHERE
+        school_id = #{schoolId,jdbcType=VARCHAR}
+    AND ccl_coursewares_id = #{cclCoursewaresId,jdbcType=VARCHAR}
+    AND ccl_class_id = #{cclClassId,jdbcType=VARCHAR}
+    ORDER BY ccl_begtime DESC
+  </select>
+
+</mapper>

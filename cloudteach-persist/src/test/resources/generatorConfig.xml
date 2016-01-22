@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
+<generatorConfiguration>
+    <context id="memberContext" targetRuntime="MyBatis3Simple" defaultModelType="flat">
+        <property name="beginningDelimiter" value="'"/>
+        <property name="endingDelimiter" value="'"/>
+
+
+        <commentGenerator type="net.xuele.common.utils.MybatisCommentGenerator">
+            <property name="suppressAllComments" value="false"/>
+            <property name="suppressDate" value="false"/>
+        </commentGenerator>
+
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+                        connectionURL="jdbc:mysql://192.168.1.76:8066/xueledb"
+                        userId="xldev" password="xueledev"/>
+
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="false"/>
+        </javaTypeResolver>
+        <javaModelGenerator targetPackage="net.xuele.cloudteach.domain"
+                            targetProject="src/main/java">
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+        <sqlMapGenerator targetPackage="META-INF.mybatis"
+                         targetProject="src/main/resources"/>
+        <javaClientGenerator type="XMLMAPPER" targetPackage="net.xuele.cloudteach.persist"
+                             targetProject="src/main/java">
+        </javaClientGenerator>
+
+        <!--<table schema="UserFile" tableName="ct_user_file"/>
+        <table schema="UserFileShare" tableName="ct_user_file_share"/>
+        <table schema="UserFileSharedLike" tableName="ct_user_file_shared_like"/>
+        <table schema="UserFileShareCount" tableName="ct_user_file_share_count"/>
+        <table schema="UserDownloadDetails" tableName="ct_user_download_details"/>
+        <table schema="UserDownloadLimit" tableName="ct_user_download_limit"/>
+
+        <table tableName="m_school" schema="MSchool"/>-->
+        <!-- 预习
+        <table schema="GuidanceItem" tableName="ct_guidance_item"/>
+        <table schema="GuidanceItemShare" tableName="ct_guidance_item_share"/>
+        <table schema="GuidanceItemShareCollect" tableName="ct_guidance_item_share_collect"/>
+        <table schema="GuidanceItemSharePraise" tableName="ct_guidance_item_share_praise"/>
+        <table schema="GuidanceItemStatistics" tableName="ct_guidance_item_statistics"/>
+        <table schema="GuidanceItemShareStatistics" tableName="ct_guidance_item_share_statistics"/>
+        <table schema="GuidanceItemFiles" tableName="ct_guidance_item_files"/>
+        <table schema="GuidanceWork" tableName="ct_guidance_work"/>
+        <table schema="GuidanceWorkItem" tableName="ct_guidance_work_item"/>
+        <table schema="GuidanceWorkItemAnswer" tableName="ct_guidance_work_item_answer"/>
+        <table schema="GuidanceWorkItemAnswerStatistics" tableName="ct_guidance_work_item_answer_statistics"/>
+        <table schema="GuidanceWorkClass" tableName="ct_guidance_work_class"/>
+        <table schema="GuidanceWorkItemAnswerPraise" tableName="ct_guidance_work_item_answer_praise"/>
+        <table schema="GuidanceWorkStudent" tableName="ct_guidance_work_student"/>
+        <table schema="GuidanceWorkItemAnswerFile" tableName="ct_guidance_work_item_answer_file"/>
+        <table schema="GuidanceWorkItemAnswerComment" tableName="ct_guidance_work_item_answer_comment"/>
+        <table schema="GuidanceItemShareFiles" tableName="ct_guidance_item_share_files"/>-->
+        <!--课程目录
+        <table schema="CtBook" tableName="ct_book"/>
+        <table schema="CtEditions" tableName="ct_editions"/>
+        <table schema="CtUnits" tableName="ct_units"/>-->
+
+        <!--习题作业
+        <table schema="ExerciseWork" tableName="ct_exercise_work"/>
+        <table schema="ExerciseWorkAnswer" tableName="ct_exercise_work_answer"/>
+        <table schema="ExerciseWorkAnswerComment" tableName="ct_exercise_work_answer_comment"/>
+        <table schema="ExerciseWorkAnswerFiles" tableName="ct_exercise_work_answer_files"/>
+        <table schema="ExerciseWorkAnswerPraise" tableName="ct_exercise_work_answer_praise"/>
+        <table schema="ExerciseWorkAnswerStatistics" tableName="ct_exercise_work_answer_statistics"/>
+        <table schema="ExerciseWorkClass" tableName="ct_exercise_work_class"/>
+        <table schema="ExerciseWorkFiles" tableName="ct_exercise_work_files"/>-->
+
+        <!--提分宝作业
+        <table schema="MagicWork" tableName="ct_magic_work"/>
+        <table schema="MagicWorkAnswer" tableName="ct_magic_work_answer"/>
+        <table schema="MagicWorkAnswerComment" tableName="ct_magic_work_answer_comment"/>
+        <table schema="MagicWorkAnswerFiles" tableName="ct_magic_work_answer_files"/>
+        <table schema="MagicWorkAnswerPraise" tableName="ct_magic_work_answer_praise"/>
+        <table schema="MagicWorkAnswerStatistics" tableName="ct_magic_work_answer_statistics"/>
+        <table schema="MagicWorkClass" tableName="ct_magic_work_class"/>
+        <table schema="MagicWorkBank" tableName="ct_magic_work_bank"/>
+        <table schema="MagicWorkAnswerRw" tableName="ct_magic_work_answer_rw"/>
+        <table schema="CtMagicWorkChallenge" tableName="ct_magic_work_challenge"/>
+        <table schema="CtMagicWorkChallengeQue" tableName="ct_magic_work_challenge_que"/>-->
+
+
+        <!--同步课堂作业
+        <table schema="SynclassWork" tableName="ct_synclass_work"/>
+        <table schema="SynclassWorkAnswerComment" tableName="ct_synclass_work_answer_comment"/>
+        <table schema="SynclassWorkAnswerPraise" tableName="ct_synclass_work_answer_praise"/>
+        <table schema="SynclassWorkClass" tableName="ct_synclass_work_class"/>
+        <table schema="SynclassWorkGame" tableName="ct_synclass_work_game"/>
+        <table schema="SynclassWorkPlay" tableName="ct_synclass_work_play"/>
+        <table schema="SynclassWorkStudent" tableName="ct_synclass_work_student"/>
+        <table schema="SynclassWorkStudentStatistics" tableName="ct_synclass_work_student_statistics"/>-->
+        <!--提分宝题库
+        <table schema="MagicQuestionBank" tableName="ct_magic_question_bank"/>
+        <table schema="MagicQuestion" tableName="ct_magic_question"/>
+        <table schema="MagicQuestionHistory" tableName="ct_magic_question_history"/>
+        <table schema="MagicQuestionImage" tableName="ct_magic_question_image"/>
+        <table schema="MagicQuestionBankStatistics" tableName="ct_magic_question_bank_statistics"/>
+        <table schema="MagicQuestionVideo" tableName="ct_magic_question_video"/>-->
+        <!--授课课件
+        <table schema="TeachCoursewares" tableName="ct_teach_coursewares"/>
+        <table schema="TeachCoursewaresContent" tableName="ct_teach_coursewares_content"/>
+        <table schema="TeachCoursewaresShare" tableName="ct_teach_coursewares_share"/>
+        <table schema="TeachCoursewaresShareStatistics" tableName="ct_teach_coursewares_share_statistics"/>
+        <table schema="TeachCoursewaresShareCollect" tableName="ct_teach_coursewares_share_collect"/>
+        <table schema="TeachCoursewaresSharePraise" tableName="ct_teach_coursewares_share_praise"/>
+        <table schema="TeachCoursewaresStatistics" tableName="ct_teach_coursewares_statistics"/>
+        <table schema="TeachCoursewaresShareContent" tableName="ct_teach_coursewares_share_content"/>-->
+        <!--课件发布
+        <table schema="CourseReappear" tableName="ct_course_reappear"/>
+        <table schema="CourseReappearCoursewares" tableName="ct_course_reappear_coursewares"/>
+        <table schema="CourseReappearClass" tableName="ct_course_reappear_class"/>
+        <table schema="CourseReappearStudent" tableName="ct_course_reappear_student"/>-->
+        <!--板书发布
+        <table schema="BlackboardPublish" tableName="ct_blackboard_publish"/>
+        <table schema="BlackboardPublishFiles" tableName="ct_blackboard_publish_files"/>
+        <table schema="BlackboardPublishClass" tableName="ct_blackboard_publish_class"/>
+        <table schema="BlackboardPublishStudent" tableName="ct_blackboard_publish_student"/>-->
+
+        <!--教师题目
+        <table schema="BankItem" tableName="ct_bank_item"/>
+        <table schema="BankItemShare" tableName="ct_bank_item_share"/>
+        <table schema="BankItemStatistics" tableName="ct_bank_item_statistics"/>
+        <table schema="BankItemFiles" tableName="ct_bank_item_files"/>
+        <table schema="BankItemShareFiles" tableName="ct_bank_item_share_files"/>
+        <table schema="BankItemShareStatistics" tableName="ct_bank_item_share_statistics"/>
+        <table schema="BankItemShareCollect" tableName="ct_bank_item_share_collect"/>
+        <table schema="BankItemSharePraise" tableName="ct_bank_item_share_praise"/>-->
+        <!--教师作业
+        <table schema="TeacherWork" tableName="ct_teacher_work"/>
+        <table schema="TeacherWorkItem" tableName="ct_teacher_work_item"/>
+        <table schema="TeacherWorkClass" tableName="ct_teacher_work_class"/>
+        <table schema="TeacherWorkStudent" tableName="ct_teacher_work_student"/>
+        <table schema="TeacherWorkItemAnswer" tableName="ct_teacher_work_item_answer"/>
+        <table schema="TeacherWorkItemAnswerFile" tableName="ct_teacher_work_item_answer_file"/>
+        <table schema="TeacherWorkItemAnswerStatistics" tableName="ct_teacher_work_item_answer_statistics"/>
+        <table schema="TeacherWorkItemAnswerPraise" tableName="ct_teacher_work_item_answer_praise"/>
+        <table schema="TeacherWorkItemAnswerComment" tableName="ct_teacher_work_item_answer_comment"/>-->
+
+        <!--作业公共表
+        <table schema="WorkStatistics" tableName="ct_work_statistics"/>
+        <table schema="WorkTapeFiles" tableName="ct_work_tape_files"/>
+        <table schema="WorkGather" tableName="ct_work_gather"/>
+        <table schema="WorkStudentGather" tableName="ct_work_student_gather"/>
+        <table schema="WorkClassGather" tableName="ct_work_class_gather"/>-->
+
+        <!--官方资源表
+        <table schema="AcOfficialResource" tableName="ac_official_resource"/>-->
+
+        <!--随堂反馈
+        <table schema="CtClassFeedback" tableName="ct_class_feedback"/>-->
+
+        <!--提分宝2代-->
+        <!--<table schema="CtMagic2WorkChallenge " tableName="ct_magic2_work_challenge"/>
+        <table schema="CtMagic2WorkChallengeQue " tableName="ct_magic2_work_challenge_que"/>
+        <table schema="CtMagic2WorkChallengeQueAnswer " tableName="ct_magic2_work_challenge_que_answer"/>
+        <table schema="CtMagic2WorkMaxPractice " tableName="ct_magic2_work_max_practice"/>-->
+        <!--题库表-->
+        <!--<table schema="QQuest" tableName="q_quest"/>
+        <table schema="QAnswer" tableName="q_answer"/>-->
+
+        <!--按4为区域ID分片的表-->
+        <!--<table schema="CtCloudDiskArea" tableName="ct_cloud_disk_area"/>-->
+        <!--<table schema="CtWorkGatherArea" tableName="ct_work_gather_area"/>-->
+
+        <!--课件打点-->
+        <!--<table schema="CtCoursewareClassLog" tableName="ct_courseware_class_log"/>-->
+        <!--<table schema="CtCoursewareClassDetailLog" tableName="ct_courseware_class_detail_log"/>-->
+
+        <!--题目反馈表-->
+        <table schema="QQuestFeedback" tableName="q_quest_feedback"/>
+
+    </context>
+</generatorConfiguration>

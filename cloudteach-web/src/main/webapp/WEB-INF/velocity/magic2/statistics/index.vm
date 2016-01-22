@@ -1,0 +1,164 @@
+#set($layout="layout/bodyLayout.vm")
+#set($page_title="提分宝数据-教师")
+#define($script)
+<link rel="stylesheet" href="$!{asset_host}/css/cloudteach/magic.css?version=${version}"/>
+<script src="$!{asset_host}/js/cloudteach/highchart.js"></script>
+<script>
+    seajs.use('http://asset.xueleyun.com/cjs/page/cloudteach/magicStatistic');
+</script>
+#end
+
+<div class="magic-head header">
+    <a class="back-to" href="http://www.xueleyun.com/appcenter/applyStore/magicQuestionBankList?bookId=$!{unitsDTO.bookId}"><&nbsp;&nbsp;返回</a>
+    <h1>$!{unitsDTO.unitName}</h1>
+</div>
+<div class="container">
+    <div class="magic-statistic">
+        <div class="classes-statistic">
+            <div class="change-class">
+
+                #if($!{classNum} == 0)
+                    <div class="cur-class">
+                        $!teacherClass.get(0).className<i class="icon-down"></i>
+                    </div>
+                    <div class="class-wrap">
+                        #foreach($tc in $teacherClass)
+                            <a href="$!{ctx}/magic2/work/statistics/index?unitId=$!{unitsDTO.unitId}&classId=$!{tc.classId}">$!{tc.className}</a>
+                        #end
+                    </div>
+                #else
+                    <div class="cur-class">
+                        $!teacherClass.get(0).className
+                    </div>
+                #end
+
+            </div>
+            <ul class="u-statistic">
+                <li class="l-statistic">
+                    <em class="e-name">总挑战次数</em>
+                    <em class="e-num">$!{classTotalDTO.totalTimes}</em>
+                </li>
+                <li class="l-statistic">
+                    <em class="e-name">总练习时长</em>
+                    <em class="e-num">$!{classTotalDTO.totalTime}</em>
+                </li>
+                <li class="l-statistic">
+                    <em class="e-name">挑战平均时长</em>
+                    <em class="e-num">$!{classTotalDTO.avgTime}</em>
+                </li>
+                <li class="l-statistic no-br">
+                    <em class="e-name">正确率</em>
+                    <em class="e-num">$!{classTotalDTO.rate}</em>
+                </li>
+            </ul>
+            <table class="t-statistic">
+                <thead>
+                <tr>
+                    <th class="t-first align-l">姓名</th>
+                    <th class="align-l">最高评价</th>
+                    <th>挑战次数</th>
+                    <th>总练习时长</th>
+                    <th>挑战平均时长</th>
+                    <th class="t-last">正确率</th>
+                </tr>
+                </thead>
+                <tbody>
+                #foreach($dto in $!classStatisticsDTO.studentStatisticsDTOs)
+                    <tr data-userId="$!{dto.userId}">
+                        <td class="align-l t-first">$!{dto.userName}</td>
+                        <td class="align-l">$!{dto.scoreContext}</td>
+                        <td>$!{dto.times}</td>
+                        <td>$!{dto.pTime}</td>
+                        <td>$!{dto.avgTime}</td>
+                        <td class="t-last">$!{dto.rate}</td>
+                    </tr>
+                #end
+                </tbody>
+            </table>
+            <div class="pie-wrap">
+                <div class="picdata"></div>
+                <div class="evaluate">
+            #if($!{classTotalDTO.totalTimes} == 0)
+
+            #else
+                <h2 class="h-evaluate">评价分布</h2>
+                <ul class="u-evaluate">
+                    #foreach($rdto in $!classStatisticsDTO.scoreRateDTOs)
+                        #if($!{rdto.score} == 5)
+                            <li>
+                                <i class="magic5"></i>
+                                挑战完成（<em class="J-rate">$!{rdto.rate}</em>）
+                            </li>
+                        #elseif ($!{rdto.score} == 6)
+                            <li >
+                                <i class="magic6"></i>
+                                <span>三本大学（<em class="J-rate">$!{rdto.rate}</em>）</span>
+                            </li>
+                        #elseif($!{rdto.score} == 7)
+                            <li>
+                                <i class="magic7"></i>
+                                <span>二本大学（<em class="J-rate">$!{rdto.rate}</em>）</span>
+                            </li>
+                        #elseif($!{rdto.score} == 8)
+                            <li>
+                                <i class="magic8"></i>
+                                <span>一本大学（<em class="J-rate">$!{rdto.rate}</em>）</span>
+                            </li>
+                        #elseif($!{rdto.score} == 9)
+                            <li>
+                                <i class="magic9"></i>
+                                <span>重点大学（<em class="J-rate">$!{rdto.rate}</em>）</span>
+                            </li>
+                        #elseif($!{rdto.score} == 10)
+                            <li>
+                                <i class="magic10"></i>
+                                <span>清华北大（<em class="J-rate">$!{rdto.rate}</em>）</span>
+                            </li>
+                        #end
+                    #end
+                </ul>
+            #end
+                </div>
+            </div>
+        </div>
+        <div class="personal-statistic">
+            <div class="change-class">
+                张三的数据统计
+            </div>
+            <ul class="u-statistic">
+                <li class="l-statistic">
+                    <em class="e-name">总挑战次数</em>
+                    <em class="e-num">324</em>
+                </li>
+                <li class="l-statistic">
+                    <em class="e-name">总练习时长</em>
+                    <em class="e-num">123：34：54</em>
+                </li>
+                <li class="l-statistic">
+                    <em class="e-name">挑战平均时长</em>
+                    <em class="e-num">00:12:34</em>
+                </li>
+                <li class="l-statistic no-br">
+                    <em class="e-name">正确率</em>
+                    <em class="e-num">76%</em>
+                </li>
+            </ul>
+            <table class="t-statistic">
+                <thead>
+                <tr>
+                    <th class="t-first">编号</th>
+                    <th class="align-l">最高评价</th>
+                    <th>挑战次数</th>
+                    <th>练习时长</th>
+                    <th>最佳挑战时长</th>
+                    <th>最佳挑战正确率</th>
+                    <th class="t-last">开始挑战时间</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+

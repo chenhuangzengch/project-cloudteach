@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtTeachCoursewaresShareMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtTeachCoursewaresShare" >
+    <id column="share_id" property="shareId" jdbcType="VARCHAR" />
+    <result column="creator" property="creator" jdbcType="VARCHAR" />
+    <result column="creator_name" property="creatorName" jdbcType="VARCHAR" />
+    <result column="coursewares_id" property="coursewaresId" jdbcType="VARCHAR" />
+    <result column="unit_id" property="unitId" jdbcType="VARCHAR" />
+    <result column="school_id" property="schoolId" jdbcType="VARCHAR" />
+    <result column="school_name" property="schoolName" jdbcType="VARCHAR" />
+    <result column="area_id" property="areaId" jdbcType="VARCHAR" />
+    <result column="area_name" property="areaName" jdbcType="VARCHAR" />
+    <result column="share_type" property="shareType" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="stick_status" property="stickStatus" jdbcType="INTEGER" />
+    <result column="share_time" property="shareTime" jdbcType="TIMESTAMP" />
+    <result column="opinion" property="opinion" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from ct_teach_coursewares_share
+    where share_id = #{shareId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtTeachCoursewaresShare" >
+    insert into ct_teach_coursewares_share (share_id, creator, creator_name, coursewares_id,
+      unit_id, school_id, school_name, area_id, area_name,
+      share_type, title, stick_status, 
+      share_time, opinion, status
+      )
+    values (#{shareId,jdbcType=VARCHAR}, #{creator,jdbcType=VARCHAR}, #{creatorName,jdbcType=VARCHAR}, #{coursewaresId,jdbcType=VARCHAR},
+      #{unitId,jdbcType=VARCHAR}, #{schoolId,jdbcType=VARCHAR}, #{schoolName,jdbcType=VARCHAR}, #{areaId,jdbcType=VARCHAR}, #{areaName,jdbcType=VARCHAR},
+      #{shareType,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{stickStatus,jdbcType=INTEGER}, 
+      #{shareTime,jdbcType=TIMESTAMP}, #{opinion,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtTeachCoursewaresShare" >
+    update ct_teach_coursewares_share
+    set creator = #{creator,jdbcType=VARCHAR},
+      creator_name = #{creatorName,jdbcType=VARCHAR},
+      coursewares_id = #{coursewaresId,jdbcType=VARCHAR},
+      unit_id = #{unitId,jdbcType=VARCHAR},
+      school_id = #{schoolId,jdbcType=VARCHAR},
+      school_name = #{schoolName,jdbcType=VARCHAR},
+      area_id = #{areaId,jdbcType=VARCHAR},
+      area_name = #{areaName,jdbcType=VARCHAR},
+      share_type = #{shareType,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
+      stick_status = #{stickStatus,jdbcType=INTEGER},
+      share_time = #{shareTime,jdbcType=TIMESTAMP},
+      opinion = #{opinion,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER}
+    where share_id = #{shareId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select share_id, creator, creator_name,coursewares_id, unit_id, school_id, school_name,area_id, area_name,share_type,
+    title, stick_status, share_time, opinion, status
+    from ct_teach_coursewares_share
+    where share_id = #{shareId,jdbcType=VARCHAR}
+    and status=2
+  </select>
+<!--分页查询大家分享的授课课件-->
+  <select id="selectByPage" resultType="net.xuele.cloudteach.view.TeachCoursewaresShareView" >
+    select a.share_id shareId, a.creator creator, a.creator_name creatorName,a.coursewares_id coursewaresId, a.unit_id unitId, a.school_id schoolId, a.school_name schoolName,
+    a.area_id areaId,a.area_name, a.share_type shareType,a.title title, a.stick_status stickStatus, a.share_time shareTime, a.opinion opinion, a.status status,
+    IF(col.share_id IS NULL ,0,1) collectState,IF(pra.share_id IS NULL,0,1) praiseState,if(a.creator =#{record.creator,jdbcType=VARCHAR},1,0 ) isMyShare,
+    b.collect_times collectTimes, b.praise_times praiseTimes
+    from ct_teach_coursewares_share a
+    <!--查统计数-->
+    inner join ct_teach_coursewares_share_statistics b on a.share_id = b.share_id and a.status = 2
+    <!--判断是否收藏-->
+    LEFT JOIN ct_teach_coursewares_share_collect col
+    ON col.share_id=a.share_id and col.collect_status=1
+    AND col.user_id = #{record.creator,jdbcType=VARCHAR}
+    <!--判断是否点赞-->
+    LEFT JOIN ct_teach_coursewares_share_praise pra
+    ON pra.share_id=a.share_id
+    AND pra.user_id=#{record.creator,jdbcType=VARCHAR} AND pra.praise_status=1
+    WHERE a.status = 2
+    and a.unit_id = #{record.unitId,jdbcType=VARCHAR}
+    <!--分享范围-->
+    and (a.share_type = 0
+    OR (a.share_type = 1 and a.school_id = #{record.schoolId,jdbcType=VARCHAR})
+    OR (a.share_type = 2 and SUBSTRING(a.area_id,1,4) = SUBSTRING(#{record.areaId,jdbcType=VARCHAR},1,4))
+    OR (a.share_type = 3 and a.area_id = #{record.areaId,jdbcType=VARCHAR}))
+    <!--大家的分享-->
+    <if test="seltype==1">
+      and a.creator != #{record.creator,jdbcType=VARCHAR}
+    </if>
+    <!--我的分享-->
+    <if test="seltype==2">
+      and a.creator = #{record.creator,jdbcType=VARCHAR}
+    </if>
+    order by a.stick_status desc,
+    a.share_Time desc
+    limit #{page.start},#{pageSize}
+  </select>
+  <!--查询我的分享总数-->
+  <select id="selectCount" resultType="int" >
+    select count(1)
+    from ct_teach_coursewares_share a
+    WHERE a.status = 2
+    and a.unit_id = #{record.unitId,jdbcType=VARCHAR}
+    <!--分享范围-->
+    and (a.share_type = 0
+    OR (a.share_type = 1 and a.school_id = #{record.schoolId,jdbcType=VARCHAR})
+    OR (a.share_type = 2 and SUBSTRING(a.area_id,1,4) = SUBSTRING(#{record.areaId,jdbcType=VARCHAR},1,4))
+    OR (a.share_type = 3 and a.area_id = #{record.areaId,jdbcType=VARCHAR}))
+    <!--大家的分享-->
+    <if test="seltype==1">
+      and a.creator != #{record.creator,jdbcType=VARCHAR}
+    </if>
+    <!--我的分享-->
+    <if test="seltype==2">
+      and a.creator = #{record.creator,jdbcType=VARCHAR}
+    </if>
+  </select>
+  <!--查询分享总数-->
+  <select id="myShareCount" resultType="int" parameterType="net.xuele.cloudteach.domain.CtTeachCoursewaresShare" >
+    select count(1)
+    from ct_teach_coursewares_share a
+    where a.status = 2
+    and a.unit_id = #{record.unitId,jdbcType=VARCHAR}
+    <!--分享范围-->
+    and (a.share_type = 0
+    OR (a.share_type = 1 and a.school_id = #{schoolId,jdbcType=VARCHAR})
+    OR (a.share_type = 2 and SUBSTRING(a.area_id,1,4) = SUBSTRING(#{areaId,jdbcType=VARCHAR},1,4))
+    OR (a.share_type = 3 and a.area_id = #{areaId,jdbcType=VARCHAR}))
+    and a.creator = #{creator,jdbcType=VARCHAR}
+  </select>
+<!--取消分享：状态改为0-->
+    <update id="unShareCourseware"  >
+        update ct_teach_coursewares_share
+        set
+        status = 0
+        where share_id = #{shareId,jdbcType=VARCHAR}
+    </update>
+
+  <!--预览课件-->
+  <select id="preview" resultType="net.xuele.cloudteach.view.CoursewaresResponseView"  >
+    select s.share_id coursewaresId,s.title coursewaresName,s.status state,s.unit_id unitId,s.creator userId,t.content content
+    from ct_teach_coursewares_share s
+    inner join ct_teach_coursewares_share_content t
+    on s.share_id = t.coursewares_id
+    where s.status = 2
+    and s.share_id = #{shareId,jdbcType=VARCHAR}
+  </select>
+</mapper>

@@ -1,0 +1,53 @@
+#set($layout="layout/bodyLayout.vm")
+#set($page_title="预习作业题目")
+#define($script)
+<link rel="stylesheet" href="$!{asset_host}/css/cloudteach/homework-manage.css?version=${version}" />
+#end
+<input type="hidden" name="viewType" value="1">
+<div class="detail-head">
+    <a class="li-whos" href="initDetail?workId=$!{synclassWorkDetailViewDTO.workId}&classId=$!{classId}&schoolId=$!{schoolId}">完成详情</a>
+    <a class="li-whos on" href="javascript:void(0)">作业题目</a>
+</div>
+<div class="title-wrap">
+    <div class="detail-title">
+        <div class="task-title">
+            <img src="$!{avatar_host}/images/48x48_$!{synclassWorkDetailViewDTO.userIcon}.jpg" class="portrait"/>
+            <h3 class="detail-info">
+                <span class="tch-name">$!{synclassWorkDetailViewDTO.userName}($!{synclassWorkDetailViewDTO.positionName})</span><br/>
+                <span class="publish-time">$!{date.format('yyyy年MM月dd日 HH:mm:ss ',$!{synclassWorkDetailViewDTO.publishTime})}</span>
+            </h3>
+            <p class="p-detail">$!{synclassWorkDetailViewDTO.context.replaceAll("\r\n", "<br>").replaceAll("\r", "<br>").replaceAll("\n", "<br>").replaceAll(" ","&nbsp;")}
+            </p>
+        </div>
+        <ul class="homework-explain">
+            <li class="subject-name"> $!{synclassWorkDetailViewDTO.subjectName}</li>
+            <li class="course-name"> $!{synclassWorkDetailViewDTO.unitName}</li>
+            <li class="homework-num"> $!{synclassWorkGameViewDTOList.size()} 题 </li>
+            <li class="last-time">最晚提交时间： $!{date.format('yyyy年MM月dd日 HH:mm:ss ',$!{synclassWorkDetailViewDTO.endTime})}</li>
+        </ul>
+        #if($workTapeFilesDTO.url)
+            <div class="video-wrap">
+                <div role="player" class="xlplayer" data-filekey="$!{workTapeFilesDTO.url}" data-ext="$!{workTapeFilesDTO.extension}"></div>
+            </div>
+        #end
+    </div>
+    <div class="sync-class">
+        <ul class="seatwork_main">
+            #foreach($SynclassWorkGameViewDTO in $synclassWorkGameViewDTOList)
+                <li>
+                    <div class="img-wrap">
+                        <img src="http://resource.xuelecn.com/gameicons/$!{SynclassWorkGameViewDTO.cId}.jpg" class="seatwork_img" />
+                        <span class="exercise-name">$!{SynclassWorkGameViewDTO.gameName}</span><br/>
+                        <span class="exercise-type"></span>
+                    </div>
+                    <div class="relative-info">
+                        <a href="http://www.xueleyun.com/appcenter/synClassFlash/cloudteachPlay?ucID=$!{SynclassWorkGameViewDTO.gameId}&cReal=$!{SynclassWorkGameViewDTO.CReal}&uType=1&uID=-1">
+                            <span class="experience">体验</span>
+                        </a>
+                    </div>
+                </li>
+            #end
+        </ul>
+    </div>
+
+</div>

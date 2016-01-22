@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtMagic2WorkMaxPracticeMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtMagic2WorkMaxPractice" >
+    <id column="practice_id" property="practiceId" jdbcType="VARCHAR" />
+    <result column="unit_id" property="unitId" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="challenge_id" property="challengeId" jdbcType="VARCHAR" />
+    <result column="practice_id" property="practiceId" jdbcType="VARCHAR" />
+    <result column="max_score" property="maxScore" jdbcType="INTEGER" />
+    <result column="max_score_context" property="maxScoreContext" jdbcType="VARCHAR" />
+    <result column="last_time" property="lastTime" jdbcType="TIMESTAMP" />
+    <result column="sort" property="sort" jdbcType="INTEGER" />
+    <result column="school_id" property="schoolId" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from ct_magic2_work_max_practice
+    where practice_id = #{practiceId,jdbcType=VARCHAR}
+    and school_id = #{schoolId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtMagic2WorkMaxPractice" >
+    insert into ct_magic2_work_max_practice (practice_id, unit_id, user_id, challenge_id, max_score,
+      max_score_context, last_time, sort, 
+      school_id)
+    values (#{practiceId,jdbcType=VARCHAR}, #{unitId,jdbcType=INTEGER}, #{userId,jdbcType=VARCHAR}, #{challengeId,jdbcType=VARCHAR},
+      #{maxScore,jdbcType=INTEGER}, #{maxScoreContext,jdbcType=VARCHAR}, #{lastTime,jdbcType=TIMESTAMP}, #{sort,jdbcType=INTEGER},
+      #{schoolId,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtMagic2WorkMaxPractice" >
+    update ct_magic2_work_max_practice
+    set unit_id = #{unitId,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=VARCHAR},
+      challenge_id = #{challengeId,jdbcType=VARCHAR},
+      max_score = #{maxScore,jdbcType=INTEGER},
+      max_score_context = #{maxScoreContext,jdbcType=VARCHAR},
+      last_time = #{lastTime,jdbcType=TIMESTAMP},
+      sort = #{sort,jdbcType=INTEGER}
+    where practice_id = #{practiceId,jdbcType=VARCHAR}
+    and school_id = #{schoolId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select practice_id, unit_id, user_id, challenge_id, max_score, max_score_context, last_time, sort, school_id
+    from ct_magic2_work_max_practice
+    where practice_id = #{practiceId,jdbcType=VARCHAR}
+    and school_id = #{schoolId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select practice_id, unit_id, user_id, challenge_id, max_score, max_score_context, last_time, sort, school_id
+    from ct_magic2_work_max_practice
+    where school_id = #{schoolId,jdbcType=VARCHAR}
+  </select>
+
+  <!--查询某一课程下的练习记录最高分-->
+  <select id="selectByUnitIdAndUserId" resultMap="BaseResultMap" >
+    select practice_id, unit_id, user_id, challenge_id, MAX(max_score) max_score, max_score_context, last_time, sort, school_id
+    from ct_magic2_work_max_practice
+    where school_id = #{schoolId,jdbcType=VARCHAR}
+    and unit_id = #{unitId,jdbcType=VARCHAR}
+    and user_id = #{userId,jdbcType=VARCHAR}
+  </select>
+
+  <!--按课本统计百分比-->
+  <select id="selectBookRate" resultType="net.xuele.cloudteach.view.Magic2WorkBookRateView" >
+    SELECT COUNT(1),b.total,COUNT(1)/(b.total)*100 rate,a.score
+    FROM
+    (
+    SELECT p.user_id,MAX(max_score) score
+    FROM ct_magic2_work_max_practice p
+    INNER JOIN (
+        SELECT user_id FROM m_student
+        WHERE school_id=#{schoolId,jdbcType=VARCHAR}
+        AND class_id IN
+          <foreach collection="classIds" item="classId"  open="(" separator="," close=")">
+            #{classId,jdbcType=VARCHAR}
+          </foreach>
+    ) m
+      ON p.user_id=m.user_id
+    INNER JOIN (SELECT unit_id FROM ct_units WHERE book_id=#{bookId,jdbcType=VARCHAR}) u
+    ON p.unit_id = u.unit_id
+    WHERE school_id=#{schoolId,jdbcType=VARCHAR}
+    GROUP BY p.user_id
+    ) a,
+    (SELECT COUNT(DISTINCT(p.user_id)) total
+    FROM ct_magic2_work_max_practice p
+    INNER JOIN (
+        SELECT user_id FROM m_student
+        WHERE school_id=#{schoolId,jdbcType=VARCHAR}
+        AND class_id IN
+          <foreach collection="classIds" item="classId"  open="(" separator="," close=")">
+            #{classId,jdbcType=VARCHAR}
+          </foreach>
+    ) m
+      ON p.user_id=m.user_id
+    INNER JOIN (SELECT unit_id FROM ct_units WHERE book_id=#{bookId,jdbcType=VARCHAR}) u
+    ON p.unit_id = u.unit_id
+    WHERE school_id=#{schoolId,jdbcType=VARCHAR}) b
+    GROUP BY a.score;
+  </select>
+<!--按课程统计百分比-->
+  <select id="selectUnitsRate" resultType="net.xuele.cloudteach.view.Magic2WorkUnitsRateView" >
+    SELECT b.unit_id unitId,a.score,COUNT(1),b.total,COUNT(1)/(b.total)*100 rate
+    FROM
+    (
+      SELECT DISTINCT p.unit_id,p.user_id,MAX(max_score) score
+      FROM ct_magic2_work_max_practice p
+      INNER JOIN (
+        SELECT user_id FROM m_student WHERE school_id=#{schoolId,jdbcType=VARCHAR}
+         AND class_id IN
+          <foreach collection="classIds" item="classId"  open="(" separator="," close=")">
+            #{classId,jdbcType=VARCHAR}
+          </foreach>
+      ) m
+      ON p.user_id=m.user_id
+      INNER JOIN (
+        SELECT unit_id FROM ct_units WHERE book_id=#{bookId,jdbcType=VARCHAR}) u
+      ON p.unit_id = u.unit_id
+      WHERE school_id=#{schoolId,jdbcType=VARCHAR}
+      GROUP BY p.unit_id,user_id
+    ) a INNER JOIN (
+      SELECT p.unit_id,COUNT(DISTINCT(p.user_id)) total
+      FROM ct_magic2_work_max_practice p
+      INNER JOIN (
+        SELECT user_id FROM m_student WHERE school_id=#{schoolId,jdbcType=VARCHAR}
+        AND class_id IN
+          <foreach collection="classIds" item="classId"  open="(" separator="," close=")">
+            #{classId,jdbcType=VARCHAR}
+          </foreach>
+      ) m
+      ON p.user_id=m.user_id
+      INNER JOIN (
+        SELECT unit_id FROM ct_units WHERE book_id=#{bookId,jdbcType=VARCHAR}
+        ) u
+      ON p.unit_id = u.unit_id
+      WHERE school_id=#{schoolId,jdbcType=VARCHAR}
+      GROUP BY p.unit_id
+    ) b
+    ON a.unit_id=b.unit_id
+    GROUP BY b.unit_id,a.score;
+  </select>
+</mapper>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtDiskSharePraiseMapper">
+    <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtDiskSharePraise">
+        <id column="share_praise_id" property="sharePraiseId" jdbcType="VARCHAR"/>
+        <result column="share_id" property="shareId" jdbcType="VARCHAR"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+    </resultMap>
+    <delete id="deleteByPrimaryKey" parameterType="map">
+    delete from ct_disk_share_praise
+    where share_id = #{shareId,jdbcType=VARCHAR}
+      and user_id = #{userId,jdbcType=VARCHAR}
+  </delete>
+    <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtDiskSharePraise">
+    insert into ct_disk_share_praise (share_praise_id,share_id, user_id, status
+      )
+    values (#{sharePraiseId,jdbcType=VARCHAR}, #{shareId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR},  #{status,jdbcType=INTEGER}
+      )
+  </insert>
+    <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtDiskSharePraise">
+    update ct_disk_share_praise
+    set status = #{status,jdbcType=INTEGER}
+    where share_id = #{shareId,jdbcType=VARCHAR}
+      and user_id = #{userId,jdbcType=VARCHAR}
+  </update>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="map">
+    select share_praise_id,share_id, user_id, status
+    from ct_disk_share_praise
+    where share_id = #{shareId,jdbcType=VARCHAR}
+      and user_id = #{userId,jdbcType=VARCHAR}
+  </select>
+    <!--<select id="selectAll" resultMap="BaseResultMap" >-->
+    <!--select shareId, user_id, status-->
+    <!--from ct_disk_share_praise-->
+    <!--</select>-->
+    <!--点赞记录-->
+    <select id="count" resultType="int" parameterType="map">
+    select COUNT(1)
+    from ct_disk_share_praise
+    where status =1 and share_id = #{shareId,jdbcType=VARCHAR}
+    and user_id=#{userId,jdbcType=VARCHAR}
+  </select>
+
+</mapper>

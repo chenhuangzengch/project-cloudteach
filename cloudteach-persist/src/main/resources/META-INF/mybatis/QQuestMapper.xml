@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.QQuestMapper">
+    <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.QQuest">
+        <id column="q_id" property="qId" jdbcType="VARCHAR"/>
+        <result column="TYPE" property="type" jdbcType="INTEGER"/>
+        <result column="kp_tag" property="kpTag" jdbcType="VARCHAR"/>
+        <result column="unit_id" property="unitId" jdbcType="VARCHAR"/>
+        <result column="has_sub" property="hasSub" jdbcType="INTEGER"/>
+        <result column="parent_id" property="parentId" jdbcType="VARCHAR"/>
+        <result column="sync_model" property="syncModel" jdbcType="VARCHAR"/>
+        <result column="difficulty" property="difficulty" jdbcType="INTEGER"/>
+        <result column="score" property="score" jdbcType="REAL"/>
+        <result column="sort" property="sort" jdbcType="INTEGER"/>
+        <result column="add_time" property="addTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="STATUS" property="status" jdbcType="INTEGER"/>
+        <result column="locate_tag" property="locateTag" jdbcType="VARCHAR"/>
+        <result column="content" property="content" jdbcType="LONGVARCHAR"/>
+        <result column="solution" property="solution" jdbcType="LONGVARCHAR"/>
+        <result column="ctent_type" property="ctentType" jdbcType="INTEGER"/>
+    </resultMap>
+    <!--一次性查出原题对应的衍生题-->
+<!--    <resultMap id="QQuestViewMap" type="net.xuele.cloudteach.view.QQuestView">
+        <id column="q_id" property="qId" jdbcType="VARCHAR"/>
+        <result column="TYPE" property="type" jdbcType="INTEGER"/>
+        <result column="kp_tag" property="kpTag" jdbcType="VARCHAR"/>
+        <result column="unit_id" property="unitId" jdbcType="VARCHAR"/>
+        <result column="has_sub" property="hasSub" jdbcType="INTEGER"/>
+        <result column="parent_id" property="parentId" jdbcType="VARCHAR"/>
+        <result column="sync_model" property="syncModel" jdbcType="VARCHAR"/>
+        <result column="difficulty" property="difficulty" jdbcType="INTEGER"/>
+        <result column="score" property="score" jdbcType="REAL"/>
+        <result column="sort" property="sort" jdbcType="INTEGER"/>
+        <result column="add_time" property="addTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="STATUS" property="status" jdbcType="INTEGER"/>
+        <result column="locate_tag" property="locateTag" jdbcType="VARCHAR"/>
+        <result column="content" property="content" jdbcType="LONGVARCHAR"/>
+        <result column="solution" property="solution" jdbcType="LONGVARCHAR"/>
+        <result column="ctent_type" property="ctentType" jdbcType="INTEGER"/>
+        <collection property="deriveQuests" javaType="ArrayList" column="parent_id=q_id,unit_id=unit_id"
+                    ofType="net.xuele.cloudteach.domain.QQuest"
+                    select="selectDeriveQuestList"/>
+    </resultMap>
+    &lt;!&ndash;一次性查出题目对应的答案&ndash;&gt;
+    <resultMap id="Magic2QuestInfoMap" type="net.xuele.cloudteach.domain.CtMagic2QuestInfo">
+        <id column="q_id" property="qId" jdbcType="VARCHAR"/>
+        <result column="TYPE" property="type" jdbcType="INTEGER"/>
+        <result column="kp_tag" property="kpTag" jdbcType="VARCHAR"/>
+        <result column="unit_id" property="unitId" jdbcType="VARCHAR"/>
+        <result column="has_sub" property="hasSub" jdbcType="INTEGER"/>
+        <result column="parent_id" property="parentId" jdbcType="VARCHAR"/>
+        <result column="sync_model" property="syncModel" jdbcType="VARCHAR"/>
+        <result column="difficulty" property="difficulty" jdbcType="INTEGER"/>
+        <result column="score" property="score" jdbcType="REAL"/>
+        <result column="sort" property="sort" jdbcType="INTEGER"/>
+        <result column="add_time" property="addTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="STATUS" property="status" jdbcType="INTEGER"/>
+        <result column="locate_tag" property="locateTag" jdbcType="VARCHAR"/>
+        <result column="content" property="content" jdbcType="LONGVARCHAR"/>
+        <result column="solution" property="solution" jdbcType="LONGVARCHAR"/>
+        <result column="ctent_type" property="ctentType" jdbcType="INTEGER"/>
+        <collection property="qAnswers" javaType="ArrayList" column="q_id=q_id"
+                    ofType="net.xuele.cloudteach.domain.QAnswer"
+                    select="selectQAnswersList"/>
+    </resultMap>-->
+
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from q_quest
+    where q_id = #{qId,jdbcType=VARCHAR}
+  </delete>
+
+    <insert id="insert" parameterType="net.xuele.cloudteach.domain.QQuest">
+    insert into q_quest (q_id, TYPE, kp_tag,
+      unit_id, has_sub, parent_id,
+      sync_model, difficulty, score,
+      sort, add_time, update_time,
+      STATUS, locate_tag, content,
+      solution,ctent_type)
+    values (#{qId,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER}, #{kpTag,jdbcType=VARCHAR},
+      #{unitId,jdbcType=VARCHAR}, #{hasSub,jdbcType=INTEGER}, #{parentId,jdbcType=VARCHAR},
+      #{syncModel,jdbcType=VARCHAR}, #{difficulty,jdbcType=INTEGER}, #{score,jdbcType=REAL},
+      #{sort,jdbcType=INTEGER}, #{addTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
+      #{status,jdbcType=INTEGER}, #{locateTag,jdbcType=VARCHAR}, #{content,jdbcType=LONGVARCHAR},
+      #{solution,jdbcType=LONGVARCHAR},#{ctentType,jdbcType=INTEGER})
+  </insert>
+
+    <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.QQuest">
+    update q_quest
+    set TYPE = #{type,jdbcType=INTEGER},
+      kp_tag = #{kpTag,jdbcType=VARCHAR},
+      unit_id = #{unitId,jdbcType=VARCHAR},
+      has_sub = #{hasSub,jdbcType=INTEGER},
+      parent_id = #{parentId,jdbcType=VARCHAR},
+      sync_model = #{syncModel,jdbcType=VARCHAR},
+      difficulty = #{difficulty,jdbcType=INTEGER},
+      score = #{score,jdbcType=REAL},
+      sort = #{sort,jdbcType=INTEGER},
+      add_time = #{addTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      STATUS = #{status,jdbcType=INTEGER},
+      locate_tag = #{locateTag,jdbcType=VARCHAR},
+      content = #{content,jdbcType=LONGVARCHAR},
+      solution = #{solution,jdbcType=LONGVARCHAR},
+      ctent_type = #{ctentType,jdbcType=INTEGER}
+    where q_id = #{qId,jdbcType=VARCHAR}
+  </update>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select q_id, TYPE, kp_tag, unit_id, has_sub, parent_id, sync_model, difficulty, score,
+    sort, add_time, update_time, STATUS, locate_tag, content, solution,ctent_type
+    from q_quest
+    where q_id = #{qId,jdbcType=VARCHAR}
+  </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+    select q_id, TYPE, kp_tag, unit_id, has_sub, parent_id, sync_model, difficulty, score,
+    sort, add_time, update_time, STATUS, locate_tag, content, solution,ctent_type
+    from q_quest
+  </select>
+
+    <!--根据课程id，随机获取原题中的num道题目-->
+    <select id="selectByUnitId" resultMap="BaseResultMap">
+    select q_id, TYPE, kp_tag, unit_id, has_sub, parent_id, sync_model, difficulty, score,
+    sort, add_time, update_time, STATUS, locate_tag, content, solution,ctent_type
+    from q_quest
+    where unit_id = #{unitId,jdbcType=VARCHAR}
+    and sync_model LIKE CONCAT('%','SYNC_MAGIC_WORK','%')
+    and sort = 0
+    and TYPE in(11,12,2,3)
+    and status != 0
+    /*and q_id in('eeb6d938890511e5b6ac005056a70a48','130cc8a8890211e5b6ac005056a70a48')*/
+    ORDER BY Rand() LIMIT #{num,jdbcType=INTEGER}
+  </select>
+    <!--获取某个课程下所有的原题题目-->
+    <select id="selectAllOriByUnitId" resultMap="BaseResultMap">
+        select q_id, TYPE, kp_tag, unit_id, has_sub, parent_id, sync_model, difficulty, score,
+        sort, add_time, update_time, STATUS, locate_tag, content, solution,ctent_type
+        from q_quest
+        where unit_id = #{unitId,jdbcType=VARCHAR}
+        and sync_model LIKE CONCAT('%','SYNC_MAGIC_WORK','%')
+        and sort = 0
+        and TYPE in(11,12,2,3)
+        and status != 0
+        /*and q_id in('eeb6d938890511e5b6ac005056a70a48','130cc8a8890211e5b6ac005056a70a48')*/
+        ORDER BY Rand()
+    </select>
+    <!--根据课程id，随机获取衍生题中对应原题的num道题目-->
+    <select id="selectChildByUnitId" resultMap="BaseResultMap">
+        select b.q_id, b.TYPE, b.kp_tag, b.unit_id, b.has_sub, b.parent_id, b.sync_model, b.difficulty, b.score,
+        b.sort, b.add_time, b.update_time, b.STATUS, b.locate_tag, b.content, a.solution,b.ctent_type
+        from q_quest a INNER join q_quest b ON a.q_id = b.parent_id
+        where a.unit_id = #{unitId,jdbcType=VARCHAR}
+        and a.sort = 0
+        and b.sort = #{sort,jdbcType=INTEGER}
+        and a.status != 0
+        and b.status != 0
+        and a.sync_model LIKE CONCAT('%','SYNC_MAGIC_WORK','%')
+        and b.parent_id in
+        <foreach item="item" index="index" collection="parentIds" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <!--查询题目sort-->
+<!--    <select id="queryQQuestSortList" resultType="java.lang.Integer" parameterType="java.lang.String">
+    select sort
+    from q_quest
+    <![CDATA[where status != 0 and sort > 0 and unit_id = #{unitId,jdbcType=VARCHAR}]]>
+    group by sort
+  </select>-->
+    <!--查询题目最大sort-->
+    <!--<select id="queryQQuestMaxSort" resultType="java.lang.Integer" parameterType="java.lang.String">
+        select IFNULL(max(sort),0)
+        from q_quest
+        where status != 0
+        and unit_id = #{unitId,jdbcType=VARCHAR}
+        and sync_model LIKE CONCAT('%','SYNC_MAGIC_WORK','%')
+    </select>-->
+
+    <!--查询原题对应的衍生题-->
+    <!--<select id="selectDeriveQuestList" resultMap="BaseResultMap">
+        select b.q_id, b.TYPE, b.kp_tag, b.unit_id, b.has_sub, b.parent_id, b.sync_model, b.difficulty, b.score,
+        b.sort, b.add_time, b.update_time, b.STATUS, b.locate_tag, b.content, a.solution,b.ctent_type
+        from q_quest a INNER join q_quest b ON a.q_id = b.parent_id
+        where a.unit_id = #{unit_id,jdbcType=VARCHAR}
+        and a.sort = 0
+        and b.sort = #{sort,jdbcType=INTEGER}
+        and a.status != 0
+        and b.status != 0
+        and a.sync_model LIKE CONCAT('%','SYNC_MAGIC_WORK','%')
+    </select>-->
+
+    <!--根据课程id，获取该课程下所有的提分宝题目-->
+    <select id="selectAllQuestByUnitId" resultMap="BaseResultMap">
+        select q_id, TYPE, kp_tag, unit_id, has_sub, parent_id, sync_model, difficulty, score,
+        sort, add_time, update_time, STATUS, locate_tag, content, solution,ctent_type
+        from q_quest
+        where unit_id = #{unitId,jdbcType=VARCHAR}
+        and sync_model LIKE CONCAT('%','SYNC_MAGIC_WORK','%')
+        and TYPE in(11,12,2,3)
+        and status != 0
+        ORDER BY sort,CASE WHEN parent_id='' THEN q_id ELSE parent_id END
+    </select>
+
+    <!--根据课程id，查询课程下最多题目数量-->
+    <select id="selectOriNum" resultType="int">
+        SELECT MAX(num)
+        FROM(
+        SELECT COUNT(1) num,sort
+        FROM q_quest
+        WHERE unit_id = #{unitId,jdbcType=VARCHAR}
+        AND sync_model LIKE CONCAT('%','SYNC_MAGIC_WORK','%')
+        AND TYPE IN(11,12,2,3)
+        AND STATUS != 0
+        GROUP BY sort
+        ) b
+    </select>
+
+    <!--更改题目状态-->
+    <update id="updateStatus" >
+        update q_quest
+        set STATUS = #{status,jdbcType=INTEGER}
+        where q_id = #{qId,jdbcType=VARCHAR}
+    </update>
+    <!--查询题目sort-->
+    <select id="selectSortAndPIdByQId" resultType="net.xuele.cloudteach.view.QQuestSortPView" parameterType="java.lang.String">
+        select CASE WHEN sort = 0 THEN  q_id ELSE  parent_id END parentId,sort
+        from q_quest
+        where q_id = #{qId,jdbcType=VARCHAR}
+        and unit_id = #{unitId,jdbcType=VARCHAR}
+    </select>
+
+<!--    <select id="selectFullQuestByUnitId" resultMap="QQuestViewMap">
+        select a.q_id, a.TYPE, a.kp_tag, a.unit_id, a.has_sub, a.parent_id, a.sync_model, a.difficulty, a.score,
+        a.sort, a.add_time, a.update_time, a.STATUS, a.locate_tag, a.content, a.solution,a.ctent_type
+        from q_quest a
+        where a.unit_id = #{unitId,jdbcType=VARCHAR}
+        and a.sort = 0
+        and a.status != 0
+        and a.sync_model LIKE CONCAT('%','SYNC_MAGIC_WORK','%')
+        <if test="num != null">
+            order by rand() limit #{num,jdbcType=INTEGER}
+        </if>
+    </select>-->
+
+    <!--提分宝题目查询优化-->
+    <!--查询某一题的选项-->
+    <!--<select id="selectQAnswersList" resultType="net.xuele.cloudteach.domain.QAnswer" >
+        select a_id, q_id, sortid, iscorrect, a_content
+        from q_answer
+        where q_id = #{qId,jdbcType=VARCHAR}
+        order by sortid
+    </select>-->
+<!--查询原题题目信息（包括选项）-->
+<!--    <select id="selectQuestInfo" resultMap="Magic2QuestInfoMap">
+        select q_id, TYPE, kp_tag, unit_id, has_sub, parent_id, sync_model, difficulty, score,
+        sort, add_time, update_time, STATUS, locate_tag, content, solution,ctent_type
+        from q_quest
+        where q_id = #{qId,jdbcType=VARCHAR}
+    </select>-->
+
+    <!--根据课程id，随机获取衍生题中对应原题的num道题目-->
+    <!--<select id="selectChildByUnitId" resultMap="Magic2QuestInfoMap">
+        select q_id, TYPE, kp_tag, unit_id, has_sub, parent_id, sync_model, difficulty, score,
+        sort, add_time, update_time, STATUS, locate_tag, content, solution
+        from q_quest
+        where unit_id = #{unitId,jdbcType=VARCHAR}
+        and sync_model LIKE CONCAT('%','SYNC_MAGIC_WORK','%')
+        and sort = #{sort,jdbcType=INTEGER}
+        and status != 0
+        and parent_id in
+        <foreach item="item" index="index" collection="parentIds" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>-->
+
+    <!--根据课程id，随机获取一组题目-->
+<!--    <select id="selectByUnitId" resultMap="BaseResultMap">
+        select b.q_id, b.TYPE, b.kp_tag, b.unit_id, b.has_sub, b.parent_id, b.sync_model, b.difficulty, b.score,
+        b.sort, b.add_time, b.update_time, b.STATUS, b.locate_tag, b.content, a.solution,b.ctent_type
+        from q_quest a INNER join q_quest b ON a.q_id = b.parent_id
+        where a.unit_id = #{unitId,jdbcType=VARCHAR}
+        and a.sort = 0
+        and a.status != 0
+        and b.status != 0
+        and a.sync_model LIKE CONCAT('%','SYNC_MAGIC_WORK','%')
+        and b.parent_id = #{parentId,jdbcType=VARCHAR}
+        ORDER BY sort
+    </select>-->
+
+</mapper>

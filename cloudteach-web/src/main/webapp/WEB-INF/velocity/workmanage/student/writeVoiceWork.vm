@@ -1,0 +1,143 @@
+#set($layout="layout/bodyLayout.vm")
+#set($page_title="写口语作业")
+#define($script)
+
+<link rel="stylesheet" href="$!{asset_host}/css/cloudteach/stu.css?version=${version}"/>
+<script src="$!{asset_host}/g/lib/gallery/swfobject.js?version=${version}"></script>
+<script src="$!{asset_host}/js/cloudteach/stu-write-electronic.js?version=${version}"></script>
+<script src="$!{asset_host}/cjs/common/xlutil.js?version=${version}"></script>
+#end
+
+<div class="detail-head">
+    <a class="li-whos on" href="javascript:void(0)">写作业</a>
+    <a class="li-whos"
+       href="$!{ctx}/voice/work/student/voiceWorkCommunication?workId=$!{basicWorkInfo.workId}&workType=7">作业交流</a>
+</div>
+<input type="hidden" name="workId" value="$!{basicWorkInfo.workId}">
+<input type="hidden" name="endTime" value="$DateExtend.toMillis($!{basicWorkInfo.endTime})">
+
+<div class="container">
+    <div class="write-wrap">
+        <div class="task-info">
+            <div class="detail-title">
+                <div class="task-title">
+                    <img src="$!{avatar_host}/images/48x48_$!{basicWorkInfo.teacherHeadIcon}.jpg" class="portrait"/>
+
+                    <h3 class="detail-info">
+                        <span class="tch-name">$!{basicWorkInfo.teacherName}</span><br/>
+                    </h3>
+                    <ul class="homework-explain">
+                        <li class="subject-name"> $!{basicWorkInfo.subjectName} </li>
+                        <li class="course-name"> $!{basicWorkInfo.unitName} </li>
+                        <li class="homework-num">$!{basicWorkInfo.workItemCount}题</li>
+                    </ul>
+                    <p class="p-detail">$!{basicWorkInfo.context.replaceAll("\r\n", "<br>").replaceAll("\r", "<br>").replaceAll("\n", "<br>").replaceAll(" ","&nbsp;")}</p>
+
+                    #if($workTapeFilesDTO)
+                        <div class="video-wrap">
+                            <div role="player" class="xlplayer" data-filekey="$!{workTapeFilesDTO.url}"
+                                 data-ext="$!{workTapeFilesDTO.extension}"></div>
+                        </div>
+                    #end
+
+                </div>
+            </div>
+
+##            <div class="attachment-wrap">
+##                <h3>题目附件</h3>
+##                <ul class="ul-attachment">
+##                    #foreach($teacherWorkFileDetailViewDTO in $teacherWorkFileDetailList)
+##                        <li>
+##                            <img class="xlpreview img-file-type"
+##                                 data-ext="$!{teacherWorkFileDetailViewDTO.extension}"
+##                                 data-filekey="$!{teacherWorkFileDetailViewDTO.url}"
+##                                 src="$!{asset_host}/g/imgs/icons/$!{teacherWorkFileDetailViewDTO.extIconType}.png"
+##                                 alt=""/>
+##                            <span class="file-name">$!{teacherWorkFileDetailViewDTO.name}
+##                                .$!{teacherWorkFileDetailViewDTO.extension}</span>
+##                        </li>
+##                    #end
+##                </ul>
+##            </div>
+        </div>
+
+        <div class="hand-info">
+            <button class="hand-button">交作业</button>
+            <div class="hand-method method-time">作业上交方式：
+                文字
+                #if( ${basicWorkInfo.subImage} == 1 )  图片 #end
+                #if( ${basicWorkInfo.subVideo} == 1 )  视频 #end
+                #if( ${basicWorkInfo.subTape} == 1 )  录音 #end
+                学乐APP
+            </div>
+            <div class="hand-time method-time">最晚交作业时间：$!{lastCommitDays}天之内</div>
+
+            #if($DateExtend.compareToCurrTime($!{basicWorkInfo.endTime}) ==1&&${stuWorkItemAnswerDTO.subStatus}==0)
+                <div class="child-finish-no">
+                    作业已经过期了
+                </div>
+            #else
+                #if(${stuWorkItemAnswerDTO.subStatus}==1)
+                <div class="audio-finish-wrap" style="display: block">
+                #else
+                <div class="audio-finish-wrap" style="display: none">
+                #end
+                <p class="hand-content">$!{stuWorkItemAnswerDTO.context.replaceAll("\r\n", "<br>").replaceAll("\r", "<br>").replaceAll("\n", "<br>").replaceAll(" ","&nbsp;")}</p>
+
+                <div class="audio-wrap">
+                    #foreach($teacherWorkItemAnswerFileDTO in $stuWorkItemAnswerFileList)
+                        #if($teacherWorkItemAnswerFileDTO.fileType==2)
+                            <em class="score">获得了$!{stuWorkItemAnswerDTO.sysScore}分！</em>
+
+                            <div class="video-wrap">
+                                <div role="player" class="xlplayer" data-filekey="$!{teacherWorkItemAnswerFileDTO.url}"
+                                     data-ext="$!{teacherWorkItemAnswerFileDTO.extension}"></div>
+                            </div>
+                        ##<div id="spoken-detail2" data-url="http://haha"></div>
+                        #end
+                        #if($teacherWorkItemAnswerFileDTO.fileType==1)
+                            <li><img class="xlpreview img-file-type"
+                                     data-ext="$!{teacherWorkItemAnswerFileDTO.extension}"
+                                     data-filekey="$!{teacherWorkItemAnswerFileDTO.url}"
+                                     src="$!{dl_host}/images/1/100x100_$!{teacherWorkItemAnswerFileDTO.url}.$!{teacherWorkItemAnswerFileDTO.extension}"
+                                     alt=""/>
+                            </li>
+                        #end
+                        #if($teacherWorkItemAnswerFileDTO.fileType==3)
+                            <li><img class="xlpreview img-file-type"
+                                     data-ext="$!{teacherWorkItemAnswerFileDTO.extension}"
+                                     data-filekey="$!{teacherWorkItemAnswerFileDTO.url}"
+                                     src="$!{asset_host}/g/imgs/video.png"
+                                     alt=""/>
+                            </li>
+                        #end
+                    #end
+                </div>
+                <div class="finish-time">
+                    作业完成时间: $!{subTime}
+                </div>
+            </div>
+            #end
+
+            <div class="spoken-notes">
+                <p class="remind-no">
+                    目前电脑上无法支持评测功能<br/>
+                    请登录手机学乐app去评测吧!
+                </p>
+
+                <div class="two-dimension-code">
+                    <img src="$!{asset_host}/g/imgs/qr.png" alt="">
+                </div>
+                <em class="notes">扫描二维码下载学乐APP</em>
+##                <a href="javascript:void(0)" class="to-google">iPhone下载</a>
+                <a href="https://dn-xueleyun.qbox.me/xueleyun.apk" class="to-app ">Android下载</a>
+##                <div class="local-download">
+##                    <span>本地下载</span>
+##                    <a href="#">应用宝</a>
+##                    <span>360</span>
+##                    <span>91</span>
+##                </div>
+            </div>
+        </div>
+        </div>
+    </div>

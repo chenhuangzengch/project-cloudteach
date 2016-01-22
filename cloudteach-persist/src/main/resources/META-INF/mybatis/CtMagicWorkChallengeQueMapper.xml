@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtMagicWorkChallengeQueMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtMagicWorkChallengeQue" >
+    <id column="cq_id" property="cqId" jdbcType="VARCHAR" />
+    <result column="challenge_id" property="challengeId" jdbcType="VARCHAR" />
+    <result column="work_id" property="workId" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="bank_id" property="bankId" jdbcType="VARCHAR" />
+    <result column="order_num" property="orderNum" jdbcType="INTEGER" />
+    <result column="que_id" property="queId" jdbcType="VARCHAR" />
+    <result column="original_question_id" property="originalQuestionId" jdbcType="VARCHAR" />
+    <result column="rw_status" property="rwStatus" jdbcType="INTEGER" />
+    <result column="school_id" property="schoolId" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+  </resultMap>
+  <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtMagicWorkChallengeQue" >
+    insert into ct_magic_work_challenge_que (cq_id, challenge_id, work_id, 
+      user_id, bank_id, order_num,
+      que_id, original_question_id, rw_status, 
+      school_id, status)
+    values (#{cqId,jdbcType=VARCHAR}, #{challengeId,jdbcType=VARCHAR}, #{workId,jdbcType=VARCHAR}, 
+      #{userId,jdbcType=VARCHAR}, #{bankId,jdbcType=VARCHAR}, #{orderNum,jdbcType=INTEGER},
+      #{queId,jdbcType=VARCHAR}, #{originalQuestionId,jdbcType=VARCHAR}, #{rwStatus,jdbcType=INTEGER}, 
+      #{schoolId,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtMagicWorkChallengeQue" >
+    update ct_magic_work_challenge_que
+    set challenge_id = #{challengeId,jdbcType=VARCHAR},
+      work_id = #{workId,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=VARCHAR},
+      bank_id = #{bankId,jdbcType=VARCHAR},
+      order_num = #{orderNum,jdbcType=INTEGER},
+      que_id = #{queId,jdbcType=VARCHAR},
+      original_question_id = #{originalQuestionId,jdbcType=VARCHAR},
+      rw_status = #{rwStatus,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER}
+    where school_id = #{schoolId,jdbcType=VARCHAR} and cq_id = #{cqId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" >
+    select cq_id, challenge_id, work_id, user_id, bank_id, order_num, que_id, original_question_id,
+    rw_status, school_id, status
+    from ct_magic_work_challenge_que
+    where school_id = #{schoolId,jdbcType=VARCHAR} and cq_id = #{cqId,jdbcType=VARCHAR}
+  </select>
+
+  <!--根据作业id删除对应的学生挑战题目表记录-->
+  <update id="delMagicWorkChallengeQue" >
+    update ct_magic_work_challenge_que
+    set
+    status = 0
+    where school_id = #{schoolId,jdbcType=VARCHAR}
+    and work_id = #{workId,jdbcType=VARCHAR}
+  </update>
+
+  <!--根据作业id、学生id删除某个学生挑战题目表记录-->
+  <update id="delStuMagicWorkChallengeQue" >
+    update ct_magic_work_challenge_que
+    set
+    status = 0
+    where school_id = #{schoolId,jdbcType=VARCHAR}
+    and work_id = #{workId,jdbcType=VARCHAR}
+    and user_id = #{userId,jdbcType=VARCHAR}
+  </update>
+<!--查询一次挑战的题目信息-->
+  <select id="selectByChallengeId" resultMap="BaseResultMap" >
+    select cq_id, challenge_id, work_id, user_id, bank_id, order_num, que_id, original_question_id,
+    rw_status, school_id, status
+    from ct_magic_work_challenge_que
+    where school_id = #{schoolId,jdbcType=VARCHAR} and challenge_id = #{challengeId,jdbcType=VARCHAR}
+  </select>
+</mapper>

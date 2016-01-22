@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtCourseReappearClassMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtCourseReappearClass" >
+    <id column="rc_id" property="rcId" jdbcType="VARCHAR" />
+    <result column="reappear_id" property="reappearId" jdbcType="VARCHAR" />
+    <result column="school_id" property="schoolId" jdbcType="VARCHAR" />
+    <result column="class_id" property="classId" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="FileInfoViewMap" type="net.xuele.cloudteach.view.FileInfoView" >
+    <id column="coursewares_id" property="id" jdbcType="VARCHAR" />
+    <result column="title" property="name" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from ct_course_reappear_class
+    where rc_id = #{rcId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtCourseReappearClass" >
+    insert into ct_course_reappear_class (rc_id, reappear_id,school_id, class_id,
+      status)
+    values (#{rcId,jdbcType=VARCHAR}, #{reappearId,jdbcType=VARCHAR}, #{schoolId,jdbcType=VARCHAR}
+    , #{classId,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER})
+  </insert>
+
+  <insert id="batchInsert"  >
+    insert into ct_course_reappear_class (rc_id, reappear_id,school_id , class_id,status)
+    values
+    <foreach collection="classIdList" item="classId"   separator="," >
+    (REPLACE(UUID(),'-',''), #{reappearId,jdbcType=VARCHAR},#{schoolId,jdbcType=VARCHAR}, #{classId,jdbcType=VARCHAR},1)
+    </foreach>
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtCourseReappearClass" >
+    update ct_course_reappear_class
+    set reappear_id = #{reappearId,jdbcType=VARCHAR},
+      class_id = #{classId,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER}
+    where rc_id = #{rcId,jdbcType=VARCHAR} AND school_id = #{schoolId,jdbcType=VARCHAR} and status = 1
+  </update>
+
+  <update id="updateByReappearId"  >
+    update ct_course_reappear_class
+    set
+    status = 0
+    where reappear_id = #{reappearId,jdbcType=VARCHAR}AND school_id = #{schoolId,jdbcType=VARCHAR} AND  status = 1
+  </update>
+
+  <update id="batchUpdateByClassList" >
+    update ct_course_reappear_class
+    SET
+    status = 0
+    WHERE school_id = #{schoolId,jdbcType=VARCHAR} and class_id in
+    <foreach collection="list" item="classId"  open="(" separator="," close=")">
+      #{classId,jdbcType=VARCHAR}
+    </foreach>
+
+  </update>
+
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap"  >
+    select rc_id, reappear_id, school_id,class_id, status
+    from ct_course_reappear_class
+    where rc_id = #{rcId,jdbcType=VARCHAR} AND  status = 1 AND school_id = #{schoolId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select rc_id, reappear_id, school_id,class_id, status
+    from ct_course_reappear_class AND  status = 1 AND school_id = #{schoolId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="queryCourseReappearClassList" resultMap="BaseResultMap" >
+    select rc_id, reappear_id,school_id, class_id, status
+    from ct_course_reappear_class
+    where reappear_id = #{reappearId,jdbcType=VARCHAR} AND  status = 1 AND school_id = #{schoolId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getClassList" resultType="java.lang.String" >
+    select class_id
+    from ct_course_reappear_class
+    where reappear_id = #{reappearId,jdbcType=VARCHAR} AND  status = 1 AND school_id = #{schoolId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getFileInfoViewList" resultMap="FileInfoViewMap" >
+    select ctc.coursewares_id,ctc.title ,1 type from ct_teach_coursewares ctc
+    INNER JOIN ct_course_reappear_coursewares ccrc
+    on  ccrc.coursewares_id =ctc.coursewares_id and ccrc.status =1
+    where  ccrc.school_id = #{schoolId,jdbcType=VARCHAR} and  ccrc.reappear_id = #{reappearId,jdbcType=VARCHAR}
+    and ctc.status =1
+  </select>
+</mapper>

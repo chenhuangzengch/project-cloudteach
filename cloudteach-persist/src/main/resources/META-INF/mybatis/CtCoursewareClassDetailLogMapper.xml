@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtCoursewareClassDetailLogMapper">
+    <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtCoursewareClassDetailLog">
+        <id column="ccdl_id" property="ccdlId" jdbcType="VARCHAR"/>
+        <result column="ccl_id" property="cclId" jdbcType="VARCHAR"/>
+        <result column="ccdl_type" property="ccdlType" jdbcType="INTEGER"/>
+        <result column="ccdl_context" property="ccdlContext" jdbcType="VARCHAR"/>
+        <result column="ccdl_begtime" property="ccdlBegtime" jdbcType="TIMESTAMP"/>
+        <result column="ccdl_endtime" property="ccdlEndtime" jdbcType="TIMESTAMP"/>
+        <result column="ccdl_content1" property="ccdlContent1" jdbcType="VARCHAR"/>
+        <result column="ccdl_content2" property="ccdlContent2" jdbcType="VARCHAR"/>
+        <result column="ccdl_content3" property="ccdlContent3" jdbcType="VARCHAR"/>
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+    </resultMap>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from ct_courseware_class_detail_log
+    where ccdl_id = #{ccdlId,jdbcType=VARCHAR}
+  </delete>
+    <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtCoursewareClassDetailLog">
+    insert into ct_courseware_class_detail_log (ccdl_id, ccl_id, ccdl_type, 
+      ccdl_context, ccdl_begtime, ccdl_endtime, 
+      ccdl_content1, ccdl_content2, ccdl_content3, 
+      school_id)
+    values (#{ccdlId,jdbcType=VARCHAR}, #{cclId,jdbcType=VARCHAR}, #{ccdlType,jdbcType=INTEGER}, 
+      #{ccdlContext,jdbcType=VARCHAR}, #{ccdlBegtime,jdbcType=TIMESTAMP}, #{ccdlEndtime,jdbcType=TIMESTAMP}, 
+      #{ccdlContent1,jdbcType=VARCHAR}, #{ccdlContent2,jdbcType=VARCHAR}, #{ccdlContent3,jdbcType=VARCHAR}, 
+      #{schoolId,jdbcType=VARCHAR})
+  </insert>
+    <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtCoursewareClassDetailLog">
+    update ct_courseware_class_detail_log
+    set ccl_id = #{cclId,jdbcType=VARCHAR},
+      ccdl_type = #{ccdlType,jdbcType=INTEGER},
+      ccdl_context = #{ccdlContext,jdbcType=VARCHAR},
+      ccdl_begtime = #{ccdlBegtime,jdbcType=TIMESTAMP},
+      ccdl_endtime = #{ccdlEndtime,jdbcType=TIMESTAMP},
+      ccdl_content1 = #{ccdlContent1,jdbcType=VARCHAR},
+      ccdl_content2 = #{ccdlContent2,jdbcType=VARCHAR},
+      ccdl_content3 = #{ccdlContent3,jdbcType=VARCHAR},
+      school_id = #{schoolId,jdbcType=VARCHAR}
+    where ccdl_id = #{ccdlId,jdbcType=VARCHAR}
+  </update>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select ccdl_id, ccl_id, ccdl_type, ccdl_context, ccdl_begtime, ccdl_endtime, ccdl_content1, 
+    ccdl_content2, ccdl_content3, school_id
+    from ct_courseware_class_detail_log
+    where ccdl_id = #{ccdlId,jdbcType=VARCHAR}
+  </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+    select ccdl_id, ccl_id, ccdl_type, ccdl_context, ccdl_begtime, ccdl_endtime, ccdl_content1, 
+    ccdl_content2, ccdl_content3, school_id
+    from ct_courseware_class_detail_log
+  </select>
+
+    <!--查询某个授课记录的所有明细数据-->
+    <select id="selectByLogId" resultMap="BaseResultMap">
+        SELECT
+        ccdl_id,
+        ccl_id,
+        ccdl_type,
+        ccdl_context,
+        ccdl_begtime,
+        ccdl_endtime,
+        ccdl_content1,
+        ccdl_content2,
+        ccdl_content3,
+        school_id
+    FROM
+        ct_courseware_class_detail_log
+    WHERE
+        school_id = #{schoolId,jdbcType=VARCHAR}
+    AND ccl_id = #{cclId,jdbcType=VARCHAR}
+    ORDER BY ccdl_type , ccdl_begtime DESC
+  </select>
+</mapper>

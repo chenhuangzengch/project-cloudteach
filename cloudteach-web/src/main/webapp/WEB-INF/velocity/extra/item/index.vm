@@ -1,0 +1,52 @@
+#set($page_title="课外作业")
+#set($currPage="homework")
+#define($script)
+<link rel="stylesheet" href="$!{asset_host}/css/cloudteach/homework.css?version=${version}"/>
+<script src="$!{asset_host}/js/cloudteach/guide-common.js?version=${version}"></script>
+<script src="$!{asset_host}/js/cloudteach/electronic.js?version=${version}"></script>
+#end
+
+<div class="container">
+    <div class="task-nav">
+        #if( $!{periodType} == 1 ) <a class="task-type" href="$!{ctx}/synclass/work/index">同步课堂</a>
+##        #elseif($!{periodType} == 2 ) <a class="task-type" href="$!{ctx}/magic/work/index">提分宝</a>
+        #end
+        <a class="task-type" href="$!{ctx}/exercise/item/index">电子作业</a>
+        #if($!{subjectId} == "030" ) <a class="task-type" href="$!{ctx}/voice/item/index">口语作业</a>
+        #end
+        <a class="task-type on" href="$!{ctx}/extra/item/index">课外作业</a>
+    </div>
+    <div class="two-column">
+        <div class="right-content spe-content">
+            <div class="inner-search">
+                <a class="new-exercise" href="$!{ctx}/extra/work/tonewpublish">
+                    <div>
+                        <img src="$!{asset_host}/imgs/cloudteach/add-black.png" alt=""/>
+                        新建题目
+                    </div>
+                </a>
+            </div>
+            <div class="empty">
+                <p class="empty-msg">没有课外作业题目</p>
+
+                <p class="empty-who">您可以先去发布作业，然后查看作业完成情况</p>
+
+                <p class="empty-ctls"><a href="$!{ctx}/extra/work/tonewpublish" class="new-exercise"><i
+                        class="icon-add"></i>新建题目</a>
+                </p>
+            </div>
+            <ul class="act-detail">
+                <li class="publish">
+                    <a href="$!{ctx}/extra/work/toeditpublish">
+                        <i class="pan-icons publish-icon"></i><span>发布</span>
+                    </a>
+                </li>
+                <li class="delete"><i class="pan-icons delete-icon"></i><span>删除</span></li>
+
+            </ul>
+            <div class="task-list">
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,33 @@
+#set($layout="layout/bodyLayout.vm")
+#set($page_title="课外作业-作业交流")
+#define($script)
+##    <meta charset="UTF-8">
+##    <title>预习作业-作业交流</title>
+<link rel="stylesheet" href="$!{asset_host}/css/cloudteach/stu.css?version=${version}"/>
+<script src="$!{asset_host}/js/cloudteach/detail.js?version=${version}"></script>
+<script src="$!{asset_host}/js/cloudteach/stu-communicate-types.js?version=${version}"></script>
+<script src="$!{asset_host}/g/lib/gallery/swfobject.js?version=${version}"></script>
+#end
+
+<body>
+
+<div class="detail-head">
+    <a class="li-whos" href="$!{ctx}/studentcloudwork/parent/viewWorkDetail?workId=$!{workId}&studentId=$!{studentId}&workType=8">写作业</a>
+    <a class="li-whos on" href="javascript:void(0)">作业交流</a>
+</div>
+
+<input type="hidden" name="displayStatus" value="$!{displayStatus}">
+<input type="hidden" name="isParent" value="1">
+
+<div class="container">
+    <div class="detail-wrap">
+        <div class="right-content">
+            <div class="empty">
+                <p class="empty-msg">写好作业之后才可以看</p>
+                <p class="empty-who">您可以督促下孩子，让他别太贪玩啦！</p>
+            </div>
+            <div class="stu-list">
+            </div>
+        </div>
+    </div>
+</div>

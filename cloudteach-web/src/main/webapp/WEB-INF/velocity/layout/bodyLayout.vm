@@ -1,0 +1,28 @@
+#set($session=${request.getSession()})
+#set($user=${request.session.getAttribute("SPRING_SECURITY_CONTEXT").authentication.principal})
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <title>$!page_title</title>
+
+    ## 云教学通用
+    #parse("common/common.vm")
+
+    $!script
+
+    ## 引入用户信息
+    #parse("common/userSession.vm")
+
+</head>
+<body>
+
+    $screen_content
+
+    ## 引入弹出层
+    #parse("common/popup.vm")
+
+</body>
+
+</html>

@@ -1,0 +1,82 @@
+#set($page_title="电子作业")
+#set($currPage="homework")
+#define($script)
+<link rel="stylesheet" href="$!{asset_host}/css/cloudteach/homework.css?version=${version}"/>
+<script  src="$!{asset_host}/js/cloudteach/guide-common.js?version=${version}"></script>
+<script  src="$!{asset_host}/js/cloudteach/electronic.js?version=${version}"></script>
+#end
+
+<div class="container">
+    <div class="task-nav">
+        #if( $!{periodType} == 1 ) <a class="task-type" href="$!{ctx}/synclass/work/index">同步课堂</a>
+##        #elseif($!{periodType} == 2 ) <a class="task-type" href="$!{ctx}/magic/work/index">提分宝</a>
+        #end
+        <a class="task-type on" href="$!{ctx}/exercise/item/index">电子作业</a>
+        #if($!{subjectId} == "030" ) <a class="task-type" href="$!{ctx}/voice/item/index">口语作业</a>
+        #end
+        <a class="task-type" href="$!{ctx}/extra/item/index">课外作业</a>
+    </div>
+    <div class="two-column">
+        <div class="left-nav">
+        ##LEFT 引入教材左侧页面片段
+            #parse("common/curriculumLeftBar.vm")
+        </div>
+        <div class="right-content">
+            <div class="inner-search">
+                <div class="sel-rect">
+                    <i class="sel sel-all sel-no"></i>
+                    <label>全选</label>
+                </div>
+                <span class="no-selected">选择题目以布置作业</span>
+
+                <div class="assign-task selected-yes">
+                    <img src="$!{asset_host}/imgs/cloudteach/work_issue.png"/>
+                    <a href="$!{ctx}/exercise/work/toPublish">发布</a>
+                </div>
+                <a class="new-exercise" href="$!{ctx}/exercise/item/new">
+                    <div>
+                        <img src="$!{asset_host}/imgs/cloudteach/add-black.png" alt=""/>
+                        新建题目
+                    </div>
+                </a>
+            </div>
+            <div class="empty">
+                <p class="empty-msg">当前没有题目</p>
+
+                <p class="empty-who">新建题目后，就可以发布电子作业给学生</p>
+
+                <p class="empty-ctls"><a href="$!{ctx}/exercise/item/new" class="new-exercise"><i class="icon-add"></i>新建题目</a>
+                </p>
+            </div>
+            <ul class="act-detail">
+                <li class="edit">
+                    <a href="$!{ctx}/exercise/item/editPage">
+                        <i class="pan-icons moveto-icon"></i><span>编辑</span>
+                    </a>
+                </li>
+                <li class="publish">
+                    <a href="$!{ctx}/exercise/work/toPublish">
+                        <i class="pan-icons publish-icon"></i><span>发布</span>
+                    </a>
+                </li>
+                <li class="delete"><i class="pan-icons delete-icon"></i><span>删除</span></li>
+
+            </ul>
+##            <ul class="act-detail">
+##                <li class="publish-times">从未发布</li>
+##                <li class="edit">
+##                    <a href="$!{ctx}/exercise/item/editPage">
+##                        <i class="pan-icons moveto-icon"></i>
+##                        <span>编辑</span>
+##                    </a>
+##                </li>
+##                <li class="publish"><a href="$!{ctx}/exercise/work/toPublish"><i
+##                        class="pan-icons shareN-icon"></i><span>发布</span></a></li>
+##                <li class="delete"><i class="pan-icons cancelsave-icon"></i><span>删除</span></li>
+##            </ul>
+            <div class="task-list">
+
+            </div>
+        </div>
+    </div>
+</div>

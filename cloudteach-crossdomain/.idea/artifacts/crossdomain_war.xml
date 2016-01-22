@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="crossdomain:war">
+    <output-path>$PROJECT_DIR$/cloudteach-crossdomain/target</output-path>
+    <root id="archive" name="crossdomain.war">
+      <element id="artifact" artifact-name="crossdomain:war exploded" />
+    </root>
+  </artifact>
+</component>

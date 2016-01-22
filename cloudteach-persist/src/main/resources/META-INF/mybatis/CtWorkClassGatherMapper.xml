@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtWorkClassGatherMapper">
+    <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtWorkClassGather">
+        <id column="work_class_id" property="workClassId" jdbcType="VARCHAR"/>
+        <result column="work_id" property="workId" jdbcType="VARCHAR"/>
+        <result column="class_id" property="classId" jdbcType="VARCHAR"/>
+        <result column="last_warn_time" property="lastWarnTime" jdbcType="TIMESTAMP"/>
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+    </resultMap>
+    <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtWorkClassGather">
+    insert into ct_work_class_gather (work_class_id, work_id, class_id,
+      school_id, status)
+    values (#{workClassId,jdbcType=VARCHAR}, #{workId,jdbcType=VARCHAR}, #{classId,jdbcType=VARCHAR},
+      #{schoolId,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER})
+  </insert>
+    <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtWorkClassGather">
+    update ct_work_class_gather
+    set work_id = #{workId,jdbcType=VARCHAR},
+      class_id = #{classId,jdbcType=VARCHAR},
+      last_warn_time = #{lastWarnTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER}
+    where school_id=#{schoolId,jdbcType=VARCHAR} and work_class_id = #{workClassId,jdbcType=VARCHAR}
+  </update>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    select work_class_id, work_id, class_id,last_warn_time, school_id, status
+    from ct_work_class_gather
+    where school_id=#{schoolId,jdbcType=VARCHAR} and work_class_id = #{workClassId,jdbcType=VARCHAR}
+  </select>
+
+    <!--布置作业初始化-->
+    <insert id="initCtWorkClassGather" parameterType="net.xuele.cloudteach.domain.CtWorkClassGather">
+        insert into ct_work_class_gather(
+        work_class_id,work_id,class_id,school_id,status
+        ) values
+        <foreach collection="initInfoList" item="items" index="index" separator=",">
+            (#{items.workClassId},#{items.workId},#{items.classId},#{items.schoolId},#{items.status})
+        </foreach>
+    </insert>
+
+    <!--删除提分宝作业时逻辑删除作业班级汇总表信息-->
+    <update id="delWorkClassGather">
+        update ct_work_class_gather
+        set
+        status = 0
+        where school_id = #{schoolId,jdbcType=VARCHAR}
+        and work_id = #{workId,jdbcType=VARCHAR}
+    </update>
+
+    <!--获取初始化信息-->
+    <select id="getInitInfo" resultMap="BaseResultMap">
+        select REPLACE(UUID(),'-','') work_class_id,#{workId,jdbcType=VARCHAR} work_id,
+        class_id,school_id,1 status
+        from m_student  where
+        school_id =#{schoolId,jdbcType=VARCHAR} and class_id in
+        <foreach collection="classList" item="classId" index="index" open="(" close=")" separator=",">
+            #{classId}
+        </foreach>
+    </select>
+
+    <insert id="batchInsert" parameterType="java.util.List">
+        insert into ct_work_class_gather(
+        work_class_id,work_id,class_id,school_id,status
+        )
+        values
+        <foreach collection="list" item="item" index="index" separator="," >
+            (#{item.workClassId,jdbcType=VARCHAR}, #{item.workId,jdbcType=VARCHAR}, #{item.classId,jdbcType=VARCHAR},
+            #{item.schoolId,jdbcType=VARCHAR}, #{item.status,jdbcType=INTEGER})
+        </foreach>
+    </insert>
+
+
+    <update id="updateStatusByClassList">
+        update ct_work_class_gather
+        set
+        status = #{status,jdbcType=INTEGER}
+        where school_id=#{schoolId,jdbcType=VARCHAR} and class_id in
+        <foreach collection="classList" item="classId" index="index" open="(" close=")" separator=",">
+            #{classId,jdbcType=VARCHAR}
+        </foreach>
+    </update>
+
+    <update id="updateStatusByWorkId">
+        update ct_work_class_gather
+        set status = #{status,jdbcType=INTEGER}
+        where school_id=#{schoolId,jdbcType=VARCHAR} and work_id = #{workId,jdbcType=VARCHAR}
+    </update>
+
+    <!--通过作业ID获得作业班级统计信息-->
+    <select id="getWorkClassGatherByWorkId" resultMap="BaseResultMap">
+        select work_class_id, work_id, class_id, last_warn_time, school_id, status
+        from ct_work_class_gather
+        where school_id=#{schoolId,jdbcType=VARCHAR}
+        and work_id = #{workId,jdbcType=VARCHAR}
+        and status = 1
+    </select>
+
+    <!--通过作业ID、班级ID获得作业班级统计信息-->
+    <select id="getWorkClassGatherByClassId" resultMap="BaseResultMap">
+        select work_class_id, work_id, class_id, last_warn_time, school_id, status
+        from ct_work_class_gather
+        where school_id=#{schoolId,jdbcType=VARCHAR}
+        and work_id = #{workId,jdbcType=VARCHAR}
+        and class_id = #{classId,jdbcType=VARCHAR}
+        and status = 1
+    </select>
+</mapper>

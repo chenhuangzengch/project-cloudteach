@@ -1,0 +1,15 @@
+#set($layout="layout/systemLayout.vm")
+#set($page_title="操作失败")
+#define($script)
+<link rel="stylesheet" href="$!{asset_host}/g/css/global.min.css?version=${version}" />
+<link rel="stylesheet" href="$!{asset_host}/css/member/spec.css?version=${version}" />
+#end
+
+	<div class="success-fail">
+		<img src="$!{asset_host}/imgs/cloudteach/failed.png" alt="" class="status-icon"/>
+		<h2 class="status-result">操作失败</h2>##操作时遇到一个小问题，请返回重新发送
+		<p class="status-notes">$!{errorInfo}</p>
+		<div class="actions">
+			<a href="javascript:history.go(-1);" class="confirm">返回</a>
+		</div>
+	</div>

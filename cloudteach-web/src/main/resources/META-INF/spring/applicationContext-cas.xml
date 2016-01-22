@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:context="http://www.springframework.org/schema/context"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans
+             http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+             http://www.springframework.org/schema/security
+             http://www.springframework.org/schema/security/spring-security.xsd
+             http://www.springframework.org/schema/context
+             http://www.springframework.org/schema/context/spring-context-3.2.xsd"
+             default-lazy-init="true">
+
+    <context:property-placeholder location="classpath:application.properties" ignore-unresolvable="true"/>
+
+    <!--将启动基于表达式的语法-->
+    <global-method-security pre-post-annotations="enabled" jsr250-annotations="enabled" proxy-target-class="true"/>
+
+    <http pattern="/coursewares/extfl/*" security="none"/>
+    <http pattern="/coursewares/extpc/*" security="none"/>
+    <http pattern="/mobileApp/*" security="none"/>
+    <!--<http pattern="//j_spring_cas_security_check" security="none"/>-->
+
+    <http auto-config="false" entry-point-ref="casEntryPoint" servlet-api-provision="true" use-expressions="true">
+        <anonymous enabled="false"/>
+        <intercept-url pattern="/**" access="isFullyAuthenticated()"/>
+        <access-denied-handler ref="accessDeniedHandler"/>
+        <custom-filter ref="requestSingleLogoutFilter" before="LOGOUT_FILTER"/>
+        <!--<custom-filter ref="singleLogoutFilter" before="CAS_FILTER"/>-->
+        <custom-filter ref="casAuthenticationFilter" position="CAS_FILTER"/>
+        <custom-filter ref="exceptionTranslationFilter" after="EXCEPTION_TRANSLATION_FILTER"/>
+        <custom-filter ref="filterSecurityInterceptor" before="FILTER_SECURITY_INTERCEPTOR"/>
+    </http>
+    <beans:bean id="exceptionTranslationFilter" class="net.xuele.member.web.manager.MemberExceptionTranslationFilter">
+        <beans:constructor-arg ref="casEntryPoint"></beans:constructor-arg>
+    </beans:bean>
+    <beans:bean id="accessDeniedHandler"
+                class="net.xuele.member.web.manager.MemberAccessDeniedHandlerImpl">
+    </beans:bean>
+    <beans:bean id="ExceptionTranslationFilter"
+                class="org.springframework.security.web.access.ExceptionTranslationFilter">
+    </beans:bean>
+
+    <!--权限验证-->
+    <beans:bean id="filterSecurityInterceptor"
+                class="org.springframework.security.web.access.intercept.FilterSecurityInterceptor">
+        <beans:property name="authenticationManager" ref="authenticationManager"/>
+        <!--投票-->
+        <beans:property name="accessDecisionManager" ref="xueleAccessDecisionManager"/>
+        <!--资源权限关系认证    提供getAttributes方法，根据资源获取角色id列表-->
+        <beans:property name="securityMetadataSource" ref="securityMetadataSource"/>
+    </beans:bean>
+
+    <!--决策管理器-->
+    <beans:bean id="xueleAccessDecisionManager" class="net.xuele.common.security.XueleAccessDecisionManager"/>
+
+    <!--资源角色对应-->
+    <beans:bean id="securityMetadataSource"
+                class="org.springframework.security.web.access.intercept.DefaultFilterInvocationSecurityMetadataSource">
+        <beans:constructor-arg name="requestMap" ref="requestMap"/>
+    </beans:bean>
+    <beans:bean id="requestMap" class="net.xuele.member.util.RequestMapFactoryBean">
+        <beans:property name="resourceService" ref="resourceService"/>
+    </beans:bean>
+    <!--security-->
+
+
+    <!--拦截认证异常到CAS登录页-->
+    <beans:bean id="casEntryPoint" class="org.springframework.security.cas.web.CasAuthenticationEntryPoint">
+        <beans:property name="loginUrl" value="${cas.url}"/>
+        <beans:property name="encodeServiceUrlWithSessionId" value="false"/>
+        <beans:property name="serviceProperties" ref="serviceProperties" />
+    </beans:bean>
+
+    <beans:bean id="serviceProperties" class="org.springframework.security.cas.ServiceProperties">
+        <beans:property name="service" value="${cas.cloudteach.server}"/>
+        <beans:property name="sendRenew" value="false"/>
+    </beans:bean>
+
+    <!--ticket认证 AbstractAuthenticationProcessingFilter封装简单au,-->
+    <beans:bean id="casAuthenticationFilter" class="org.springframework.security.cas.web.CasAuthenticationFilter">
+        <beans:property name="authenticationManager" ref="authenticationManager"/>
+    </beans:bean>
+
+    <authentication-manager alias="authenticationManager">
+        <authentication-provider ref="casAuthenticationProvider"/>
+    </authentication-manager>
+
+
+    <beans:bean id="casAuthenticationProvider"
+                class="org.springframework.security.cas.authentication.CasAuthenticationProvider">
+        <beans:property name="authenticationUserDetailsService" ref="casAuthenticationUserDetailsService"/>
+        <beans:property name="serviceProperties" ref="serviceProperties"/>
+        <beans:property name="ticketValidator">
+            <beans:bean class="org.jasig.cas.client.validation.Cas20ServiceTicketValidator">
+                <beans:constructor-arg index="0" value="${cas.url}"/>
+            </beans:bean>
+        </beans:property>
+        <beans:property name="key" value="an_id_for_this_auth_provider_only"/>
+    </beans:bean>
+
+    <!--补充usersession-->
+    <beans:bean id="casAuthenticationUserDetailsService"
+                class="org.springframework.security.core.userdetails.UserDetailsByNameServiceWrapper">
+        <beans:property name="userDetailsService">
+            <beans:ref bean="userDetailsService"/>
+        </beans:property>
+    </beans:bean>
+
+
+    <!-- 注销客户端 -->
+    <!--<beans:bean id="singleLogoutFilter"-->
+                <!--class="org.jasig.cas.client.session.SingleSignOutFilter"/>-->
+    <!-- 注销服务器端 -->
+    <beans:bean id="requestSingleLogoutFilter"
+                class="org.springframework.security.web.authentication.logout.LogoutFilter">
+        <beans:constructor-arg value="${cas.url}/logout?service=${cloudteach-web}"/>
+        <beans:constructor-arg>
+            <beans:bean
+                    class="org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler"/>
+        </beans:constructor-arg>
+        <beans:property name="filterProcessesUrl" value="/j_spring_cas_security_logout"/>
+    </beans:bean>
+
+</beans:beans>    

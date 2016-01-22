@@ -1,0 +1,73 @@
+#set($page_title="我的预习题")
+#set($currPage="guidance")
+#define($script)
+<link rel="stylesheet" href="$!{asset_host}/css/cloudteach/homework.css?version=${version}"/>
+<script  src="$!{asset_host}/js/cloudteach/guide-common.js?version=${version}"></script>
+<script  src="$!{asset_host}/js/cloudteach/guide-index.js?version=${version}"></script>
+#end
+
+<div class="container">
+    <div class="task-nav">
+        <a class="task-type on" href="$!{ctx}/guidance/item/index">我的预习题</a>
+        <a class="task-type" href="$!{ctx}/guidance/itemShare/index">大家的分享</a>
+    </div>
+    <div class="two-column">
+        <div class="left-nav">
+        ##LEFT 引入教材左侧页面片段
+            #parse("common/curriculumLeftBar.vm")
+        </div>
+        <div class="right-content">
+            <div class="inner-search">
+                <div class="sel-rect">
+                    <i class="sel sel-all sel-no"></i>
+                    <label>全选</label>
+                </div>
+                <span class="no-selected">选择题目以布置作业</span>
+
+                <div class="assign-task selected-yes">
+                    <img src="$!{asset_host}/imgs/cloudteach/work_issue.png"/>
+                    <a href="$!{ctx}/guidance/work/toPublish">发布</a>
+                </div>
+                <a href="$!{ctx}/guidance/item/new" class="new-exercise">
+                    <div>
+                        <img src="$!{asset_host}/imgs/cloudteach/add-black.png" alt=""/>
+                        新建题目
+                    </div>
+                </a>
+            </div>
+            <div class="empty">
+                <p class="empty-msg">当前没有题目</p>
+
+                <p class="empty-who">您可以去看看大家的分享，或者从电脑上传</p>
+
+                <p class="empty-ctls"><a href="$!{ctx}/guidance/item/new" class="new-exercise"><i class="icon-add"></i>新建题目</a>
+                </p>
+            </div>
+            <ul class="act-detail">
+                <li class="edit">
+                    <a href="$!{ctx}/guidance/item/editPage">
+                        <i class="pan-icons moveto-icon"></i><span>编辑</span>
+                    </a>
+                </li>
+                <li class="publish">
+                    <a href="$!{ctx}/guidance/work/toPublish">
+                        <i class="pan-icons publish-icon"></i><span>发布</span>
+                    </a>
+                </li>
+                <li class="delete"><i class="pan-icons delete-icon"></i><span>删除</span></li>
+                <li class="share"><i class="pan-icons shareN-icon"></i><span>分享</span></li>
+                <li class="cancel-save"><i class="pan-icons saveN-icon"></i><span>取消收藏</span></li>
+
+####                <li class="publish-times">从未发布</li>
+##                <li class="edit"><a href="$!{ctx}/guidance/item/editPage"><i class="pan-icons moveto-icon"></i><span>编辑</span></a></li>
+##                <li class="publish"><a href="$!{ctx}/guidance/work/toPublish"><i class="pan-icons shareN-icon"></i><span>发布</span></a></li>
+##                <li class="delete"><i class="pan-icons cancelsave-icon"></i><span>删除</span></li>
+##                <li class="share"><i class="pan-icons cancelsave-icon"></i><span>分享</span></li>
+##                <!-- <li class="cancel-share"><i class="pan-icons cancelsave-icon"></i><span>取消分享</span></li> -->
+##                <li class="cancel-save"><i class="pan-icons cancelsave-icon"></i><span>取消收藏</span></li>
+            </ul>
+            <div class="task-list">
+            </div>
+        </div>
+    </div>
+</div>

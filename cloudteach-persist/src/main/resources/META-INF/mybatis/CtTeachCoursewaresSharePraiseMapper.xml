@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtTeachCoursewaresSharePraiseMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtTeachCoursewaresSharePraise" >
+    <id column="share_praise_id" property="sharePraiseId" jdbcType="VARCHAR" />
+    <result column="share_id" property="shareId" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="praise_time" property="praiseTime" jdbcType="TIMESTAMP" />
+    <result column="praise_status" property="praiseStatus" jdbcType="INTEGER" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="map" >
+    delete from ct_teach_coursewares_share_praise
+    where share_id = #{shareId,jdbcType=VARCHAR}
+      and user_id = #{userId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtTeachCoursewaresSharePraise" >
+    insert into ct_teach_coursewares_share_praise (share_praise_id,share_id, user_id, praise_time,
+      praise_status)
+    values (REPLACE(UUID(),'-',''),#{shareId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{praiseTime,jdbcType=TIMESTAMP},
+      #{praiseStatus,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtTeachCoursewaresSharePraise" >
+    update ct_teach_coursewares_share_praise
+    set praise_time = #{praiseTime,jdbcType=TIMESTAMP},
+      praise_status = #{praiseStatus,jdbcType=INTEGER}
+    where share_id = #{shareId,jdbcType=VARCHAR}
+      and user_id = #{userId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="map" >
+    select share_praise_id,share_id, user_id, praise_time, praise_status
+    from ct_teach_coursewares_share_praise
+    where share_id = #{shareId,jdbcType=VARCHAR}
+      and user_id = #{userId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select share_praise_id,share_id, user_id, praise_time, praise_status
+    from ct_teach_coursewares_share_praise
+  </select>
+</mapper>

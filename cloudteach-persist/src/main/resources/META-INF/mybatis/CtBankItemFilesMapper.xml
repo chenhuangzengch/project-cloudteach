@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtBankItemFilesMapper">
+    <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtBankItemFiles">
+        <id column="file_id" property="fileId" jdbcType="VARCHAR"/>
+        <result column="f_type" property="fType" jdbcType="INTEGER"/>
+        <result column="relation_id" property="relationId" jdbcType="VARCHAR"/>
+        <result column="disk_id" property="diskId" jdbcType="VARCHAR"/>
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtBankItemFiles">
+    insert into ct_bank_item_files (file_id, f_type, relation_id, 
+      disk_id, school_id)
+    values (#{fileId,jdbcType=VARCHAR}, #{fType,jdbcType=INTEGER}, #{relationId,jdbcType=VARCHAR}, 
+      #{diskId,jdbcType=VARCHAR}, #{schoolId,jdbcType=VARCHAR})
+  </insert>
+    <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtBankItemFiles">
+    update ct_bank_item_files
+    set f_type = #{fType,jdbcType=INTEGER},
+      relation_id = #{relationId,jdbcType=VARCHAR},
+      disk_id = #{diskId,jdbcType=VARCHAR}
+    where school_id = #{schoolId,jdbcType=VARCHAR} and file_id = #{fileId,jdbcType=VARCHAR}
+  </update>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    select file_id, f_type, relation_id, disk_id, school_id
+    from ct_bank_item_files
+    where school_id = #{schoolId,jdbcType=VARCHAR} and file_id = #{fileId,jdbcType=VARCHAR}
+  </select>
+
+    <!--获取初始化信息-->
+    <select id="getInitInfo" resultMap="BaseResultMap">
+        select REPLACE(UUID(),'-','') file_id,3 f_type,b.work_item_id relation_id,c.disk_id,b.school_id
+        from ct_bank_item a,ct_teacher_work_item b,ct_bank_item_files c
+        where a.school_id = #{schoolId,jdbcType=VARCHAR}
+        and b.school_id = #{schoolId,jdbcType=VARCHAR}
+        and c.school_id = #{schoolId,jdbcType=VARCHAR}
+        and a.item_id = b.item_id
+        and a.item_id = c.relation_id
+        and c.f_type = 1
+        and b.work_id = #{workId,jdbcType=VARCHAR}
+        and a.item_id = #{itemId,jdbcType=VARCHAR}
+    </select>
+
+    <!--布置作业时，copy一份数据-->
+    <insert id="initCopyBankItemFiles" parameterType="net.xuele.cloudteach.domain.CtBankItemFiles">
+        insert into ct_bank_item_files (file_id, f_type, relation_id,
+        disk_id,school_id) values
+        <foreach collection="initInfoList" item="items" index="" separator=",">
+            (#{items.fileId},#{items.fType},#{items.relationId},#{items.diskId},#{items.schoolId})
+        </foreach>
+    </insert>
+
+    <!--根据预习项关联类型，预习项关联id查询附件-->
+    <select id="selectAttachment" resultMap="BaseResultMap">
+        SELECT
+            file_id,
+            f_type,
+            relation_id,
+            disk_id,
+            school_id
+        FROM
+            ct_bank_item_files cbif
+        WHERE
+            cbif.school_id = #{schoolId}
+            AND cbif.relation_id = #{itemId}
+            AND cbif.f_type = #{type}
+    </select>
+
+   <!--根据预习项关联类型，预习项关联id查询附件总数-->
+    <select id="selectAttachmentAmount" resultType="long">
+        SELECT
+            COUNT(1)
+        FROM
+            ct_bank_item_files cbif
+        WHERE
+            cbif.school_id = #{schoolId}
+            AND cbif.relation_id = #{itemId}
+            AND cbif.f_type = 1
+    </select>
+
+    <!--批量插入附件-->
+    <insert id="batchInsert">
+        INSERT INTO ct_bank_item_files (
+        file_id,
+        f_type,
+        relation_id,
+        disk_id,
+        school_id
+        )
+        VALUES
+        <foreach collection="diskIds" item="item" separator=",">
+            (
+            REPLACE(UUID(), '-', ''),
+            #{type},
+            #{itemId},
+            #{item,jdbcType=VARCHAR},
+            #{schoolId}
+            )
+        </foreach>
+    </insert>
+
+    <!--删除某个题目下的所有附件-->
+    <delete id="deleteByItemId">
+        DELETE
+        FROM
+        ct_bank_item_files
+        WHERE school_id = #{schoolId} AND relation_id = #{itemId}
+    </delete>
+
+    <select id="attachmentInfoForJson" resultType="net.xuele.cloudteach.view.AttachmentInfoView">
+        SELECT a.file_id id,b.file_uri uri,b.name name b.extension ext
+        FROM ct_bank_item_files a,ct_cloud_disk b
+        WHERE a.school_id = #{schoolId}
+        AND b.school_id = #{schoolId}
+        AND a.disk_id = b.disk_id
+        AND a.relation_id = #{itemId}
+        AND a.f_type = #{type}
+    </select>
+
+    <!--获取某个题目所带的附件信息-->
+    <select id="teacherWorkFileInfo" resultType="net.xuele.cloudteach.view.TeacherWorkFileDetailView">
+        select
+        a.file_id fileId,
+        b.name name,
+        b.extension extension,
+        b.ext_icon_type extIconType,
+        b.file_uri url,
+        b.ext_type extType
+        from ct_bank_item_files a, ct_cloud_disk b
+        where a.school_Id = #{schoolId}
+        and b.school_id = #{schoolId}
+        and a.disk_id = b.disk_id
+        and a.relation_id = #{workItemId}
+        and a.f_type = 3
+    </select>
+
+</mapper>

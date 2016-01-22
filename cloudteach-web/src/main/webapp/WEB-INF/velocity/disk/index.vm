@@ -1,0 +1,103 @@
+#set($page_title="我的云盘")
+#define($script)
+<link rel="stylesheet" href="$!{asset_host}/css/cloudteach/pan.css?version=${version}"/>
+<script  src="$!{asset_host}/js/cloudteach/disk-common.js?version=${version}"></script>
+<script  src="$!{asset_host}/js/cloudteach/disk-my.js?version=${version}"></script>
+<script src="$!{asset_host}/g/lib/gallery/swfobject.js?version=${version}"></script>
+#end
+
+<div class="container">
+    <div class="whos-nav">
+        <a class="li-whos on" href="$!{ctx}/cloudDisk/file/index">我的云盘</a>
+        <a class="li-whos" href="$!{ctx}/cloudDisk/share/index">大家的分享</a>
+        <a class="li-whos" href="$!{ctx}/cloudDisk/share/acOfficialResource">官方资源</a>
+    </div>
+
+    <div class="two-column">
+
+        <div class="left-nav">
+        ##LEFT 引入教材左侧页面片段
+                #parse("common/curriculumLeftBar.vm")
+        </div>
+
+        <div class="right-content">
+            <img src="$!{asset_host}/imgs/cloudteach/upload-file.png" alt="上传文件" class="upload-file-img" data-user="$userId" data-school="$schoolId" />
+            <ul class="file-type">
+                <li class="type-name no-bl selected" data-filetype="0">全部<br/><em class="file-num">(0)</em></li>
+                <li class="type-name" data-filetype="4">课件<br/><em class="file-num">(0)</em></li>
+                <li class="type-name" data-filetype="5">习题<br/><em class="file-num">(0)</em></li>
+                <li class="type-name" data-filetype="6">课程素材<br/><em class="file-num">(0)</em></li>
+                <li class="type-name" data-filetype="2">教案<br/><em class="file-num">(0)</em></li>
+                <li class="type-name" data-filetype="3">学案<br/><em class="file-num">(0)</em></li>
+                <li class="type-name" data-filetype="1">其他<br/><em class="file-num">(0)</em></li>
+            </ul>
+            <div class="inner-search">
+                <i class="sel sel-no sel-all"></i>
+                <label for="sel-all">全选</label>
+                <ul class="ul-op">
+                    <li class="moveto"><i class="moveto-icon"></i><span>移动到</span></li>
+                    <li class="delete"><i class="delete-icon"></i><span>删除</span></li>
+                </ul>
+                <div class="show-method">
+                    <i class="grid-method" title="缩略图模式"></i>
+                    <i class="list-method" title="列表模式"></i>
+                </div>
+            </div>
+            <div class="current-type">
+                <div class="current-typename">
+                    <span data-type="">所有类型</span>
+                    <i class="arrow-down arrow-black"></i>
+                </div>
+                <ul class="type-list">
+                    <li data-type="">所有类型</li>
+                    <li data-type="2"><i class="PPT-icon filetype-icon"></i><span>PPT</span></li>
+                    <li data-type="3"><i class="word-icon filetype-icon"></i><span>word</span></li>
+                    <li data-type="4"><i class="video-icon filetype-icon"></i><span>视频</span></li>
+                    <li data-type="5"><i class="audio-icon filetype-icon"></i><span>声音</span></li>
+                    <li data-type="6"><i class="image-icon filetype-icon"></i><span>图片</span></li>
+                    <li data-type="1"><i class="others-icon filetype-icon"></i><span>其他</span></li>
+                </ul>
+                <em class="total-file">共123文件</em>
+            </div>
+            <div class="empty">
+                <p class="empty-msg">云盘没有任何文件</p>
+
+                <p class="empty-who">您可以去看看大家的分享，或者从电脑上传</p>
+
+                <p class="empty-ctls"><a href="javascript:;" class="upload-file"><i class="icon-add"></i>从电脑上传</a></p>
+            </div>
+            <div class="list-view">
+                <ul class="list-view-header">
+                    <li class="li-checkbox">&nbsp;</li>
+                    <li class="li-filename">文件名称</li>
+                    <li class="li-uploadtime">上传时间</li>
+                    <li class="li-filesize">文件大小</li>
+                </ul>
+                <ul class="act-detail">
+                    <li class="rename"><i class="pan-icons rename-icon"></i><span>重命名</span></li>
+                    <li class="moveto"><i class="pan-icons moveto-icon"></i><span>移动到</span></li>
+                    <li class="cancelsave"><i class="pan-icons cancelsave-icon"></i><span>取消收藏</span></li>
+                    <li class="deletefile"><i class="pan-icons delete-icon"></i><span>删除</span></li>
+                </ul>
+                <div class="file-wrap">
+                </div>
+            </div>
+            <div class="grid-view">
+                <ul class="act-detail">
+                    <li class="rename"><i class="pan-icons rename-icon"></i><span>重命名</span></li>
+                    <li class="moveto"><i class="pan-icons moveto-icon"></i><span>移动到</span></li>
+                    <li class="shareto"><i class="pan-icons shareN-icon"></i><span>分享</span></li>
+                    <li class="cancelsave"><i class="pan-icons cancelsave-icon"></i><span>取消收藏</span></li>
+                    <li class="totop"><i class="pan-icons topN-icon"></i><span>置顶</span></li>
+                    <li class="canceltop"><i class="pan-icons topN-icon"></i><span>取消置顶</span></li>
+                    <li class="li-download"><i class="pan-icons download-icon pan-icons"></i><span>下载</span></li>
+                    <li class="deletefile"><i class="pan-icons delete-icon"></i><span>删除</span></li>
+                </ul>
+                <ul class="file-wrap">
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+</div>

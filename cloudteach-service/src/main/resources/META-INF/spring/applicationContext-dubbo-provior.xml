@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	   http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	   http://code.alibabatech.com/schema/dubbo
+	   http://code.alibabatech.com/schema/dubbo/dubbo.xsd
+	   http://www.springframework.org/schema/context
+	   http://www.springframework.org/schema/context/spring-context-3.2.xsd
+	   http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+
+
+    <context:property-placeholder location="classpath:application.properties" ignore-unresolvable="true"/>
+    <!--服务名称,用于计算依赖 -->
+    <dubbo:application name="cloudteach-service-provider" owner="cloudteach" organization="xuele"/>
+
+    <!--将服务注册到zookeeper -->
+    <!--<dubbo:registry address="${dubbo.zookeeper.address}" />-->
+    <dubbo:registry  address="${dubbo.zookeeper.address}" timeout="30000"/>
+
+    <dubbo:provider timeout="60000" retries="0" />
+
+    <dubbo:monitor protocol="registry"/>
+
+    <!--采用dubbo协议+kryo序列化实现服务发布 -->
+    <dubbo:protocol name="dubbo" port="20882" threads="500"/>
+
+    <dubbo:consumer timeout="30000" check="false"/>
+
+    <!-- 扫描目录发布dubbo服务 -->
+    <dubbo:annotation package="net.xuele.cloudteach.service.impl"/>
+
+    <bean name="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"></property>
+    </bean>
+
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+
+            <tx:method name="updateSubmitStudentNum" propagation="REQUIRED" isolation="READ_COMMITTED" read-only="false"/>
+            <tx:method name="updateCorrectStudentNum" propagation="REQUIRED" isolation="READ_COMMITTED" read-only="false"/>
+            <tx:method name="addWorkStatistics" propagation="REQUIRED" isolation="READ_COMMITTED" read-only="false"/>
+            <tx:method name="updateWorkStatistics" propagation="REQUIRED" isolation="READ_COMMITTED" read-only="false"/>
+
+            <tx:method name="create*" propagation="REQUIRED" read-only="false"/>
+            <tx:method name="save*" propagation="REQUIRED" read-only="false"/>
+            <tx:method name="update*" propagation="REQUIRED" read-only="false"/>
+            <tx:method name="edit*" propagation="REQUIRED" read-only="false"/>
+            <tx:method name="share*" propagation="REQUIRED" read-only="false"/>
+            <tx:method name="collect*" propagation="REQUIRED" read-only="false"/>
+            <tx:method name="cancel*" propagation="REQUIRED" read-only="false"/>
+            <tx:method name="un*" propagation="REQUIRED" read-only="false"/>
+            <tx:method name="del*" propagation="REQUIRED" read-only="false"/>
+            <tx:method name="*Correct" propagation="REQUIRED" read-only="false"/>
+
+            <!--课件打包操作-->
+            <tx:method name="pack" propagation="REQUIRED" read-only="false"/>
+
+            <tx:method name="query*" propagation="SUPPORTS"/>
+            <tx:method name="get*" propagation="SUPPORTS"/>
+            <tx:method name="submit*" propagation="REQUIRED" read-only="false"/>
+            <tx:method name="addMagicWork" propagation="REQUIRED" read-only="false"/>
+            <tx:method name="finishWork" propagation="REQUIRED" read-only="false"/>
+            <tx:method name="praise" propagation="REQUIRED" read-only="false"/>
+            <tx:method name="comment" propagation="REQUIRED" read-only="false"/>
+            <tx:method name="score" propagation="REQUIRED" read-only="false"/>
+            <tx:method name="add*" propagation="REQUIRED" read-only="false"/>
+            <tx:method name="handIn*" propagation="REQUIRED" read-only="false"/>
+            <tx:method name="*" propagation="SUPPORTS" read-only="true"/>
+        </tx:attributes>
+    </tx:advice>
+
+    <aop:config>
+        <aop:pointcut id="pc" expression="execution(public * net.xuele.cloudteach.service.*.*(..))"/>
+        <!--把事务控制在Service层-->
+        <aop:advisor pointcut-ref="pc" advice-ref="txAdvice"/>
+    </aop:config>
+
+
+</beans>

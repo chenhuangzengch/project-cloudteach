@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtBankItemShareMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtBankItemShare" >
+    <id column="share_id" property="shareId" jdbcType="VARCHAR" />
+    <result column="creator" property="creator" jdbcType="VARCHAR" />
+    <result column="creator_name" property="creatorName" jdbcType="VARCHAR" />
+    <result column="item_id" property="itemId" jdbcType="VARCHAR" />
+    <result column="unit_id" property="unitId" jdbcType="VARCHAR" />
+    <result column="school_id" property="schoolId" jdbcType="VARCHAR" />
+    <result column="school_name" property="schoolName" jdbcType="VARCHAR" />
+    <result column="area_id" property="areaId" jdbcType="VARCHAR" />
+    <result column="area_name" property="areaName" jdbcType="VARCHAR" />
+    <result column="share_type" property="shareType" jdbcType="INTEGER" />
+    <result column="item_type" property="itemType" jdbcType="INTEGER" />
+    <result column="sub_image" property="subImage" jdbcType="INTEGER" />
+    <result column="sub_tape" property="subTape" jdbcType="INTEGER" />
+    <result column="sub_video" property="subVideo" jdbcType="INTEGER" />
+    <result column="sub_other" property="subOther" jdbcType="INTEGER" />
+    <result column="context" property="context" jdbcType="VARCHAR" />
+    <result column="stick_status" property="stickStatus" jdbcType="INTEGER" />
+    <result column="share_time" property="shareTime" jdbcType="TIMESTAMP" />
+    <result column="opinion" property="opinion" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="voiceContext" property="voiceContext" jdbcType="VARCHAR" />
+  </resultMap>
+  <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtBankItemShare" >
+    insert into ct_bank_item_share (share_id, creator, creator_name, 
+      item_id, unit_id, school_id, 
+      school_name, area_id, area_name, 
+      share_type, item_type, sub_image, 
+      sub_tape, sub_video, sub_other, context, stick_status, share_time,
+      opinion, status,voiceContext)
+    values (#{shareId,jdbcType=VARCHAR}, #{creator,jdbcType=VARCHAR}, #{creatorName,jdbcType=VARCHAR}, 
+      #{itemId,jdbcType=VARCHAR}, #{unitId,jdbcType=VARCHAR}, #{schoolId,jdbcType=VARCHAR}, 
+      #{schoolName,jdbcType=VARCHAR}, #{areaId,jdbcType=VARCHAR}, #{areaName,jdbcType=VARCHAR}, 
+      #{shareType,jdbcType=INTEGER}, #{itemType,jdbcType=INTEGER}, #{subImage,jdbcType=INTEGER}, 
+      #{subTape,jdbcType=INTEGER}, #{subVideo,jdbcType=INTEGER}, #{subOther,jdbcType=INTEGER}, #{context,jdbcType=VARCHAR}, #{stickStatus,jdbcType=INTEGER},
+      #{shareTime,jdbcType=TIMESTAMP}, #{opinion,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER},#{voiceContext,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtBankItemShare" >
+    update ct_bank_item_share
+    set creator = #{creator,jdbcType=VARCHAR},
+      creator_name = #{creatorName,jdbcType=VARCHAR},
+      item_id = #{itemId,jdbcType=VARCHAR},
+      unit_id = #{unitId,jdbcType=VARCHAR},
+      school_name = #{schoolName,jdbcType=VARCHAR},
+      area_id = #{areaId,jdbcType=VARCHAR},
+      area_name = #{areaName,jdbcType=VARCHAR},
+      share_type = #{shareType,jdbcType=INTEGER},
+      item_type = #{itemType,jdbcType=INTEGER},
+      sub_image = #{subImage,jdbcType=INTEGER},
+      sub_tape = #{subTape,jdbcType=INTEGER},
+      sub_video = #{subVideo,jdbcType=INTEGER},
+      sub_other = #{subOther,jdbcType=INTEGER},
+      context = #{context,jdbcType=VARCHAR},
+      stick_status = #{stickStatus,jdbcType=INTEGER},
+      share_time = #{shareTime,jdbcType=TIMESTAMP},
+      opinion = #{opinion,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      voiceContext = #{voiceContext,jdbcType=INTEGER},
+    where share_id = #{shareId,jdbcType=VARCHAR}
+  </update>
+  <!--根据shareId查询分享的课件-->
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select share_id, creator, creator_name, item_id, unit_id, school_id, school_name, 
+    area_id, area_name, share_type, item_type, sub_image, sub_tape, sub_video, sub_other,
+    context, stick_status, share_time, opinion, status, voiceContext
+    from ct_bank_item_share
+    where share_id = #{shareId,jdbcType=VARCHAR}
+  </select>
+  <!--分页查询-->
+  <select id="selectByPage" resultType="net.xuele.cloudteach.view.BankItemShareView" >
+    select a.share_id shareId, a.creator creator, a.creator_name creatorName,a.item_id itemId, a.unit_id unitId,a.school_id schoolId ,a.school_name schoolName, a.area_id areaId,
+    a.area_name areaName,a.share_type shareType, a.item_type itemType, a.sub_image subImage,a.sub_tape subTape, a.sub_video subVideo, a.sub_other subOther, a.context context, a.stick_status stickStatus,
+    a.share_time shareTime, a.opinion opinion, a.status status, a.voiceContext,IF(pra.share_id IS NULL,0,1) praiseState,IF(col.share_id IS NULL,0,1) collectState,
+    if(a.creator =#{record.creator,jdbcType=VARCHAR},1,0 ) isMyShare,b.collect_times collectTimes, b.praise_times praiseTimes
+    from ct_bank_item_share a
+    <!--查统计数-->
+    inner join ct_bank_item_share_statistics b on a.share_id = b.share_id and a.status = 2
+    <!--判断是否收藏-->
+    LEFT JOIN ct_bank_item_share_collect col
+    ON col.share_id=a.share_id and col.collect_status=1
+    AND col.user_id = #{record.creator,jdbcType=VARCHAR}
+    <!--判断是否点赞-->
+    LEFT JOIN ct_bank_item_share_praise pra
+    ON pra.share_id=a.share_id
+    AND pra.user_id=#{record.creator,jdbcType=VARCHAR} AND pra.praise_status=1
+    where a.unit_id = #{record.unitId,jdbcType=VARCHAR}
+    <!--题目类型-->
+    and a.item_type = #{record.itemType,jdbcType=INTEGER}
+    <!--分享范围-->
+    and (a.share_type = 0
+    OR (a.share_type = 1 and a.school_id = #{record.schoolId,jdbcType=VARCHAR})
+    OR (a.share_type = 2 and SUBSTRING(a.area_id,1,4) = SUBSTRING(#{record.areaId,jdbcType=VARCHAR},1,4))
+    OR (a.share_type = 3 and a.area_id = #{record.areaId,jdbcType=VARCHAR})
+    )
+    <!--大家的分享-->
+    <if test="seltype==1">
+      and a.creator != #{record.creator,jdbcType=VARCHAR}
+    </if>
+    <!--我的分享-->
+    <if test="seltype==2">
+      and a.creator = #{record.creator,jdbcType=VARCHAR}
+    </if>
+    order by a.stick_status desc,
+    a.share_Time desc
+    limit #{page.start},#{pageSize}
+  </select>
+  <!--查询总记录数-->
+  <select id="selectCount" resultType="int" >
+    select count(1)
+    from ct_bank_item_share a
+    where a.status = 2 and a.unit_id = #{record.unitId,jdbcType=VARCHAR}
+    <!--题目类型-->
+    and a.item_type = #{record.itemType,jdbcType=INTEGER}
+    <!--分享范围-->
+    and (a.share_type = 0
+    OR (a.share_type = 1 and a.school_id = #{record.schoolId,jdbcType=VARCHAR})
+    OR (a.share_type = 2 and SUBSTRING(a.area_id,1,4) = SUBSTRING(#{record.areaId,jdbcType=VARCHAR},1,4))
+    OR (a.share_type = 3 and a.area_id = #{record.areaId,jdbcType=VARCHAR})
+    )
+    <!--大家的分享-->
+    <if test="seltype==1">
+      and a.creator != #{record.creator,jdbcType=VARCHAR}
+    </if>
+    <!--我的分享-->
+    <if test="seltype==2">
+      and a.creator = #{record.creator,jdbcType=VARCHAR}
+    </if>
+  </select>
+  <!--查询题目详情-->
+  <select id="showDetail" resultType="net.xuele.cloudteach.view.BankItemShareView" parameterType="java.lang.String">
+    select a.share_id shareId, a.creator creator, a.creator_name userName,a.item_id itemId, a.unit_id unitId,a.school_id schoolId schoolName, a.school_name, a.area_id areaId,
+    a.area_name,a.share_type shareType, a.item_type itemType, a.sub_image subImage,a.sub_tape subTape, a.sub_video subVideo, a.sub_other subOther,a.context context, a.stick_status stickStatus,
+    a.share_time shareTime, a.opinion opinion, a.status status, a.voiceContext
+    from ct_bank_item_share a
+    where a.share_id = #{shareId,jdbcType=VARCHAR}
+    and a.status = 2
+  </select>
+  <!--取消分享-->
+  <update id="unShareBankItem" parameterType="java.lang.String" >
+    update ct_bank_item_share
+    set status = 0
+    where share_id = #{shareId}
+  </update>
+  <!--分享审核成功-->
+  <update id="shareBankItemSuc" parameterType="java.lang.String" >
+    update ct_bank_item_share
+    set status = 2
+    where share_id = #{shareId}
+  </update>
+  <!--分享审核失败-->
+  <update id="shareBankItemFail" parameterType="java.lang.String" >
+    update ct_bank_item_share
+    set status = 3
+    where share_id = #{shareId}
+  </update>
+  <!--根据原题id查询分享的题目-->
+  <select id="selectSharedRecordByItemid" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select share_id, creator, creator_name, item_id, unit_id, school_id, school_name,
+    area_id, area_name, share_type, item_type, sub_image, sub_tape, sub_video, sub_other,
+    context, stick_status, share_time, opinion, status, voiceContext
+    from ct_bank_item_share
+    where item_id = #{itemId}
+    and (status = 2 or status = 1)
+  </select>
+</mapper>

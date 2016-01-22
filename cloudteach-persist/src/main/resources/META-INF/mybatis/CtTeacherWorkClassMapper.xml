@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtTeacherWorkClassMapper">
+    <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtTeacherWorkClass">
+        <id column="work_class_id" property="workClassId" jdbcType="VARCHAR"/>
+        <result column="work_id" property="workId" jdbcType="VARCHAR"/>
+        <result column="class_id" property="classId" jdbcType="VARCHAR"/>
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+    </resultMap>
+    <resultMap id="WorkClassViewResultMap" type="net.xuele.cloudteach.view.WorkClassView">
+        <id column="work_class_id" property="workClassId" jdbcType="VARCHAR"/>
+        <result column="work_id" property="workId" jdbcType="VARCHAR"/>
+        <result column="class_id" property="classId" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="years" property="years" jdbcType="INTEGER"/>
+        <result column="code_sharing" property="codeSharing" jdbcType="INTEGER"/>
+    </resultMap>
+    <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtTeacherWorkClass">
+    insert into ct_teacher_work_class (work_class_id, work_id, class_id, 
+      school_id, status)
+    values (#{workClassId,jdbcType=VARCHAR}, #{workId,jdbcType=VARCHAR}, #{classId,jdbcType=VARCHAR}, 
+      #{schoolId,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER})
+  </insert>
+    <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtTeacherWorkClass">
+    update ct_teacher_work_class
+    set work_id = #{workId,jdbcType=VARCHAR},
+      class_id = #{classId,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER}
+    where school_id = #{schoolId,jdbcType=VARCHAR} and work_class_id = #{workClassId,jdbcType=VARCHAR}
+  </update>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    select work_class_id, work_id, class_id, school_id, status
+    from ct_teacher_work_class
+    where school_id = #{schoolId,jdbcType=VARCHAR} and work_class_id = #{workClassId,jdbcType=VARCHAR}
+  </select>
+
+    <!--获取初始化信息-->
+    <select id="getInitInfo" resultMap="BaseResultMap">
+        select REPLACE(UUID(),'-','') work_class_id ,#{workId,jdbcType=VARCHAR} work_id,a.class_id,a.school_id,1 status
+        from m_class a
+        where a.school_id = #{schoolId,jdbcType=VARCHAR}
+        and a.class_id in
+        <foreach collection="classList" item="classes" index="index" open="(" close=")" separator=",">
+            #{classes}
+        </foreach>
+    </select>
+
+    <!--布置作业初始化-->
+    <insert id="initCtTeacherWorkClass" parameterType="net.xuele.cloudteach.domain.CtTeacherWorkClass">
+        insert into ct_teacher_work_class (
+        work_class_id,work_id,class_id,school_id,status
+        ) values
+        <foreach collection="initInfoList" item="items" index="index" separator=",">
+            (#{items.workClassId},#{items.workId},#{items.classId},#{items.schoolId},#{items.status})
+        </foreach>
+    </insert>
+
+    <!--用于封装班级信息(班级ID，班级名称)-->
+    <select id="selectClassIdName" resultType="net.xuele.cloudteach.view.ClassIdNameView">
+    select a.class_id as classId,a.name as className
+    from m_class a
+    where a.class_id = #{classId,jdbcType=VARCHAR}
+    and a.school_id = #{schoolId,jdbcType=VARCHAR}
+  </select>
+
+    <!--教师删除作业-->
+    <update id="deleteTeacherWorkClass" parameterType="java.lang.String">
+    update ct_teacher_work_class
+    set status = 0
+    where school_id = #{schoolId,jdbcType=VARCHAR}
+    and work_id = #{workId,jdbcType=VARCHAR}
+  </update>
+    <!--教师作业发布班级-->
+    <select id="queryTeacherWorkClassList" resultMap="WorkClassViewResultMap">
+        select c.work_class_id,c.work_id, c.class_id, c.status,
+               mc.years,mc.code_sharing
+        from ct_teacher_work_class as c
+        inner join m_class as mc on c.class_id=mc.class_id
+        where c.school_id = #{schoolId,jdbcType=VARCHAR}
+              and c.status=1 and c.work_id = #{workId,jdbcType=VARCHAR}
+    </select>
+
+    <!--通过作业ID，获得作业班级信息-->
+    <select id="getTeacherWorkClassByWorkId" resultMap="BaseResultMap">
+     select work_class_id, work_id, class_id, school_id, status
+    from ct_teacher_work_class
+    where school_id = #{schoolId,jdbcType=VARCHAR}
+    and work_id = #{workId,jdbcType=VARCHAR}
+    and status = 1
+    </select>
+
+</mapper>

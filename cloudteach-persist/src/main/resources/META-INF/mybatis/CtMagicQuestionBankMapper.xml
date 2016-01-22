@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtMagicQuestionBankMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtMagicQuestionBank" >
+    <id column="bank_id" property="bankId" jdbcType="CHAR" />
+    <result column="extra_book_id " property="extraBookId" jdbcType="VARCHAR" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="unit" property="unit" jdbcType="VARCHAR" />
+    <result column="unit_id" property="unitId" jdbcType="VARCHAR" />
+    <result column="topic" property="topic" jdbcType="VARCHAR" />
+    <result column="classes" property="classes" jdbcType="VARCHAR" />
+    <result column="create_user" property="createUser" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from ct_magic_question_bank
+    where bank_id = #{bankId,jdbcType=CHAR}
+  </delete>
+  <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtMagicQuestionBank" >
+    insert into ct_magic_question_bank (bank_id, extra_book_id, title, unit,
+      unit_id, topic, classes, 
+      create_user, create_time, status
+      )
+    values (#{bankId,jdbcType=CHAR}, #{extraBookId,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{unit,jdbcType=VARCHAR},
+      #{unitId,jdbcType=VARCHAR}, #{topic,jdbcType=VARCHAR}, #{classes,jdbcType=VARCHAR}, 
+      #{createUser,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtMagicQuestionBank" >
+    update ct_magic_question_bank
+    set extra_book_id = #{extraBookId,jdbcType=VARCHAR},
+      title = #{title,jdbcType=VARCHAR},
+      unit = #{unit,jdbcType=VARCHAR},
+      unit_id = #{unitId,jdbcType=VARCHAR},
+      topic = #{topic,jdbcType=VARCHAR},
+      classes = #{classes,jdbcType=VARCHAR},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER}
+    where bank_id = #{bankId,jdbcType=CHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select bank_id, extra_book_id, title, unit, unit_id, topic, classes, create_user, create_time, status
+    from ct_magic_question_bank
+    where bank_id = #{bankId,jdbcType=CHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select bank_id, extra_book_id, title, unit, unit_id, topic, classes, create_user, create_time, status
+    from ct_magic_question_bank
+  </select>
+
+  <select id="queryMagicQuestionBankListByUnitId" resultMap="BaseResultMap">
+    select bank_id, extra_book_id, title, unit, unit_id, topic, classes, create_user, create_time, status
+    from ct_magic_question_bank
+    where status =1
+    and unit_id = #{unitId,jdbcType=CHAR}
+    and extra_book_id = #{extraBookId,jdbcType=VARCHAR}
+    ORDER BY classes
+  </select>
+</mapper>

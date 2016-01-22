@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtWorkStatisticsMapper">
+    <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtWorkStatistics">
+        <id column="work_id" property="workId" jdbcType="VARCHAR"/>
+        <result column="version" property="version" jdbcType="INTEGER"/>
+        <result column="work_view_student_num" property="workViewStudentNum" jdbcType="INTEGER"/>
+        <result column="work_sub_student_num" property="workSubStudentNum" jdbcType="INTEGER"/>
+        <result column="work_correct_student_num" property="workCorrectStudentNum" jdbcType="INTEGER"/>
+        <result column="last_warn_time" property="lastWarnTime" jdbcType="TIMESTAMP"/>
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="WorkStatisticsViewResultMap" type="net.xuele.cloudteach.view.WorkStatisticsView">
+        <id column="work_id" property="workId" jdbcType="VARCHAR"/>
+        <result column="work_sub_student_num" property="workSubStudentNum" jdbcType="INTEGER"/>
+        <result column="work_correct_student_num" property="workCorrectStudentNum" jdbcType="INTEGER"/>
+        <result column="work_student_num" property="workStudentNum" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtWorkStatistics">
+    insert into ct_work_statistics (work_id, version, work_view_student_num,work_sub_student_num, work_correct_student_num,school_id)
+    values (#{workId,jdbcType=VARCHAR}, #{version,jdbcType=INTEGER},#{workViewStudentNum,jdbcType=INTEGER},#{workSubStudentNum,jdbcType=INTEGER},
+          #{workCorrectStudentNum,jdbcType=INTEGER} ,#{schoolId,jdbcType=VARCHAR})
+  </insert>
+    <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtWorkStatistics">
+    update ct_work_statistics
+    set version = version+1,
+      work_view_student_num = #{workViewStudentNum,jdbcType=INTEGER},
+      work_sub_student_num = #{workSubStudentNum,jdbcType=INTEGER},
+      work_correct_student_num = #{workCorrectStudentNum,jdbcType=INTEGER},
+      last_warn_time = #{lastWarnTime,jdbcType=TIMESTAMP}
+    where school_id = #{schoolId,jdbcType=VARCHAR}
+          and work_id = #{workId,jdbcType=VARCHAR}
+          and version=#{version,jdbcType=INTEGER}
+  </update>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    select work_id, version, work_view_student_num,work_sub_student_num, work_correct_student_num,last_warn_time,school_id
+    from ct_work_statistics
+    where school_id = #{schoolId,jdbcType=VARCHAR} and work_id = #{workId,jdbcType=VARCHAR}
+  </select>
+
+    <select id="selectWorkStatistics" resultMap="WorkStatisticsViewResultMap">
+        select a.work_id,  a.work_sub_student_num, a.work_correct_student_num,b.work_student_num
+        from ct_work_statistics as a
+        INNER JOIN ct_work_gather as b on a.work_id = b.work_id
+        where a.school_id = #{schoolId,jdbcType=VARCHAR} and a.work_id = #{workId,jdbcType=VARCHAR}
+    </select>
+</mapper>

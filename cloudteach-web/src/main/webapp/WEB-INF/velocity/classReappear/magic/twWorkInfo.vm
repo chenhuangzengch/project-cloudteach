@@ -1,0 +1,60 @@
+#set($layout="layout/bodyLayout.vm")
+#set($page_title="预习作业题目")
+#define($script)
+<link rel="stylesheet" href="$!{asset_host}/css/cloudteach/homework-manage.css?version=${version}" />
+#end
+<input type="hidden" name="viewType" value="2">
+<div class="detail-head">
+    <a class="li-whos" href="initDetail?workId=$!{magicWorkDetailViewDTO.workId}&classId=$!{classId}&schoolId=$!{schoolId}&studentId=$!{studentId}">完成详情</a>
+    <a class="li-whos on" href="javascript:void(0)">作业题目</a>
+</div>
+<div class="title-wrap">
+    <div class="detail-title">
+        <div class="task-title">
+            <img src="$!{avatar_host}/images/48x48_$!{magicWorkDetailViewDTO.userIcon}.jpg" class="portrait"/>
+            <h3 class="detail-info">
+                <span class="tch-name">$!{magicWorkDetailViewDTO.userName}($!{magicWorkDetailViewDTO.positionName})</span><br/>
+                <span class="publish-time">$!{date.format('yyyy年MM月dd日 HH:mm:ss ',$!{magicWorkDetailViewDTO.publishTime})}</span>
+            </h3>
+            <p class="p-detail">$!{magicWorkDetailViewDTO.context.replaceAll("\r\n", "<br>").replaceAll("\r", "<br>").replaceAll("\n", "<br>").replaceAll(" ","&nbsp;")}
+            </p>
+        </div>
+        <ul class="homework-explain">
+            <li class="subject-name"> $!{magicWorkDetailViewDTO.subjectName}</li>
+            <li class="course-name"> $!{magicWorkDetailViewDTO.unitName}</li>
+            <li class="homework-num"> $!{itemNum} </li>
+            <li class="hand-method">作业上交方式:
+                #if ($!{magicWorkDetailViewDTO.subOther} == 1)不限制#end
+                #if ($!{magicWorkDetailViewDTO.subImage} == 1)照片#end
+                #if ($!{magicWorkDetailViewDTO.subTape} == 1 )录音#end
+                #if ($!{magicWorkDetailViewDTO.subVideo} == 1 )视频#end
+            <li class="last-time">最晚交作业时间： $!{date.format('yyyy年MM月dd日 HH:mm:ss ',$!{magicWorkDetailViewDTO.endTime})}</li>
+        </ul>
+        #if($workTapeFilesDTO.url)
+            <div class="video-wrap">
+                <div role="player" class="xlplayer" data-filekey="$!{workTapeFilesDTO.url}" data-ext="$!{workTapeFilesDTO.extension}"></div>
+            </div>
+        #end
+    </div>
+    <div class="upgrade-list">
+        <p class="title-num">作业题目：$!{itemNum}</p>
+        <h3 class="upgrade-publish">
+            $!{magicQuestionBankDTO.classes}<span class="publish-status">（已布置）</span>
+        </h3>
+        <ul class="ul-list">
+            #foreach($ques in $!{magicQuestionDTOList})
+                <li>
+                    <h4 class="task-head">
+                        #if( ${ques.queTypeCode} == 1 ) <strong>$!{velocityCount}.[选择题]</strong>
+                        #elseif(${ques.queTypeCode} == 2 ) <strong>$!{velocityCount}.[填空题]</strong>
+                        #elseif(${ques.queTypeCode} == 3 ) <strong>$!{velocityCount}.[判断题]</strong>
+                        #else <strong>$!{velocityCount}.[其他题目]</strong> #end
+                    </h4>
+                    <p class="task-content">$!{ques.content}</p>
+                </li>
+            #end
+        </ul>
+    </div>
+
+</div>
+

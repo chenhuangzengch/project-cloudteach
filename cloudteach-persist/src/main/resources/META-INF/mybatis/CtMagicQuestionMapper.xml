@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtMagicQuestionMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtMagicQuestion" >
+    <id column="que_id" property="queId" jdbcType="CHAR" />
+    <result column="bank_id" property="bankId" jdbcType="CHAR" />
+    <result column="que_type_code" property="queTypeCode" jdbcType="INTEGER" />
+    <result column="que_type" property="queType" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="answer" property="answer" jdbcType="VARCHAR" />
+    <result column="difficulty" property="difficulty" jdbcType="INTEGER" />
+    <result column="original_question_id" property="originalQuestionId" jdbcType="VARCHAR" />
+    <result column="order_num" property="orderNum" jdbcType="INTEGER" />
+    <result column="create_user" property="createUser" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from ct_magic_question
+    where que_id = #{queId,jdbcType=CHAR}
+  </delete>
+  <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtMagicQuestion" >
+    insert into ct_magic_question (que_id, bank_id, que_type_code, 
+      que_type, content, answer, 
+      difficulty, original_question_id, order_num, 
+      create_user, create_time, status
+      )
+    values (#{queId,jdbcType=CHAR}, #{bankId,jdbcType=CHAR}, #{queTypeCode,jdbcType=INTEGER}, 
+      #{queType,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{answer,jdbcType=VARCHAR}, 
+      #{difficulty,jdbcType=INTEGER}, #{originalQuestionId,jdbcType=VARCHAR}, #{orderNum,jdbcType=INTEGER},
+      #{createUser,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtMagicQuestion" >
+    update ct_magic_question
+    set bank_id = #{bankId,jdbcType=CHAR},
+      que_type_code = #{queTypeCode,jdbcType=INTEGER},
+      que_type = #{queType,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
+      answer = #{answer,jdbcType=VARCHAR},
+      difficulty = #{difficulty,jdbcType=INTEGER},
+      original_question_id = #{originalQuestionId,jdbcType=VARCHAR},
+      order_num = #{orderNum,jdbcType=INTEGER},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER}
+    where que_id = #{queId,jdbcType=CHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" >
+    select que_id, bank_id, que_type_code, que_type, content, answer, difficulty, original_question_id,
+    order_num, create_user, create_time, status
+    from ct_magic_question
+    where que_id = #{queId,jdbcType=CHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select que_id, bank_id, que_type_code, que_type, content, answer, difficulty, original_question_id, 
+    order_num, create_user, create_time, status
+    from ct_magic_question
+  </select>
+
+  <select id="queryMagicQuestionSlaveNumList" resultType="java.lang.Integer" parameterType="java.lang.String" >
+    select order_num
+    from ct_magic_question
+    <![CDATA[where status = 1 and order_num > 0 and bank_id = #{bankId,jdbcType=CHAR}]]>
+    group by order_num
+  </select>
+
+  <select id="queryMagicQuestionListByBankId" resultMap="BaseResultMap" >
+  select que_id, bank_id, que_type_code, que_type, content, answer, difficulty, original_question_id,
+  order_num, create_user, create_time, status
+  from ct_magic_question
+  where status = 1 and order_num = #{orderNum,jdbcType=INTEGER} and bank_id = #{bankId,jdbcType=CHAR}
+ </select>
+  <!--查询某一题库下的题目数-->
+  <select id="countByBankId" resultType="java.lang.Integer" >
+    select count(1)
+    from ct_magic_question
+    where status = 1 and bank_id = #{bankId,jdbcType=CHAR}
+    and order_num=#{orderNum,jdbcType=INTEGER}
+  </select>
+</mapper>

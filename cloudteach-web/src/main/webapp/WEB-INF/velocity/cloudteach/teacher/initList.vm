@@ -1,0 +1,54 @@
+#set($page_title="云教学首页")
+#set($currPage="cloudteach")
+#define($script)
+
+<link rel="stylesheet" type="text/css" href="$!{asset_host}/css/cloudteach/giveLessons/pan.css?version=${version}">
+<link rel="stylesheet" type="text/css" href="$!{asset_host}/css/common/common.css?version=${version}">
+<link rel="stylesheet" type="text/css" href="$!{asset_host}/css/cloudteach/index/index.css?version=${version}">
+
+#end
+
+<div class="container">
+    <div class="two-column">
+
+        <div class="left-nav">
+        ##LEFT 引入教材左侧页面片段
+                #parse("common/curriculumLeftBar.vm")
+        </div>
+
+        <div class="right-content">
+                <div class="right-nav borderBotton clearfix">
+                    <a class="fl right-nav-item J-write" href="javascript:void(0);"><i class="icon-write icon"></i>撰写教案</a>
+                    <a class="fl right-nav-item" href="$!{ctx}/guidance/item/index"><i class="icon-preview icon"></i>预习作业</a>
+                	<a class="fl right-nav-item" href="$!{ctx}/teachCoursewares/teaching"><i class="icon-addCourse icon"></i>添加课件</a>
+                	<a class="fl right-nav-item J-addBlackboard" href="javascript:void(0);"><i class="icon-addBlackboard icon"></i>添加板书</a>
+                    <a class="fl right-nav-item" href="$!{ctx}/teacher/initWorkPage"><i class="icon-makeHomework icon"></i>布置作业</a>
+                    <a class="fl right-nav-item J-rethink" href="javascript:void(0);"><i class="icon-rethink icon"></i>教学反思</a>
+                </div>
+            #if(${teachClassList} && ${teachClassList.size()}>0)
+                <div class="grades">
+                	<h3 data-value="$!{initclassInfo.classId}">
+                        <i class="icon-grades icon"></i>
+                        <span class="name">$!{initclassInfo.className}</span>
+                        <i class="icon-arrDown icon"></i>
+                    </h3>
+                	<div class="grades-select">
+                	    <div class="grades-select-wraper">
+                                <div class="every-grade">
+                                    <ul class="grade-list clearfix">
+										#foreach($classInfoDTO in $teachClassList)
+                                        	<li data-value="$!{classInfoDTO.classId}"><i class="icon-grades icon"></i><span class="name">$!{classInfoDTO.className}</span></li>
+										#end
+                                    </ul>
+                                </div>
+                	    </div>
+                	</div>
+                </div>
+            #end
+                <div class="student-wraper">
+                </div>
+        </div>
+    </div>
+</div>
+
+<script >seajs.use('$!{asset_host}/cjs/page/cloudteach/index');</script>

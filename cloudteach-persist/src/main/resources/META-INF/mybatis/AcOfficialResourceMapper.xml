@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.AcOfficialResourceMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.AcOfficialResource" >
+    <id column="resource_id" property="resourceId" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="unit_id" property="unitId" jdbcType="VARCHAR" />
+    <result column="file_pk" property="filePk" jdbcType="VARCHAR" />
+    <result column="file_uri" property="fileUri" jdbcType="VARCHAR" />
+    <result column="file_type" property="fileType" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="extention" property="extention" jdbcType="VARCHAR" />
+    <result column="ext_type" property="extType" jdbcType="INTEGER" />
+    <result column="ext_icon_type" property="extIconType" jdbcType="VARCHAR" />
+    <result column="size" property="size" jdbcType="INTEGER" />
+    <result column="add_time" property="addTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="boutique" property="boutique" jdbcType="INTEGER" />
+    <result column="share_time" property="shareTime" jdbcType="TIMESTAMP" />
+    <result column="share_type" property="shareType" jdbcType="INTEGER" />
+    <result column="area_id" property="areaId" jdbcType="VARCHAR" />
+    <result column="area_name" property="areaName" jdbcType="VARCHAR" />
+    <result column="organization_id" property="organizationId" jdbcType="VARCHAR" />
+    <result column="organization_name" property="organizationName" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from ac_official_resource
+    where resource_id = #{resourceId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="net.xuele.cloudteach.domain.AcOfficialResource" >
+    insert into ac_official_resource (resource_id, user_id, user_name, 
+      unit_id, file_pk, file_uri, 
+      file_type, name, description, 
+      extention, ext_type, ext_icon_type, 
+      size, add_time, update_time, 
+      boutique, share_time, share_type, 
+      area_id, area_name, organization_id, 
+      organization_name, status)
+    values (#{resourceId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, 
+      #{unitId,jdbcType=VARCHAR}, #{filePk,jdbcType=VARCHAR}, #{fileUri,jdbcType=VARCHAR}, 
+      #{fileType,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
+      #{extention,jdbcType=VARCHAR}, #{extType,jdbcType=INTEGER}, #{extIconType,jdbcType=VARCHAR}, 
+      #{size,jdbcType=INTEGER}, #{addTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{boutique,jdbcType=INTEGER}, #{shareTime,jdbcType=TIMESTAMP}, #{shareType,jdbcType=INTEGER}, 
+      #{areaId,jdbcType=VARCHAR}, #{areaName,jdbcType=VARCHAR}, #{organizationId,jdbcType=VARCHAR}, 
+      #{organizationName,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.AcOfficialResource" >
+    update ac_official_resource
+    set user_id = #{userId,jdbcType=VARCHAR},
+      user_name = #{userName,jdbcType=VARCHAR},
+      unit_id = #{unitId,jdbcType=VARCHAR},
+      file_pk = #{filePk,jdbcType=VARCHAR},
+      file_uri = #{fileUri,jdbcType=VARCHAR},
+      file_type = #{fileType,jdbcType=INTEGER},
+      name = #{name,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      extention = #{extention,jdbcType=VARCHAR},
+      ext_type = #{extType,jdbcType=INTEGER},
+      ext_icon_type = #{extIconType,jdbcType=VARCHAR},
+      size = #{size,jdbcType=INTEGER},
+      add_time = #{addTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      boutique = #{boutique,jdbcType=INTEGER},
+      share_time = #{shareTime,jdbcType=TIMESTAMP},
+      share_type = #{shareType,jdbcType=INTEGER},
+      area_id = #{areaId,jdbcType=VARCHAR},
+      area_name = #{areaName,jdbcType=VARCHAR},
+      organization_id = #{organizationId,jdbcType=VARCHAR},
+      organization_name = #{organizationName,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER}
+    where resource_id = #{resourceId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPage" resultMap="BaseResultMap" >
+    select resource_id, user_id, user_name, unit_id, file_pk, file_uri, file_type, name, 
+    description, extention, ext_type, ext_icon_type, size, add_time, update_time, boutique, 
+    share_time, share_type, area_id, area_name, organization_id, organization_name, status
+    from ac_official_resource a
+    where a.STATUS=2 AND a.unit_id = #{unitId,jdbcType=VARCHAR}<!--课程ID-->
+    and (SUBSTRING(a.area_id,1,2) = SUBSTRING(#{areaId,jdbcType=VARCHAR},1,2)
+      or SUBSTRING(a.area_id,1,4) = SUBSTRING(#{areaId,jdbcType=VARCHAR},1,4)
+      or a.area_id=#{areaId,jdbcType=VARCHAR})
+    <if test="fileType!=null">
+      and a.file_type = #{fileType}<!--类型(教案，学案，课件等)-->
+    </if>
+    <!--分类筛选-->
+    <if test="extType!=null">
+      and a.ext_type = #{extType,jdbcType=INTEGER}
+    </if>
+    order by a.boutique desc,a.share_time desc
+    limit #{page.start},#{pageSize}
+  </select>
+  <select id="selectCount" resultType="int" >
+    select count(1)
+    from ac_official_resource a
+    where a.STATUS=2 AND a.unit_id = #{unitId,jdbcType=VARCHAR}<!--课程ID-->
+    and (SUBSTRING(a.area_id,1,2) = SUBSTRING(#{areaId,jdbcType=VARCHAR},1,2)
+    or SUBSTRING(a.area_id,1,4) = SUBSTRING(#{areaId,jdbcType=VARCHAR},1,4)
+    or a.area_id=#{areaId,jdbcType=VARCHAR})
+    <if test="fileType!=null">
+      and a.file_type = #{fileType}<!--类型(教案，学案，课件等)-->
+    </if>
+    <!--分类筛选-->
+    <if test="extType!=null">
+      and a.ext_type = #{extType,jdbcType=INTEGER}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select resource_id, user_id, user_name, unit_id, file_pk, file_uri, file_type, name,
+    description, extention, ext_type, ext_icon_type, size, add_time, update_time, boutique,
+    share_time, share_type, area_id, area_name, organization_id, organization_name, status
+    from ac_official_resource
+    where resource_id = #{resourceId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select resource_id, user_id, user_name, unit_id, file_pk, file_uri, file_type, name, 
+    description, extention, ext_type, ext_icon_type, size, add_time, update_time, boutique, 
+    share_time, share_type, area_id, area_name, organization_id, organization_name, status
+    from ac_official_resource
+  </select>
+
+  <!--根据fileType分类计数-->
+  <select id="countByFileType" resultType="net.xuele.cloudteach.domain.CtCloudDiskShareCount">
+    select a.file_type fileType,COUNT(1) num
+    from ac_official_resource a
+    where a.STATUS=2 AND a.unit_id = #{unitId,jdbcType=VARCHAR}<!--课程ID-->
+    and (SUBSTRING(a.area_id,1,2) = SUBSTRING(#{areaId,jdbcType=VARCHAR},1,2)
+    or SUBSTRING(a.area_id,1,4) = SUBSTRING(#{areaId,jdbcType=VARCHAR},1,4)
+    or a.area_id=#{areaId,jdbcType=VARCHAR})
+    GROUP BY a.file_type
+  </select>
+</mapper>

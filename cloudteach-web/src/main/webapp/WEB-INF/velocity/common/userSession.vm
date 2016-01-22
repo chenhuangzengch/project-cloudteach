@@ -1,0 +1,42 @@
+<script>
+    var PAGEUSER = {
+        userId: "$!{user.userId}",
+        web: "$!{user.getWeb(${user.userId})}",
+        realName: "$!{user.realName}",
+        icon:"$!{user.icon}",
+        identityId:"$!{user.identityId}",
+        identityDescription:"$!{user.identityDescription}",
+        subjectName:"$!{user.subjectName}",
+        teacherClass:[
+            #foreach($cla in $user.teacherClass)
+                {
+                    classId: "$!{cla.classId}",
+                    className: "$!{cla.className}"
+                }#if($foreach.hasNext),#end
+            #end
+        ],
+        grade: "$!{user.studentClass.gradeNum}",
+        gradeName: "$!{user.studentClass.gradeName}",
+        className: "$!{user.studentClass.className}",
+        classId:"$!{user.classId}",
+        positionId: "$!{user.positionId}",
+        positionName: "$!{user.positionName}",
+        schoolId: "$!{user.schoolId}",
+        schoolName: "$!{user.schoolName}",
+        area: "$!{user.area}",
+        areaName: "$!{user.areaName}",
+        roles:[
+            #foreach($role in $user.roles)
+                {
+                    userId: "$!{role.userId}",
+                    icon: "$!{role.icon}",
+                    name: "$!{role.realName}",
+                    desc: "$!{role.orgName}"
+                }#if($foreach.hasNext),#end
+            #end
+        ],
+        servertime:"$!{user.getServerTime().getTime()}",
+        ctUnitId:"$!{ctUnitId}",
+        scUnitId:"$!{scUnitId}"
+    }
+</script>

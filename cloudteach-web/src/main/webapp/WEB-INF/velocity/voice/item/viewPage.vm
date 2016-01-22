@@ -1,0 +1,51 @@
+#set($layout="layout/bodyLayout.vm")
+#set($page_title="口语题详情")
+#define($script)
+<link rel="stylesheet" href="$!{asset_host}/css/cloudteach/homework.css?version=${version}" />
+
+#end
+
+<div class="publish-wrap">
+    <div class="publish-head">
+        <h2>
+            <em class="head-name">题目详情</em>
+            <a href = "$!{ctx}/voice/item/index" class="close">关闭</a>
+        </h2>
+    </div>
+    <div class="detail-content-wrap">
+        <div class="detail-content">
+            <img src="${normalSrc}${user.icon}.jpg" class="portrait"/>
+            <h3 class="detail-info">
+                <span class="tch-name">$!{user.realName} （$!{user.positionName}）</span><br/>
+                <span class="publish-time"> $!{date.format('yyyy年MM月dd日 HH:mm:ss ',$!{item.updateTime})}</span>
+            </h3>
+            </h3>
+            <div class="detail-audio">
+                <em class="audio-notice">请在手机上朗读：</em>
+                <p class="audio-content"> $!{item.voiceContext.replaceAll("\r\n", "<br>").replaceAll("\r", "<br>").replaceAll("\n", "<br>").replaceAll(" ","&nbsp;")}</p>
+##                <p class="audio-content"> "I have a dream that one day I can ......"</p>
+            </div>
+            <p class="p-detail">$!{item.context.replaceAll("\r\n", "<br>").replaceAll("\r", "<br>").replaceAll("\n", "<br>").replaceAll(" ","&nbsp;")}
+            </p>
+            #if(${item.diskReferList.size()}>0)
+                <div class="video-wrap">
+                    <div id="spoken-detail"></div>
+                </div>
+            #end
+
+            <div class="submit-type">
+                <span class="span-submit">作业提交方式:</span>
+                <em class="type-name">学生使用手机上传口语作业，系统自动打分</em>
+            </div>
+        </div>
+    ##
+    ##                #foreach(${disk} in $!{item.diskReferList})
+    ##                    <li>
+    ##                        <img src="$!{asset_host}/g/imgs/icons/$!{disk.extIconType}-m.png" />
+    ##                        <span>$!{disk.name}</span>
+    ##                    </li>
+    ##                #end
+
+
+    </div>
+</div>

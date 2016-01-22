@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtTeacherWorkStudentMapper">
+    <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtTeacherWorkStudent">
+        <id column="work_user_id" property="workUserId" jdbcType="VARCHAR"/>
+        <result column="work_id" property="workId" jdbcType="VARCHAR"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="class_id" property="classId" jdbcType="VARCHAR"/>
+        <result column="sub_status" property="subStatus" jdbcType="INTEGER"/>
+        <result column="correct_status" property="correctStatus" jdbcType="INTEGER"/>
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+    </resultMap>
+    <resultMap id="WorkUnSubStudentViewResultMap" type="net.xuele.cloudteach.view.WorkUnSubStudentView">
+        <result column="work_id" property="workId" jdbcType="VARCHAR"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="class_id" property="classId" jdbcType="VARCHAR"/>
+        <result column="real_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="icon" property="icon" jdbcType="VARCHAR"/>
+    </resultMap>
+    <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtTeacherWorkStudent">
+    insert into ct_teacher_work_student (work_user_id, work_id, user_id,
+      class_id, sub_status, correct_status,
+      school_id, status)
+    values (#{workUserId,jdbcType=VARCHAR}, #{workId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR},
+      #{classId,jdbcType=VARCHAR}, #{subStatus,jdbcType=INTEGER}, #{correctStatus,jdbcType=INTEGER},
+      #{schoolId,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER})
+  </insert>
+    <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtTeacherWorkStudent">
+    update ct_teacher_work_student
+    set work_id = #{workId,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=VARCHAR},
+      class_id = #{classId,jdbcType=VARCHAR},
+      sub_status = #{subStatus,jdbcType=INTEGER},
+      correct_status = #{correctStatus,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER}
+    where school_id = #{schoolId,jdbcType=VARCHAR} and work_user_id = #{workUserId,jdbcType=VARCHAR}
+  </update>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select work_user_id, work_id, user_id, class_id, sub_status, correct_status, school_id,
+    status
+    from ct_teacher_work_student
+    where school_id = #{schoolId,jdbcType=VARCHAR} and work_user_id = #{workUserId,jdbcType=VARCHAR}
+  </select>
+
+    <!--获取初始化信息-->
+    <select id="getInitInfo" resultMap="BaseResultMap">
+        select REPLACE(UUID(),'-','') work_user_id,#{workId,jdbcType=VARCHAR} work_id,a.user_id,
+        a.class_id,0 sub_status,0 correct_status,a.school_id,1 status
+        from m_student a,m_users b
+        where a.school_id = #{schoolId,jdbcType=VARCHAR}
+        and a.user_id = b.user_id
+        and b.status != 0
+        and a.class_id in
+        <foreach collection="classList" item="classes" index="index" open="(" close=")" separator=",">
+            #{classes}
+        </foreach>
+        limit 10000
+    </select>
+
+    <!--布置作业初始化-->
+    <insert id="initCtTeacherWorkStudent" parameterType="net.xuele.cloudteach.domain.CtTeacherWorkStudent">
+        insert into ct_teacher_work_student (work_user_id, work_id, user_id,class_id, sub_status,
+        correct_status,school_id, status) values
+        <foreach collection="initInfoList" item="items" index="index" separator=",">
+            (#{items.workUserId},#{items.workId},#{items.userId},#{items.classId},#{items.subStatus},
+            #{items.correctStatus},#{items.schoolId},#{items.status})
+        </foreach>
+    </insert>
+
+    <!--计算一个作业中包含了多少学生-->
+    <select id="studentCountByWorkId" resultType="int">
+        select count(1)
+        from ct_teacher_work_student a
+        where a.school_id = #{schoolId,jdbcType=VARCHAR}
+        and a.work_id = #{workId,jdbcType=VARCHAR}
+        and a.status = 1
+    </select>
+
+    <!--教师删除作业-->
+    <update id="deleteTeacherWorkStudent">
+        update ct_teacher_work_student
+        set status = 0
+        where school_id = #{schoolId,jdbcType=VARCHAR}
+        and work_id = #{workId,jdbcType=VARCHAR}
+    </update>
+
+    <!--教师删除单个学生作业-->
+    <update id="deleteStudentWork">
+        update ct_teacher_work_student
+        set status=0
+        where school_id = #{schoolId,jdbcType=VARCHAR} and status=1
+        and work_id = #{workId,jdbcType=VARCHAR}
+        and user_id = #{userId,jdbcType=VARCHAR}
+    </update>
+
+    <!--批改已提交未批改的学生作业-->
+    <update id="updateByTeacherCorrect">
+        update ct_teacher_work_student
+        set correct_status = 1
+        where school_id = #{schoolId,jdbcType=VARCHAR}
+        and status=1 and sub_status=1 and correct_status=0
+        and user_id=#{userId,jdbcType=VARCHAR} and work_id=#{workId,jdbcType=VARCHAR}
+    </update>
+    <!--查询未批改的学生作业-->
+    <select id="selectUnCorrectStudentList" resultMap="BaseResultMap">
+        select work_user_id, work_id, user_id, class_id, sub_status, correct_status, school_id, status
+        from ct_teacher_work_student
+        where school_id = #{schoolId,jdbcType=VARCHAR}
+        and status=1 and correct_status=0
+        and work_id=#{workId,jdbcType=VARCHAR}
+    </select>
+    <!--查询某个作业中未提交作业的学生信息-->
+    <select id="selectUnSubStudentList" resultMap="WorkUnSubStudentViewResultMap">
+        select s.work_id, s.user_id,s.class_id,u.real_name,u.icon
+        from ct_teacher_work_student as s
+        inner join m_users as u on s.user_id=u.user_id
+        where s.school_id=#{schoolId,jdbcType=VARCHAR}
+        and s.status=1 and s.sub_status=0
+        and s.work_id=#{workId,jdbcType=VARCHAR}
+        <if test="classId!=null">
+        and s.class_id=#{classId,jdbcType=VARCHAR}
+        </if>
+    </select>
+
+    <!--通过作业ID，获得作业学生信息-->
+    <select id="getTeacherWorkStudentByWorkId" resultMap="BaseResultMap">
+        select work_user_id, work_id, user_id, class_id, sub_status, correct_status, school_id,status
+        from ct_teacher_work_student
+        where school_id = #{schoolId,jdbcType=VARCHAR}
+        and work_id = #{workId,jdbcType=VARCHAR}
+        and status = 1
+    </select>
+
+    <!--通过作业ID，学生ID，获得该学生该作业的信息-->
+    <select id="getTeacherWorkStudentByStudentId" resultMap="BaseResultMap">
+        select work_user_id, work_id, user_id, class_id, sub_status, correct_status, school_id,status
+        from ct_teacher_work_student
+        where school_id = #{schoolId,jdbcType=VARCHAR}
+        and work_id = #{workId,jdbcType=VARCHAR}
+        and user_id = #{studentId,jdbcType=VARCHAR}
+        and status = 1
+    </select>
+
+    <select id="queryClassStuCount" resultType="int">
+        select count(1)
+        from ct_teacher_work_student as a
+        where a.school_id = #{schoolId,jdbcType=VARCHAR} and a.status=1
+        and a.work_id=#{workId,jdbcType=VARCHAR}
+        and a.class_id=#{classId,jdbcType=VARCHAR}
+    </select>
+</mapper>

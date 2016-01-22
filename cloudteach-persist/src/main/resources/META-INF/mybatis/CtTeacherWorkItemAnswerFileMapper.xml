@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtTeacherWorkItemAnswerFileMapper">
+    <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtTeacherWorkItemAnswerFile">
+        <id column="answer_file_id" property="answerFileId" jdbcType="VARCHAR"/>
+        <result column="answer_id" property="answerId" jdbcType="VARCHAR"/>
+        <result column="url" property="url" jdbcType="VARCHAR"/>
+        <result column="file_name" property="fileName" jdbcType="VARCHAR"/>
+        <result column="extension" property="extension" jdbcType="VARCHAR"/>
+        <result column="file_type" property="fileType" jdbcType="INTEGER"/>
+        <result column="size" property="size" jdbcType="INTEGER"/>
+        <result column="upload_time" property="uploadTime" jdbcType="TIMESTAMP"/>
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+    </resultMap>
+    <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtTeacherWorkItemAnswerFile">
+    insert into ct_teacher_work_item_answer_file (answer_file_id, answer_id, url, 
+      file_name, extension, file_type, 
+      size, upload_time, school_id, 
+      status)
+    values (#{answerFileId,jdbcType=VARCHAR}, #{answerId,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, 
+      #{fileName,jdbcType=VARCHAR}, #{extension,jdbcType=VARCHAR}, #{fileType,jdbcType=INTEGER}, 
+      #{size,jdbcType=INTEGER}, #{uploadTime,jdbcType=TIMESTAMP}, #{schoolId,jdbcType=VARCHAR}, 
+      #{status,jdbcType=INTEGER})
+  </insert>
+    <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtTeacherWorkItemAnswerFile">
+    update ct_teacher_work_item_answer_file
+    set answer_id = #{answerId,jdbcType=VARCHAR},
+      url = #{url,jdbcType=VARCHAR},
+      file_name = #{fileName,jdbcType=VARCHAR},
+      extension = #{extension,jdbcType=VARCHAR},
+      file_type = #{fileType,jdbcType=INTEGER},
+      size = #{size,jdbcType=INTEGER},
+      upload_time = #{uploadTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER}
+    where school_id = #{schoolId,jdbcType=VARCHAR} and answer_file_id = #{answerFileId,jdbcType=VARCHAR}
+  </update>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    select answer_file_id, answer_id, url, file_name, extension, file_type, size, upload_time, 
+    school_id, status
+    from ct_teacher_work_item_answer_file
+    where school_id = #{schoolId,jdbcType=VARCHAR} and answer_file_id = #{answerFileId,jdbcType=VARCHAR}
+  </select>
+
+    <!--教师删除作业-->
+    <update id="deleteTeacherWorkItemAnswerFile">
+        update ct_teacher_work_item_answer_file
+        set status = 0
+        where school_id = #{schoolId,jdbcType=VARCHAR}
+        and answer_id in
+        <foreach collection="answerList" item="answerIds" index="index" open="(" close=")" separator=",">
+            #{answerIds}
+        </foreach>
+    </update>
+
+    <!--教师删除单个学生作业附件-->
+    <update id="deleteStuWorkItemAnswerFile">
+    update ct_teacher_work_item_answer_file
+    set status = 0
+    where school_id = #{schoolId,jdbcType=VARCHAR}
+    and answer_id = #{answerId,jdbcType=VARCHAR} and status=1
+  </update>
+
+    <!--通过回答ID，得到附件列表信息-->
+    <select id="getAnswerFileInfoByAnswerId" resultMap="BaseResultMap">
+        select answer_file_id, answer_id, url, file_name, extension, file_type, size, upload_time,
+        school_id, status
+        from ct_teacher_work_item_answer_file
+        where school_id = #{schoolId,jdbcType=VARCHAR}
+        and answer_id = #{answerId,jdbcType=VARCHAR}
+        and status = 1
+    </select>
+
+</mapper>

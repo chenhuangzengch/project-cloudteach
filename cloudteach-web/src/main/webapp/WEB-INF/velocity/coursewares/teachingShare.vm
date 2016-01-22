@@ -1,0 +1,24 @@
+#set($page_title="大家的分享")
+#set($currPage="coursewares")
+#define($script)
+<link rel="stylesheet" href="$!{asset_host}/css/cloudteach/giveLessons/pan.css?version=${version}" />
+<link rel="stylesheet"  href="$!{asset_host}/css/common/common.css?version=${version}">
+<link rel="stylesheet"  href="$!{asset_host}/css/cloudteach/giveLessons/teachingShare.css?version=${version}">
+#end
+<div class="container">
+    <div class="whos-nav">
+        <a class="li-whos" href="$!{ctx}/teachCoursewares/teaching">我的课件</a>
+        <a class="li-whos on" href="$!{ctx}/teachCoursewares/teachingShare">大家的分享</a>
+        <a class="li-whos" href="$!{ctx}/class/feedback/index">随堂反馈</a>
+    </div>
+    <div class="two-column">
+        <div class="left-nav">
+        ##LEFT 引入教材左侧页面片段
+            #parse("common/curriculumLeftBar.vm")
+        </div>
+        <div class="right-content">
+        </div>
+    </div>
+</div>
+
+<script>seajs.use('$!{asset_host}/cjs/page/cloudteach/teachingShare');</script>

@@ -1,0 +1,15 @@
+##课程左边菜单模板页面片段,curriculemLeft.vm
+##########################################
+
+
+<div class="g-km-box">
+    <div class="g-km-box-inner">
+        <p class="g-km-nm">$!{bookName}</p>
+        <p class="g-km-ctls"><a href="/member/teacher/setBook">切换科目</a></p>
+    </div>
+</div>
+
+<div class="subject-info">
+    <div class="sorts-wrap">
+    </div>
+</div>

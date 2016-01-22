@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtTeachCoursewaresMapper">
+    <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtTeachCoursewares">
+        <id column="coursewares_id" property="coursewaresId" jdbcType="VARCHAR"/>
+        <result column="creator" property="creator" jdbcType="VARCHAR"/>
+        <result column="unit_id" property="unitId" jdbcType="VARCHAR"/>
+        <result column="is_collect" property="isCollect" jdbcType="INTEGER"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="pid" property="pid" jdbcType="VARCHAR"/>
+        <result column="title" property="title" jdbcType="VARCHAR"/>
+        <result column="stick_status" property="stickStatus" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="share_status" property="shareStatus" jdbcType="INTEGER"/>
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="pack_status" property="packStatus" jdbcType="INTEGER"/>
+        <result column="file_uri" property="fileUri" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtTeachCoursewares">
+        insert into ct_teach_coursewares (coursewares_id, creator, unit_id,
+        is_collect, user_id, pid,
+        title, stick_status, create_time,
+        update_time, share_status, school_id, status
+        )
+        values (#{coursewaresId,jdbcType=VARCHAR}, #{creator,jdbcType=VARCHAR}, #{unitId,jdbcType=VARCHAR},
+        #{isCollect,jdbcType=INTEGER}, #{userId,jdbcType=VARCHAR}, #{pid,jdbcType=VARCHAR},
+        #{title,jdbcType=VARCHAR}, #{stickStatus,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
+        #{updateTime,jdbcType=TIMESTAMP}, #{shareStatus,jdbcType=INTEGER}, #{schoolId,jdbcType=VARCHAR},
+        #{status,jdbcType=INTEGER}
+        )
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtTeachCoursewares">
+        update ct_teach_coursewares
+        set creator = #{creator,jdbcType=VARCHAR},
+        unit_id = #{unitId,jdbcType=VARCHAR},
+        is_collect = #{isCollect,jdbcType=INTEGER},
+        user_id = #{userId,jdbcType=VARCHAR},
+        pid = #{pid,jdbcType=VARCHAR},
+        title = #{title,jdbcType=VARCHAR},
+        stick_status = #{stickStatus,jdbcType=INTEGER},
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+        share_status = #{shareStatus,jdbcType=INTEGER},
+        status = #{status,jdbcType=INTEGER},
+        pack_status=#{packStatus,jdbcType=INTEGER},
+        file_uri=#{fileUri,jdbcType=VARCHAR}
+        where school_id = #{schoolId,jdbcType=VARCHAR} and
+        coursewares_id = #{coursewaresId,jdbcType=VARCHAR}
+    </update>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+        select coursewares_id, creator, unit_id, is_collect, user_id, pid, title, stick_status,
+        create_time, update_time, share_status,school_id,  status,pack_status,file_uri
+        from ct_teach_coursewares
+        where school_id = #{schoolId,jdbcType=VARCHAR}
+        and coursewares_id = #{coursewaresId,jdbcType=VARCHAR}
+    </select>
+
+    <!--查询我收藏的授课课件-->
+    <select id="selectMyCollect" resultMap="BaseResultMap">
+        select coursewares_id, creator, unit_id,
+        is_collect, user_id, pid,
+        title, stick_status, create_time,
+        update_time, share_status, school_id, status,pack_status,file_uri
+        from ct_teach_coursewares
+        where status=1
+        and pid = #{pid,jdbcType=VARCHAR}
+        and creator = #{creator,jdbcType=VARCHAR}
+        and school_id = #{schoolId,jdbcType=VARCHAR}
+        and is_collect = 1
+    </select>
+
+    <!--获取我的课件 根据课程ID 排序关键字：置顶、时间-->
+    <select id="selectByUnitId" resultMap="BaseResultMap">
+        SELECT
+        coursewares_id,
+        creator,
+        unit_id,
+        is_collect,
+        user_id,
+        pid,
+        title,
+        stick_status,
+        create_time,
+        update_time,
+        share_status,
+        status,
+        pack_status,
+        file_uri
+        FROM
+        ct_teach_coursewares ctc
+        WHERE ctc.school_id = #{schoolId,jdbcType=VARCHAR}
+        AND ctc.status = 1
+        AND ctc.unit_id = #{unitId}
+        AND ctc.creator = #{userId}
+        ORDER BY ctc.stick_status DESC,
+        ctc.create_time DESC
+    </select>
+
+    <!--取消分享：分享状态改为0-->
+    <update id="unShareCourseware">
+        UPDATE ct_teach_coursewares
+        SET
+        share_status = 0
+        WHERE school_id = #{schoolId,jdbcType=VARCHAR}
+        AND coursewares_id = #{coursewaresId,jdbcType=VARCHAR}
+        AND STATUS = 1
+    </update>
+
+    <!--分享：分享状态改为1-->
+    <update id="shareCourseware">
+        UPDATE ct_teach_coursewares
+        SET
+        share_status = 1
+        WHERE school_id = #{schoolId,jdbcType=VARCHAR}
+        AND coursewares_id = #{coursewaresId,jdbcType=VARCHAR}
+        AND STATUS = 1
+    </update>
+
+    <select id="selectByReappearId" resultMap="BaseResultMap">
+        SELECT tc.coursewares_id, creator, unit_id,
+        is_collect, user_id, pid,
+        rc.title, stick_status, create_time,
+        update_time
+        FROM ct_teach_coursewares tc
+        INNER JOIN ct_course_reappear_coursewares  rc
+        ON tc.coursewares_id = rc.coursewares_id
+        WHERE rc.school_id = #{schoolId,jdbcType=VARCHAR}
+        AND rc.status = 1
+        AND  rc.reappear_id = #{reappearId,jdbcType=VARCHAR}
+    </select>
+
+    <!--删除课件-->
+    <update id="removeTeachCourseware">
+        UPDATE
+            ct_teach_coursewares
+        SET
+            STATUS = 0
+        WHERE
+            school_id = #{schoolId}
+            AND coursewares_id = #{coursewaresId}
+    </update>
+
+    <!--取消收藏课件-->
+    <update id="cancelCollectTeachCourseware">
+        UPDATE
+            ct_teach_coursewares
+        SET
+            status = 0
+        WHERE
+            school_id = #{schoolId}
+            AND coursewares_id = #{coursewaresId}
+    </update>
+
+    <!--置顶课件-->
+    <update id="stickyTeachCourseware">
+        UPDATE
+            ct_teach_coursewares
+        SET
+            stick_status = 1
+        WHERE
+            school_id = #{schoolId}
+            AND coursewares_id = #{coursewaresId}
+    </update>
+
+    <!--取消置顶课件-->
+    <update id="cancelStickyTeachCourseware">
+        UPDATE
+            ct_teach_coursewares
+        SET
+            stick_status = 0
+        WHERE
+            school_id = #{schoolId}
+            AND coursewares_id = #{coursewaresId}
+    </update>
+
+    <!--查询用户在某个时间段内分享的课件总数-->
+    <select id="selectSharedCount" resultType="long">
+        SELECT
+        COUNT(1) num
+        FROM
+        ct_teach_coursewares
+        WHERE
+        school_id = #{schoolId}
+        AND user_id = #{userId}
+        AND share_status = 2
+        AND status = 1
+        AND create_time BETWEEN #{start} AND #{end}
+    </select>
+
+    <!--更新课件打包状态-->
+    <update id="updateCoursePackStatus">
+        UPDATE
+            ct_teach_coursewares
+        <set>
+            pack_status = #{packStatus},
+            <if test="fileUri !=null">
+                file_uri = #{fileUri}
+            </if>
+        </set>
+        WHERE
+            school_id = #{schoolId}
+            AND coursewares_id = #{coursewareId}
+    </update>
+
+</mapper>

@@ -1,0 +1,172 @@
+#set($layout="layout/bodyLayout.vm")
+#set($page_title="电子作业")
+#define($script)
+<link rel="stylesheet" href="$!{asset_host}/css/cloudteach/stu.css?version=${version}"/>
+<script src="$!{asset_host}/g/lib/gallery/swfobject.js?version=${version}"></script>
+<script src="$!{asset_host}/cjs/common/xlutil.js?version=${version}"></script>
+#end
+
+<div class="detail-head">
+    <a class="li-whos on" href="javascript:void(0)">写作业</a>
+    <a class="li-whos"
+       href="$!{ctx}/studentcloudwork/parent/exerciseWorkCommunication?workId=$!{workDetail.basicWorkInfo.workId}&studentId=$!{studentId}&workType=4">作业交流</a>
+</div>
+
+<div class="container">
+    <div class="write-wrap">
+        <div class="task-info">
+            <div class="detail-title">
+                <div class="task-title">
+                    <img src="$!{avatar_host}/images/48x48_$!{workDetail.basicWorkInfo.teacherHeadIcon}.jpg"
+                         class="portrait"/>
+
+                    <h3 class="detail-info">
+                        <span class="tch-name">$!{workDetail.basicWorkInfo.teacherName}</span><br/>
+                    </h3>
+                    <ul class="homework-explain">
+                        <li class="subject-name">$!{workDetail.basicWorkInfo.subjectName} </li>
+                        <li class="course-name"> $!{workDetail.basicWorkInfo.unitName} </li>
+                        <li class="homework-num">$!{workDetail.basicWorkInfo.workItemCount}题</li>
+                    </ul>
+                    <p class="p-detail">$!{workDetail.basicWorkInfo.context.replaceAll("\r\n", "<br>").replaceAll(
+                        "\r", "<br>").replaceAll("\n", "<br>").replaceAll(" ","&nbsp;")}
+                    </p>
+
+                    <div class="video-wrap" data-url="$!{workDetail.workTapeFilesDTO.url}">
+                        <div id="spoken-detail"></div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="attachment-wrap">
+                <h3>题目附件</h3>
+                <ul class="ul-attachment">
+                    #foreach($!{teacherWorkFileDetail} in $!{workDetail.teacherWorkFileDetailViewList})
+                        #if($teacherWorkFileDetail.extType == 6)
+                            <li><img class="xlpreview img-file-type"
+                                     data-ext="$!{teacherWorkFileDetail.extension}"
+                                     data-filekey="$!{teacherWorkFileDetail.url}"
+                                     src="$!{dl_host}/images/1/100x100_$!{teacherWorkFileDetail.url}.$!{teacherWorkFileDetail.extension}"
+                                     alt=""/>
+                            <span class="file-name">$!{teacherWorkFileDetail.name}
+                                .$!{teacherWorkFileDetail.extension}</span>
+                                <a class="a-download"
+                                   href="$!{dl_host}/files/dl/$!{teacherWorkFileDetail.url}.$!{teacherWorkFileDetail.extension}?fname=$!{teacherWorkFileDetail.name}">
+                                    <img src="$!{asset_host}/imgs/cloudteach/download.png" alt=""/>
+                                </a>
+                            </li>
+                        #else
+                            <li>
+                                <img src="$!{asset_host}/g/imgs/icons/$!{teacherWorkFileDetail.extIconType}-x.png "
+                                     class="xlpreview img-file-type"
+                                     data-ext="$!{teacherWorkFileDetail.extension}"
+                                     data-filekey="$!{teacherWorkFileDetail.url}"
+                                     alt=""/>
+                                <span class="file-name">$!{teacherWorkFileDetail.name}
+                                    .$!{teacherWorkFileDetail.extension}</span>
+                                <a class="a-download"
+                                   href="$!{dl_host}/files/dl/$!{teacherWorkFileDetail.url}.$!{teacherWorkFileDetail.extension}?fname=$!{teacherWorkFileDetail.name}">
+                                    <img src="$!{asset_host}/imgs/cloudteach/download.png" alt=""/>
+                                </a>
+                            </li>
+                        #end
+                    #end
+                </ul>
+            </div>
+        </div>
+        <div class="hand-info">
+            <div class="hand-method method-time">作业上交方式：
+                #if( $!{workDetail.basicWorkInfo.subOther} == 1 )  不限制#end
+                #if( $!{workDetail.basicWorkInfo.subImage} == 1 )  图片#end
+                #if( $!{workDetail.basicWorkInfo.subVideo} == 1 )  视频#end
+                #if( $!{workDetail.basicWorkInfo.subTape} == 1 )   录音#end
+            #*#if ( $!{workDetail.basicWorkInfo.subImage} == 0
+            &&$!{workDetail.basicWorkInfo.subVideo} == 0
+            &&$!{workDetail.basicWorkInfo.subTape} == 0
+            &&$!{workDetail.basicWorkInfo.subOther} == 0) 文字
+            #end*#
+            </div>
+            <div class="hand-time method-time">最晚交作业时间： $!{day}天之内</div>
+            #if($!{workDetail.teacherWorkItemAnswerDTO.subStatus}==1)
+                <div class="electronic-finish" style="display: block;">
+                    <p class="hand-content">$!{workDetail.teacherWorkItemAnswerDTO.context.replaceAll(
+                        "\r\n", "<br>").replaceAll("\r", "<br>").replaceAll("\n", "<br>").replaceAll(" ","&nbsp;")}</p>
+
+                    <div class="homework-attachment">
+                        <ul class="upload-icons">
+                            #foreach($teacherWorkItemAnswerFile in $!{workDetail.ctTeacherWorkItemAnswerFileList})
+                                #if($teacherWorkItemAnswerFile.fileType==1)
+                                    <li><img class="xlpreview img-file-type"
+                                             data-ext="$!{teacherWorkItemAnswerFile.extension}"
+                                             data-filekey="$!{teacherWorkItemAnswerFile.url}"
+                                             src="$!{dl_host}/images/1/100x100_$!{teacherWorkItemAnswerFile.url}.$!{teacherWorkItemAnswerFile.extension}"
+                                             alt=""/>
+                                        <a class="a-download"
+                                           href="$!{dl_host}/files/dl/$!{teacherWorkItemAnswerFile.url}.$!{teacherWorkItemAnswerFile.extension}?fname=$!{teacherWorkItemAnswerFile.fileName}">
+                                            <img class="dl-icon" src="$!{asset_host}/imgs/cloudteach/download.png"
+                                                 alt=""/>
+                                            <span class="dl-note">点击下载</span>
+                                        </a>
+                                    </li>
+                                #end
+                                #if($teacherWorkItemAnswerFile.fileType==2)
+                                    <li><img class="xlpreview img-file-type"
+                                             data-ext="$!{teacherWorkItemAnswerFile.extension}"
+                                             data-filekey="$!{teacherWorkItemAnswerFile.url}"
+                                             src="$!{asset_host}/g/imgs/audio-x.png"
+                                             alt=""/>
+                                        <a class="a-download"
+                                           href="$!{dl_host}/files/dl/$!{teacherWorkItemAnswerFile.url}.$!{teacherWorkItemAnswerFile.extension}?fname=$!{teacherWorkItemAnswerFile.fileName}">
+                                            <img class="dl-icon" src="$!{asset_host}/imgs/cloudteach/download.png"
+                                                 alt=""/>
+                                            <span class="dl-note">点击下载</span>
+                                        </a>
+                                    </li>
+                                #end
+                                #if($teacherWorkItemAnswerFile.fileType==3)
+                                    <li><img class="xlpreview img-file-type"
+                                             data-ext="$!{teacherWorkItemAnswerFile.extension}"
+                                             data-filekey="$!{teacherWorkItemAnswerFile.url}"
+                                             src="$!{asset_host}/g/imgs/video-x.png"
+                                             alt=""/>
+                                        <a class="a-download"
+                                           href="$!{dl_host}/files/dl/$!{teacherWorkItemAnswerFile.url}.$!{teacherWorkItemAnswerFile.extension}?fname=$!{teacherWorkItemAnswerFile.fileName}">
+                                            <img class="dl-icon" src="$!{asset_host}/imgs/cloudteach/download.png"
+                                                 alt=""/>
+                                            <span class="dl-note">点击下载</span>
+                                        </a>
+                                    </li>
+                                #end
+                            #end
+                        </ul>
+                    </div>
+                    <div class="finish-time">
+                        作业完成时间: $!{compliteTime} ##$!{workDetail.teacherWorkItemAnswerDTO.subTime}
+                    </div>
+                </div>
+            #end
+            #if($!{workDetail.teacherWorkItemAnswerDTO.subStatus}==0)
+                <div class="before-finish" style="display: block">
+                    <div class="child-finish-no">
+                        学生尚未完成此项作业
+                    </div>
+                </div>
+            #end
+        </div>
+    </div>
+</div>
+<div class="popup">
+    <div class="popup-info">
+        <h4 class="popup-head">
+            <span class="popup-name"></span>
+            <i class="close-icon"></i>
+        </h4>
+
+        <div class="popup-content">
+        </div>
+        <div class="popup-act">
+            <a href="javascript:void(0)" class="popup-cancel">取消</a>
+            <a href="javascript:void(0)" class="popup-confirm">确定</a>
+        </div>
+    </div>
+</div>

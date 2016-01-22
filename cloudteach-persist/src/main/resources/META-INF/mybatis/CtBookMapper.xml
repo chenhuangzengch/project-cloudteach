@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtBookMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtBook" >
+    <id column="book_id" property="bookId" jdbcType="VARCHAR" />
+    <result column="book_name" property="bookName" jdbcType="VARCHAR" />
+    <result column="subject_id" property="subjectId" jdbcType="VARCHAR" />
+    <result column="subject_name" property="subjectName" jdbcType="VARCHAR" />
+    <result column="grade" property="grade" jdbcType="INTEGER" />
+    <result column="semester" property="semester" jdbcType="INTEGER" />
+    <result column="semester_describe" property="semesterDescribe" jdbcType="VARCHAR" />
+    <result column="edition_id" property="editionId" jdbcType="VARCHAR" />
+    <result column="book_version" property="bookVersion" jdbcType="VARCHAR" />
+    <result column="standard" property="standard" jdbcType="INTEGER" />
+    <result column="edition_version" property="editionVersion" jdbcType="INTEGER" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from ct_book
+    where book_id = #{bookId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtBook" >
+    insert into ct_book (book_id, book_name, subject_id, 
+      subject_name, grade, semester, 
+      semester_describe, edition_id,
+      book_version,standard,edition_version)
+    values (#{bookId,jdbcType=VARCHAR}, #{bookName,jdbcType=VARCHAR}, #{subjectId,jdbcType=VARCHAR}, 
+      #{subjectName,jdbcType=VARCHAR}, #{grade,jdbcType=INTEGER}, #{semester,jdbcType=INTEGER}, 
+      #{semesterDescribe,jdbcType=VARCHAR}, #{editionId,jdbcType=VARCHAR},
+      #{bookVersion,jdbcType=VARCHAR}, #{standard,jdbcType=INTEGER},#{editionVersion,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtBook" >
+    update ct_book
+    set book_name = #{bookName,jdbcType=VARCHAR},
+      subject_id = #{subjectId,jdbcType=VARCHAR},
+      subject_name = #{subjectName,jdbcType=VARCHAR},
+      grade = #{grade,jdbcType=INTEGER},
+      semester = #{semester,jdbcType=INTEGER},
+      semester_describe = #{semesterDescribe,jdbcType=VARCHAR},
+      edition_id = #{editionId,jdbcType=VARCHAR},
+      book_version = #{bookVersion,jdbcType=VARCHAR},
+      standard = #{standard,jdbcType=INTEGER},
+      edition_version = #{editionVersion,jdbcType=INTEGER}
+    where book_id = #{bookId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select book_id, book_name, subject_id, subject_name, grade, semester, semester_describe,
+    edition_id,book_version,standard,edition_version
+    from ct_book
+    where book_id = #{bookId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select book_id, book_name, subject_id, subject_name, grade, semester, semester_describe, 
+    edition_id,book_version,standard,edition_version
+    from ct_book
+  </select>
+  <!--根据bookid查询课本及其对应教材信息-->
+  <select id="selectByBookId" resultType="net.xuele.cloudteach.view.EditionAndSubjectView" >
+    select b.book_id bookId, b.book_name bookName, b.subject_id subjectId, b.subject_name subjectName, b.grade grade, b.semester semester,
+    b.semester_describe semesterDescribe,b.edition_id editionId,edit.press_name pressName, edit.edition_name editionName
+    from ct_book b left join ct_editions edit on b.edition_id=edit.edition_id
+    where b.book_id = #{bookId,jdbcType=VARCHAR}
+  </select>
+</mapper>

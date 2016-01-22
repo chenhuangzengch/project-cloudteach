@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtSynclassWorkStudentStatisticsMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtSynclassWorkStudentStatistics" >
+    <id column="work_user_id" property="workUserId" jdbcType="VARCHAR" />
+    <result column="comment_times" property="commentTimes" jdbcType="INTEGER" />
+    <result column="praise_times" property="praiseTimes" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="school_id" property="schoolId" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtSynclassWorkStudentStatistics" >
+    insert into ct_synclass_work_student_statistics (work_user_id, comment_times, praise_times, 
+      status,school_id)
+    values (#{workUserId,jdbcType=VARCHAR}, #{commentTimes,jdbcType=INTEGER}, #{praiseTimes,jdbcType=INTEGER}, 
+      #{status,jdbcType=INTEGER},#{schoolId,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtSynclassWorkStudentStatistics" >
+    update ct_synclass_work_student_statistics
+    set comment_times = #{commentTimes,jdbcType=INTEGER},
+      praise_times = #{praiseTimes,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER}
+    where work_user_id = #{workUserId,jdbcType=VARCHAR} and school_id = #{schoolId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    select work_user_id, comment_times, praise_times, status ,school_id
+    from ct_synclass_work_student_statistics
+    where work_user_id = #{workUserId,jdbcType=VARCHAR} and school_id = #{schoolId,jdbcType=VARCHAR}
+  </select>
+
+  <insert id="initStudentStatistics" parameterType="java.util.List" >
+    insert into ct_synclass_work_student_statistics (work_user_id, comment_times, praise_times,
+    status,school_id)
+    values
+    <foreach collection="workUserIdList" item="workUserId" index="index" separator="," >
+    (#{workUserId,jdbcType=VARCHAR}, 0, 0, 1 , #{schoolId,jdbcType=VARCHAR})
+    </foreach>
+  </insert>
+
+  <update id="updateCommentTimes">
+    update ct_synclass_work_student_statistics
+    set comment_times = comment_times + #{time,jdbcType=INTEGER}
+    where work_user_id = #{workUserId,jdbcType=VARCHAR} and school_id = #{schoolId,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updatePraiseTimes" >
+    update ct_synclass_work_student_statistics
+    set
+    praise_times = praise_times + #{time,jdbcType=INTEGER}
+    where work_user_id = #{workUserId,jdbcType=VARCHAR} and school_id = #{schoolId,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateStatusByPrimaryKey"  >
+    update ct_synclass_work_student_statistics
+    set status = 0
+    where work_user_id = #{workUserId,jdbcType=VARCHAR} and school_id = #{schoolId,jdbcType=VARCHAR}
+  </update>
+
+</mapper>

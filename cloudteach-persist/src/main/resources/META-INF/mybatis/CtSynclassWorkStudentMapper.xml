@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtSynclassWorkStudentMapper">
+    <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtSynclassWorkStudent">
+        <id column="work_user_id" property="workUserId" jdbcType="VARCHAR"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="work_id" property="workId" jdbcType="VARCHAR"/>
+        <result column="class_id" property="classId" jdbcType="VARCHAR"/>
+        <result column="context" property="context" jdbcType="VARCHAR"/>
+        <result column="sub_status" property="subStatus" jdbcType="INTEGER"/>
+        <result column="correct_status" property="correctStatus" jdbcType="INTEGER"/>
+        <result column="sub_time" property="subTime" jdbcType="TIMESTAMP"/>
+        <result column="correct_time" property="correctTime" jdbcType="TIMESTAMP"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+    </resultMap>
+    <resultMap id="SynclassWorkAnswerViewResultMap" type="net.xuele.cloudteach.view.SynclassWorkAnswerView">
+        <id column="work_user_id" property="workUserId" jdbcType="VARCHAR"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="work_id" property="workId" jdbcType="VARCHAR"/>
+        <result column="class_id" property="classId" jdbcType="VARCHAR"/>
+        <result column="context" property="context" jdbcType="VARCHAR"/>
+        <result column="sub_status" property="subStatus" jdbcType="INTEGER"/>
+        <result column="sub_time" property="subTime" jdbcType="TIMESTAMP"/>
+        <result column="correct_status" property="correctStatus" jdbcType="INTEGER"/>
+        <result column="correct_time" property="correctTime" jdbcType="TIMESTAMP"/>
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="praise_times" property="praiseTimes" jdbcType="INTEGER"/>
+        <result column="real_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="icon" property="icon" jdbcType="VARCHAR"/>
+        <result column="class_name" property="className" jdbcType="VARCHAR"/>
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+        <result column="praise_status" property="praiseStatus" jdbcType="INTEGER"/>
+        <collection property="playViewList" javaType="ArrayList" column="work_user_id=work_user_id,school_id=school_id"
+                    ofType="net.xuele.cloudteach.view.SynclassWorkPlayView" select="selectSynclassWorkPlayViewList"/>
+        <!--<collection property="praiseViewList" javaType="ArrayList" column="work_user_id=work_user_id,school_id=school_id"
+                    ofType="net.xuele.cloudteach.view.WorkAnswerPraiseView" select="selectSynclassWorkPraiseViewList"/>-->
+        <collection property="commentViewList" javaType="ArrayList"
+                    column="work_user_id=work_user_id,school_id=school_id"
+                    ofType="net.xuele.cloudteach.view.WorkAnswerCommentView"
+                    select="selectSynclassWorkCommentViewList"/>
+    </resultMap>
+    <resultMap id="SynclassWorkPlayViewMap" type="net.xuele.cloudteach.view.SynclassWorkPlayView">
+        <id column="play_id" property="playId" jdbcType="VARCHAR"/>
+        <result column="work_id" property="workId" jdbcType="VARCHAR"/>
+        <result column="work_game_id" property="workGameId" jdbcType="VARCHAR"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="play_times" property="playTimes" jdbcType="INTEGER"/>
+        <result column="max_score" property="maxScore" jdbcType="INTEGER"/>
+        <result column="finish_status" property="finishStatus" jdbcType="INTEGER"/>
+        <result column="sub_time" property="subTime" jdbcType="TIMESTAMP"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="gameFileId" property="gameFileId" jdbcType="VARCHAR"/>
+        <result column="gameName" property="gameName" jdbcType="VARCHAR"/>
+        <result column="cReal" property="cReal" jdbcType="INTEGER"/>
+    </resultMap>
+    <resultMap id="WorkUnSubStudentViewResultMap" type="net.xuele.cloudteach.view.WorkUnSubStudentView">
+        <result column="work_id" property="workId" jdbcType="VARCHAR"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="class_id" property="classId" jdbcType="VARCHAR"/>
+        <result column="real_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="icon" property="icon" jdbcType="VARCHAR"/>
+    </resultMap>
+    <resultMap id="SynclassWorkAnswerPraiseViewMap" type="net.xuele.cloudteach.view.WorkAnswerPraiseView">
+        <id column="work_user_id" property="answerId" jdbcType="VARCHAR"/>
+        <id column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="user_type" property="userType" jdbcType="INTEGER"/>
+        <result column="praise_time" property="praiseTime" jdbcType="TIMESTAMP"/>
+        <result column="praise_status" property="praiseStatus" jdbcType="INTEGER"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="real_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="icon" property="icon" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="SynclassWorkAnswerCommentViewMap" type="net.xuele.cloudteach.view.WorkAnswerCommentView">
+        <id column="comment_id" property="commentId" jdbcType="VARCHAR"/>
+        <result column="work_user_id" property="answerId" jdbcType="VARCHAR"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="context" property="context" jdbcType="VARCHAR"/>
+        <result column="comment_time" property="commentTime" jdbcType="TIMESTAMP"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="real_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="icon" property="icon" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtSynclassWorkStudent">
+    insert into ct_synclass_work_student (work_user_id, user_id, work_id, class_id,
+      context, sub_status, correct_status,
+      correct_time, status,school_id)
+    values (#{workUserId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{workId,jdbcType=VARCHAR}, #{classId,jdbcType=VARCHAR},
+      #{context,jdbcType=VARCHAR}, #{subStatus,jdbcType=INTEGER}, #{correctStatus,jdbcType=INTEGER},
+      #{correctTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER},#{schoolId,jdbcType=VARCHAR})
+  </insert>
+    <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtSynclassWorkStudent">
+    update ct_synclass_work_student
+    set user_id = #{userId,jdbcType=VARCHAR},
+      work_id = #{workId,jdbcType=VARCHAR},
+      class_id = #{classId,jdbcType=VARCHAR},
+      context = #{context,jdbcType=VARCHAR},
+      sub_status = #{subStatus,jdbcType=INTEGER},
+      correct_status = #{correctStatus,jdbcType=INTEGER},
+      sub_time = #{subTime,jdbcType=TIMESTAMP},
+      correct_time = #{correctTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER}
+    where work_user_id = #{workUserId,jdbcType=VARCHAR} and school_id = #{schoolId,jdbcType=VARCHAR}
+  </update>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    select *
+    from ct_synclass_work_student
+    where work_user_id = #{workUserId,jdbcType=VARCHAR} and status = 1 and school_id = #{schoolId,jdbcType=VARCHAR}
+  </select>
+
+    <select id="selectSynclassWorkAnswerForUpdate" resultMap="BaseResultMap">
+        select *
+        from ct_synclass_work_student
+        where work_user_id = #{workUserId,jdbcType=VARCHAR} and status = 1 and school_id = #{schoolId,jdbcType=VARCHAR}
+        FOR UPDATE
+    </select>
+
+    <select id="selectSubedUnCorrectList" resultMap="BaseResultMap">
+    select work_user_id, user_id, work_id,class_id,school_id
+    from ct_synclass_work_student
+    where status=1 and sub_status=1 and correct_status=0
+    and work_id=#{workId,jdbcType=VARCHAR} and school_id = #{schoolId,jdbcType=VARCHAR}
+  </select>
+
+    <select id="selectStudentListByWorkId" resultMap="BaseResultMap">
+    select work_user_id, user_id, work_id,class_id ,school_id
+    from ct_synclass_work_student
+    where status=1 and work_id=#{workId,jdbcType=VARCHAR} and school_id = #{schoolId,jdbcType=VARCHAR}
+  </select>
+
+    <select id="selectUnCorrectStudentList" resultMap="BaseResultMap">
+    select work_user_id, user_id, work_id,class_id,school_id
+    from ct_synclass_work_student
+    where status=1 and correct_status=0 and work_id=#{workId,jdbcType=VARCHAR} and school_id = #{schoolId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectUnSubStudentList" resultMap="WorkUnSubStudentViewResultMap">
+    select s.work_id, s.user_id, s.class_id, u.real_name,u.icon, s.school_id
+    from ct_synclass_work_student as s
+    inner join m_users as u on s.user_id=u.user_id
+    where s.status=1 and s.sub_status=0
+    and s.work_id=#{workId,jdbcType=VARCHAR}
+    and s.school_id = #{schoolId,jdbcType=VARCHAR}
+    <if test="classId!=null">
+        and s.class_id=#{classId,jdbcType=VARCHAR}
+    </if>
+  </select>
+
+    <select id="queryClassStuCount" resultType="int">
+        select count(1)
+        from ct_synclass_work_student as a
+        where a.school_id = #{schoolId,jdbcType=VARCHAR} and a.status=1
+        and a.work_id=#{workId,jdbcType=VARCHAR}
+        and a.class_id=#{classId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="querySubedWorkAnswerList" resultMap="SynclassWorkAnswerViewResultMap">
+        select a.work_user_id, a.user_id, a.work_id,a.class_id, a.context,a.school_id,
+        a.sub_status,a.sub_time, a.correct_status,a.correct_time,a.status,IFNULL(p.praise_status,0) as praise_status,
+        s.praise_times,u.real_name,u.icon
+        from ct_synclass_work_student as a
+        inner join ct_synclass_work_student_statistics as s on s.work_user_id=a.work_user_id
+        inner join m_users as u on a.user_id=u.user_id
+        left join ct_synclass_work_answer_praise as p on p.status=1 and p.work_user_id=a.work_user_id
+        and p.user_id=#{teachUserId,jdbcType=VARCHAR}
+        where a.status=1 and a.sub_status=1 and a.school_id = #{schoolId,jdbcType=VARCHAR}
+        <if test="workId!=null">and a.work_id=#{workId,jdbcType=VARCHAR}</if>
+        <if test="classId!=null">and a.class_id=#{classId,jdbcType=VARCHAR}</if>
+        order by a.sub_time
+    </select>
+
+    <select id="selectSynclassWorkPlayViewList" resultMap="SynclassWorkPlayViewMap">
+    select a.play_id, a.work_id, a.work_user_id,a.work_game_id, a.user_id, a.play_times, a.max_score, a.finish_status,a.sub_time,a.status,
+    b.game_id as gameFileId
+    from ct_synclass_work_play as a
+    inner join ct_synclass_work_game as b on a.work_game_id=b.work_game_id
+    where a.status=1 and a.work_user_id = #{work_user_id,jdbcType=VARCHAR} and a.school_id = #{school_id,jdbcType=VARCHAR}
+  </select>
+
+    <select id="selectSynclassWorkPraiseViewList" resultMap="SynclassWorkAnswerPraiseViewMap">
+    select a.answer_id, a.user_id, a.user_type, a.praise_time, a.praise_status, a.status,
+    u.real_name,u.icon
+    from ct_exercise_work_answer_praise as a
+    inner join m_users as u on a.user_id=u.user_id
+    where a.status=1 and a.work_user_id = #{work_user_id,jdbcType=VARCHAR} and a.school_id = #{school_id,jdbcType=VARCHAR}
+  </select>
+
+    <select id="selectSynclassWorkCommentViewList" resultMap="SynclassWorkAnswerCommentViewMap">
+    select a.comment_id, a.work_user_id, a.user_id, a.context, a.comment_time, a.status,
+    u.real_name,u.icon
+    from ct_synclass_work_answer_comment as a
+    inner join m_users as u on a.user_id=u.user_id
+    where a.status=1 and a.work_user_id = #{work_user_id,jdbcType=VARCHAR} and a.school_id = #{school_id,jdbcType=VARCHAR}
+    order by a.comment_time desc
+    LIMIT 4
+  </select>
+
+    <update id="updateByWorkId">
+        update ct_synclass_work_student
+        set
+        status = 0
+        where work_id = #{workId,jdbcType=VARCHAR} and school_id = #{schoolId,jdbcType=VARCHAR}
+        <if test="userId != null">
+            and user_id = #{userId,jdbcType=VARCHAR}
+        </if>
+    </update>
+
+    <update id="updateSubStatusByWorkId">
+    update ct_synclass_work_student
+    set
+    sub_status = 1 ,
+    sub_time = NOW()
+    where work_id = #{workId,jdbcType=VARCHAR} and user_id = #{userId,jdbcType=VARCHAR} and school_id = #{schoolId,jdbcType=VARCHAR}
+  </update>
+
+    <!--获取初始化信息-->
+    <select id="getInitInfo" resultMap="BaseResultMap">
+        select REPLACE(UUID(),'-','') work_user_id,s.user_id,#{workId,jdbcType=VARCHAR} work_id,
+        s.class_id,0 sub_status,0 correct_status,1 status,s.school_id
+        from m_student s
+        inner join m_users  u on s.user_id = u.user_id and u.status != 0
+        where s.school_id = #{schoolId,jdbcType=VARCHAR}
+        and s.class_id in
+        <foreach collection="classList" item="classId" index="index" open="(" close=")" separator=",">
+            #{classId}
+        </foreach>
+        limit 10000
+    </select>
+
+    <insert id="batchInsert" parameterType="java.util.List">
+        insert into ct_synclass_work_student (work_user_id, user_id, work_id, class_id,
+        context, sub_status, correct_status,
+        correct_time, status,school_id)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.workUserId,jdbcType=VARCHAR}, #{item.userId,jdbcType=VARCHAR}, #{item.workId,jdbcType=VARCHAR},
+            #{item.classId,jdbcType=VARCHAR},
+            '', #{item.subStatus,jdbcType=INTEGER}, #{item.correctStatus,jdbcType=INTEGER},
+            #{item.correctTime,jdbcType=TIMESTAMP}, #{item.status,jdbcType=INTEGER},#{item.schoolId,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
+
+
+    <select id="selectPrimarykeyByWorkIdAndClass" resultType="java.lang.String">
+        select work_user_id
+        from ct_synclass_work_student
+        where status=1 and school_id = #{schoolId,jdbcType=VARCHAR} and work_id=#{workId,jdbcType=VARCHAR} AND class_id
+        in
+        <foreach collection="classList" item="classId" index="index" open="(" close=")" separator=",">
+            #{classId,jdbcType=VARCHAR}
+        </foreach>
+    </select>
+
+
+    <update id="batchUpdateStatusByClassId">
+        update ct_synclass_work_student
+        set
+        status = 0
+        where school_id = #{schoolId,jdbcType=VARCHAR} and class_id in
+        <foreach collection="classList" item="item" index="index" open="(" close=")" separator=",">
+            #{item.classId,jdbcType=VARCHAR}
+        </foreach>
+    </update>
+
+
+    <select id="getStudentNumByClassIdList" resultType="int">
+        select count(1)
+        from ct_synclass_work_student
+        where status=1 and school_id = #{schoolId,jdbcType=VARCHAR} and sub_status=1 and class_id in
+        <foreach collection="classList" item="item" index="index" open="(" close=")" separator=",">
+            #{item.classId,jdbcType=VARCHAR}
+        </foreach>
+    </select>
+
+    <select id="getCountByWorkId" resultType="int">
+    select count(1)
+    from ct_synclass_work_student
+    where status=1 and work_id = #{workId,jdbcType=VARCHAR} and school_id = #{schoolId,jdbcType=VARCHAR}
+  </select>
+
+    <!--通过作业ID，学生ID，得到该学生该作业的回答信息-->
+    <select id="getCtSynclassInfoByWorkStudent" resultMap="BaseResultMap">
+      select work_user_id, user_id, work_id, class_id,
+      context, sub_status, correct_status,sub_time,correct_time, school_id, status
+      from ct_synclass_work_student
+      where school_id = #{schoolId,jdbcType=VARCHAR}
+      and work_id = #{workId,jdbcType=VARCHAR}
+      and user_id = #{studentId,jdbcType=VARCHAR}
+      and status = 1
+  </select>
+
+    <!--获取该作业下，已经提交的学生数-->
+    <select id="getSubmitStuRecCount" resultType="java.lang.Long">
+        select count(1)
+        from ct_synclass_work_student a
+        where a.work_Id = #{workId,jdbcType=VARCHAR}
+        and a.school_id = #{schoolId,jdbcType=VARCHAR}
+        and a.sub_status = 1
+        and a.status = 1
+    </select>
+
+    <!--检索出学生回答的基本信息(不包含附件信息)，我的回答必须是第一个，班级信息通过其他途径得到-->
+    <select id="getBasicSynclassWorkStudentAnswerInfo"
+            resultType="net.xuele.cloudteach.view.StudentWorkCommunicationView">
+        select t.me,t.work_user_id answerId,t.user_id userId,t.icon studentHeadIcon ,t.real_name studentName,
+        null as classInfo,t.sub_time subTime ,t.context answerContext,null score,null as scoreContext
+        from(select a.*,b.icon,b.real_name,case a.user_id when #{studentId,jdbcType=VARCHAR} then 1 else 0 end me
+        from ct_synclass_work_student a,m_users b
+        where a.work_id = #{workId,jdbcType=VARCHAR}
+        and a.school_id = #{schoolId,jdbcType=VARCHAR}
+        and b.school_id = #{schoolId,jdbcType=VARCHAR}
+        and a.user_id = b.user_id) t
+        where t.sub_status = 1
+        and t.status = 1
+        <if test="firstReq==0">
+            and t.me != 1
+        </if>
+        and <![CDATA[t.sub_time<#{subTime,jdbcType=VARCHAR}]]>
+        order by t.me desc,t.sub_time desc
+        limit #{pageSize}
+    </select>
+
+    <select id="selectSubCount" resultType="int">
+        select ifnull((count(1)-sum(sub_status)),1) from ct_synclass_work_student
+        where status = 1 and work_id = #{workId,jdbcType=VARCHAR} and school_id = #{schoolId,jdbcType=VARCHAR}
+    </select>
+
+</mapper>

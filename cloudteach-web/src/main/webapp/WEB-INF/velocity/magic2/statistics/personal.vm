@@ -1,0 +1,69 @@
+#set($layout="layout/bodyLayout.vm")
+#set($page_title="提分宝数据-geren")
+#define($script)
+<link rel="stylesheet" href="$!{asset_host}/css/cloudteach/magic.css?version=${version}"/>
+<script src="$!{asset_host}/js/cloudteach/highchart.js?version=${version}"></script>
+#end
+<div class="magic-head header">
+    <a class="back-to" href="http://www.xueleyun.com/appcenter//applyStore/magicQuestionBankDetail?bookId=$!{unitsDTO.bookId}&studentId=$!studentWrapper.studentId"><&nbsp;&nbsp;返回</a>
+    <h1>$!{unitsDTO.unitName}</h1>
+</div>
+<div class="container">
+    <div class="magic-statistic">
+        <div class="personal-statistic" style="display: block">
+            <div class="change-class">
+				$!studentWrapper.studentName 的数据统计
+            </div>
+            <ul class="u-statistic">
+                <li class="l-statistic">
+                    <em class="e-name">总挑战次数</em>
+                    <em class="e-num">$!{stuTotal.totalTimes}</em>
+                </li>
+                <li class="l-statistic">
+                    <em class="e-name">总练习时长</em>
+                    <em class="e-num">$!{stuTotal.totalTime}</em>
+                </li>
+                <li class="l-statistic">
+                    <em class="e-name">挑战平均时长</em>
+                    <em class="e-num">$!{stuTotal.avgTime}</em>
+                </li>
+                <li class="l-statistic no-br">
+                    <em class="e-name">正确率</em>
+                    <em class="e-num">$!{stuTotal.rate}</em>
+                </li>
+            </ul>
+            #if($!{stuTotal.totalTimes}==0)
+                <div class="empty" style="display: block;">
+                    <p class="empty-msg">还没有挑战记录</p>
+                </div>
+            #else
+                <table class="t-statistic">
+                    <thead>
+                    <tr>
+                        <th class="t-first">编号</th>
+                        <th class="align-l">最高评价</th>
+                        <th>挑战次数</th>
+                        <th>练习时长</th>
+                        <th>最佳挑战时长</th>
+                        <th>最佳挑战正确率</th>
+                        <th class="t-last">开始挑战时间</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        #foreach($dto in $!myStatisticsDTOList)
+                        <tr>
+                            <td class="t-first">$!{velocityCount}</td>
+                            <td class="align-l">$!{dto.scoreContext}</td>
+                            <td>$!{dto.times}</td>
+                            <td>$!{dto.pTime}</td>
+                            <td>$!{dto.cTime}</td>
+                            <td>$!{dto.rate}</td>
+                            <td class="t-last">$!date.format('yyyy-MM-dd HH:mm:ss ',$!dto.bTime)</td>
+                        </tr>
+                        #end
+                    </tbody>
+                </table>
+            #end
+        </div>
+    </div>
+</div>

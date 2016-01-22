@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtSynclassWorkPlayMapper">
+    <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtSynclassWorkPlay">
+        <id column="play_id" property="playId" jdbcType="VARCHAR"/>
+        <result column="work_id" property="workId" jdbcType="VARCHAR"/>
+        <result column="work_user_id" property="workUserId" jdbcType="VARCHAR"/>
+        <result column="work_game_id" property="workGameId" jdbcType="VARCHAR"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="play_times" property="playTimes" jdbcType="INTEGER"/>
+        <result column="max_score" property="maxScore" jdbcType="INTEGER"/>
+        <result column="finish_status" property="finishStatus" jdbcType="INTEGER"/>
+        <result column="sub_time" property="subTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="update_user_id" property="updateUserId" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+        <result column="spendtime" property="spendtime" jdbcType="INTEGER"/>
+        <result column="real_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="icon" property="icon" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="SynclassWorkPlayViewMap" type="net.xuele.cloudteach.view.SynclassWorkPlayView">
+        <id column="play_id" property="playId" jdbcType="VARCHAR"/>
+        <result column="work_id" property="workId" jdbcType="VARCHAR"/>
+        <result column="work_user_id" property="workUserId" jdbcType="VARCHAR"/>
+        <result column="work_game_id" property="workGameId" jdbcType="VARCHAR"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="play_times" property="playTimes" jdbcType="INTEGER"/>
+        <result column="max_score" property="maxScore" jdbcType="INTEGER"/>
+        <result column="finish_status" property="finishStatus" jdbcType="INTEGER"/>
+        <result column="sub_time" property="subTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="update_user_id" property="updateUserId" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+        <result column="real_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="icon" property="icon" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="NotFinishedGameIdList" type="java.lang.Integer">
+        <id column="game_id" property="gameId" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <resultMap id="LearningInfoPlay" type="net.xuele.cloudteach.view.LearningInfoStuSynclassWorkView">
+        <id column="work_game_id" property="workGameId" jdbcType="VARCHAR"/>
+        <result column="work_id" property="workId" jdbcType="VARCHAR"/>
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+        <result column="user_id" property="studentId" jdbcType="VARCHAR"/>
+        <result column="real_name" property="studentName" jdbcType="VARCHAR"/>
+        <result column="icon" property="studentIcon" jdbcType="VARCHAR"/>
+        <result column="max_score" property="score" jdbcType="INTEGER"/>
+        <result column="play_times" property="playFreq" jdbcType="INTEGER"/>
+        <result column="spendtime" property="playTime" jdbcType="INTEGER"/>
+        <result column="finish_status" property="subStatus" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <select id="getNotFinishedGames" resultMap="NotFinishedGameIdList">
+        select b.game_id
+        from ct_synclass_work_play a,ct_synclass_work_game b
+        where a.school_id = #{schoolId,jdbcType=VARCHAR}
+        and b.school_id = #{schoolId,jdbcType=VARCHAR}
+        and a.work_game_id = b.work_game_id
+        and a.user_id = #{studentId,jdbcType=VARCHAR}
+        and a.work_id = #{workId,jdbcType=VARCHAR}
+        and a.play_times = 0
+        and a.status = 1
+    </select>
+
+    <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtSynclassWorkPlay">
+    insert into ct_synclass_work_play (play_id, work_id,work_user_id, work_game_id,
+      user_id, play_times,
+      max_score, finish_status, sub_time,
+      update_time, update_user_id, status,school_id,spendtime
+      )
+    values (#{playId,jdbcType=VARCHAR}, #{workId,jdbcType=VARCHAR}, #{workUserId,jdbcType=VARCHAR}, #{workGameId,jdbcType=VARCHAR},
+      #{userId,jdbcType=VARCHAR}, #{playTimes,jdbcType=INTEGER},
+      #{maxScore,jdbcType=INTEGER}, #{finishStatus,jdbcType=INTEGER}, #{subTime,jdbcType=TIMESTAMP},
+      #{updateTime,jdbcType=TIMESTAMP}, #{updateUserId,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER},#{schoolId,jdbcType=VARCHAR},
+      #{spendtime,jdbcType=INTEGER}
+      )
+  </insert>
+    <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtSynclassWorkPlay">
+        update ct_synclass_work_play
+        <set>
+            <if test="workId != null">
+                work_id = #{workId,jdbcType=VARCHAR},
+            </if>
+            <if test="workUserId != null">
+                work_user_id = #{workUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="workGameId != null">
+                work_game_id = #{workGameId,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="playTimes != null">
+                play_times = #{playTimes,jdbcType=INTEGER},
+            </if>
+            <if test="maxScore != null">
+                max_score = #{maxScore,jdbcType=INTEGER},
+            </if>
+            <if test="finishStatus != null">
+                finish_status = #{finishStatus,jdbcType=INTEGER},
+            </if>
+            <if test="subTime != null">
+                sub_time = #{subTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUserId != null">
+                update_user_id = #{updateUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+        </set>
+        where play_id = #{playId,jdbcType=VARCHAR} and school_id = #{schoolId,jdbcType=VARCHAR} and status = 1
+    </update>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    select play_id, work_id,work_user_id, work_game_id, user_id, play_times, max_score, finish_status,
+    sub_time, update_time, update_user_id, status , school_id
+    from ct_synclass_work_play
+    where play_id = #{playId,jdbcType=VARCHAR} and school_id = #{schoolId,jdbcType=VARCHAR} and status = 1
+  </select>
+
+
+    <select id="selectByGameId" resultMap="BaseResultMap">
+        select play_id, work_id,work_user_id, work_game_id, user_id, play_times, max_score, finish_status,
+        sub_time, update_time, update_user_id, status , school_id
+        from ct_synclass_work_play
+        where work_game_id = #{WorkGameId,jdbcType=VARCHAR} and user_id=#{userId,jdbcType=VARCHAR}
+        and status = 1 and school_id = #{schoolId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectByWorkIdAndGameId" resultMap="BaseResultMap">
+        select a.play_id, a.work_id,a.work_user_id, a.work_game_id, a.user_id, a.play_times, a.max_score, a.finish_status,
+        a.sub_time, a.update_time, a.update_user_id, a.status , a.school_id
+        from ct_synclass_work_play a
+        INNER JOIN ct_synclass_work_game b on a.work_game_id = b.work_game_id and b.game_id = #{gameId,jdbcType=VARCHAR}
+        where a.work_id = #{workId,jdbcType=VARCHAR}
+        and a.school_id = #{schoolId,jdbcType=VARCHAR} and a.user_id=#{userId,jdbcType=VARCHAR}
+        and a.status = 1
+    </select>
+
+
+    <select id="selectCount" parameterType="net.xuele.cloudteach.domain.CtSynclassWorkPlay" resultType="int">
+    select ifnull((count(1)-sum(finish_status)),1) from ct_synclass_work_play
+    where status = 1 and work_id = #{workId,jdbcType=VARCHAR} and
+    user_id = #{userId,jdbcType=VARCHAR} and school_id = #{schoolId,jdbcType=VARCHAR}
+  </select>
+
+
+    <update id="updateByWorkId">
+    update ct_synclass_work_play
+    set
+    status = 0
+    where work_id = #{workId,jdbcType=VARCHAR} and school_id = #{schoolId,jdbcType=VARCHAR} and status = 1
+  </update>
+
+    <!--获取初始化信息-->
+    <select id="getInitInfoByWorkId" resultMap="BaseResultMap">
+        select REPLACE(UUID(),'-','') play_id, g.work_id work_id,s.work_user_id work_user_id,g.work_game_id work_game_id,
+        s.user_id user_id,0 play_times,0 max_score,0 finish_status,s.user_id update_user_id,1 status,s.school_id,0
+        from ct_synclass_work_game g inner   join   ct_synclass_work_student s
+        on g.work_id = s.work_id
+        where s.work_id = #{workId,jdbcType=VARCHAR}  and s.status = 1 and s.school_id = #{schoolId,jdbcType=VARCHAR}
+    </select>
+
+    <insert id="batchInsertPlay">
+        insert into ct_synclass_work_play (play_id, work_id,work_user_id, work_game_id,user_id,
+        play_times,max_score, finish_status,update_time, update_user_id, status,school_id,spendtime)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.playId,jdbcType=VARCHAR},
+            #{item.workId,jdbcType=VARCHAR},
+            #{item.workUserId,jdbcType=VARCHAR},
+            #{item.workGameId,jdbcType=VARCHAR},
+            #{item.userId,jdbcType=VARCHAR},
+            #{item.playTimes,jdbcType=INTEGER},
+            #{item.maxScore,jdbcType=INTEGER},
+            #{item.finishStatus,jdbcType=INTEGER},
+            #{item.updateTime,jdbcType=TIMESTAMP},
+            #{item.updateUserId,jdbcType=VARCHAR},
+            #{item.status,jdbcType=INTEGER},
+            #{item.schoolId,jdbcType=VARCHAR},
+            #{item.spendtime,jdbcType=INTEGER}
+            )
+        </foreach>
+    </insert>
+
+    <select id="getInitInfoByClassAndGame" resultMap="BaseResultMap">
+        select REPLACE(UUID(),'-','') play_id, g.work_id work_id,s.work_user_id work_user_id,g.work_game_id
+        work_game_id,
+        s.user_id user_id,0 play_times,0 max_score,0 finish_status,s.user_id update_user_id,1 status,s.school_id
+        school_id
+        from ct_synclass_work_game g inner join ct_synclass_work_student s
+        on g.work_id = s.work_id and s.work_id = #{workId,jdbcType=VARCHAR} and s.status = 1 and s.school_id =
+        #{schoolId,jdbcType=VARCHAR}
+        and s.class_id in
+        <foreach collection="classList" item="item" index="index" open="(" close=")" separator=",">
+            #{item.classId,jdbcType=VARCHAR}
+        </foreach>
+        AND g.work_game_id in
+        <foreach collection="gameList" item="item" index="index" open="(" close=")" separator=",">
+            #{item.workGameId,jdbcType=INTEGER}
+        </foreach>
+    </select>
+
+    <update id="batchUpdateByGame">
+        update ct_synclass_work_play
+        set
+        status = 0
+        where status =1 and school_id = #{schoolId,jdbcType=VARCHAR} and work_id = #{workId,jdbcType=VARCHAR} and
+        work_game_id IN
+        <foreach collection="gameList" item="item" index="index" open="(" separator="," close=")">
+            #{item.workGameId,jdbcType=VARCHAR}
+        </foreach>
+    </update>
+
+    <update id="batchUpdateByClass">
+        update ct_synclass_work_play
+        set
+        status = 0
+        where status =1 and school_id = #{schoolId,jdbcType=VARCHAR} and work_user_id IN
+        (SELECT work_user_id from ct_synclass_work_student where class_id in
+        <foreach collection="classList" item="item" index="index" open="(" separator="," close=")">
+            #{item.classId,jdbcType=VARCHAR}
+        </foreach>
+        )
+    </update>
+
+    <!--通过学生作业ID，得到游戏记录列表
+    <select id="getSynclassWorkPlayInfoList" resultMap="BaseResultMap">
+    select play_id, work_id,work_user_id, game_id, user_id, play_times, max_score, finish_status,
+    sub_time, update_time, update_user_id, status , school_id
+    from ct_synclass_work_play
+    where school_id = #{schoolId,jdbcType=VARCHAR}
+    and work_user_id = #{workUserId,jdbcType=VARCHAR}
+    and status = 1
+  </select>-->
+
+    <!--通过学生作业ID，得到游戏信息-->
+    <!--<select id="getSynclassWorkPlayInfoList" resultType="net.xuele.cloudteach.view.SynclassWorkGameInfoView">-->
+    <select id="getSynclassWorkPlayInfoList" resultMap="BaseResultMap">
+        <!--SELECT a.play_id playId,a.work_id workId,a.work_user_id workUserId,b.game_id gameId,a.user_id userId,NULL gameName,a.max_score maxScore-->
+        select play_id, work_id,work_user_id, work_game_id, user_id, play_times, max_score, finish_status,
+        sub_time, update_time, update_user_id, status , school_id
+        FROM ct_synclass_work_play a
+        WHERE a.school_id = #{schoolId,jdbcType=VARCHAR}
+        and a.work_user_id = #{workUserId,jdbcType=VARCHAR}
+        AND a.status = 1
+    </select>
+
+    <select id="getSynclassWorkGameInfo" resultType="net.xuele.cloudteach.view.SynclassWorkGamePlayInfoView">
+        select
+        a.play_id      playId,
+        b.game_id      gameId,
+        a.play_times   playTimes,
+        null           gameName,
+        a.max_score    maxScore
+        FROM ct_synclass_work_play a,ct_synclass_work_game b
+        WHERE a.school_id = #{schoolId,jdbcType=VARCHAR}
+        and b.school_id = #{schoolId,jdbcType=VARCHAR}
+        and a.work_game_id = b.work_game_id
+        and a.work_user_id = #{workUserId,jdbcType=VARCHAR}
+        AND a.status = 1
+    </select>
+
+    <select id="getSynclassWorkGameByWorkStu" resultType="net.xuele.cloudteach.view.SynclassWorkGamePlayInfoView">
+        select
+        a.play_id      playId,
+        b.game_id      gameId,
+        a.play_times   playTimes,
+        null           gameName,
+        a.max_score    maxScore
+        FROM ct_synclass_work_play a,ct_synclass_work_game b
+        WHERE a.school_id = #{schoolId,jdbcType=VARCHAR}
+        and b.school_id = #{schoolId,jdbcType=VARCHAR}
+        and a.work_game_id = b.work_game_id
+        and a.user_id = #{studentId,jdbcType=VARCHAR}
+        and a.work_id = #{workId,jdbcType=VARCHAR}
+        AND a.status = 1
+    </select>
+
+    <select id="getSynclassWorkGameId" resultType="net.xuele.cloudteach.view.SynclassWorkGameInfoView">
+        select
+        b.game_id gameId,
+        a.play_id playId,
+        a.play_times playTimes,
+        a.max_score maxScore,
+        null gameName,
+        null CReal
+        FROM ct_synclass_work_play a,ct_synclass_work_game b
+        WHERE a.school_id = #{schoolId,jdbcType=VARCHAR}
+        and b.school_id = #{schoolId,jdbcType=VARCHAR}
+        and a.work_game_id = b.work_game_id
+        and a.user_id = #{studentId,jdbcType=VARCHAR}
+        and a.work_id = #{workId,jdbcType=VARCHAR}
+        AND a.status = 1
+    </select>
+
+    <update id="updateAfterSubmit">
+        update ct_synclass_work_play
+        set finish_status = 1,sub_time = #{subTime,jdbcType=TIMESTAMP}
+        where work_user_id = #{workUserId,jdbcType=VARCHAR}
+        and school_id = #{schoolId,jdbcType=VARCHAR}
+        and status = 1
+    </update>
+
+    <update id="delete">
+        update ct_synclass_work_play
+        set
+        status = 0
+        where work_user_id = #{workUserId,jdbcType=VARCHAR} and school_id = #{schoolId,jdbcType=VARCHAR} and status = 1
+    </update>
+
+    <select id="queryClassGameSubedStuList" resultMap="SynclassWorkPlayViewMap">
+        select a.play_id, a.work_id,a.work_user_id, a.work_game_id, a.user_id, a.play_times, a.max_score, a.finish_status,
+             a.status , a.school_id,u.real_name,u.icon
+        from ct_synclass_work_play as a
+        inner join ct_synclass_work_student as s on s.work_user_id=a.work_user_id
+        inner join m_users as u on a.user_id=u.user_id
+        where a.school_id = #{schoolId,jdbcType=VARCHAR} and a.status=1 and a.finish_status=1
+        and a.work_id=#{workId,jdbcType=VARCHAR}
+        and s.class_id=#{classId,jdbcType=VARCHAR}
+        and a.work_game_id=#{workGameId,jdbcType=VARCHAR}
+        order by a.max_score desc
+    </select>
+
+    <select id="selectSynclassGame" resultType="net.xuele.cloudteach.view.LearningInfoSynclassGameView">
+        select distinct b.game_id gameId,a.work_game_id workGameId
+        from ct_synclass_work_play a,ct_synclass_work_game b,ct_synclass_work c
+        where a.work_game_id = b.work_game_id
+        and a.work_id = c.work_id
+        and a.status = 1
+        and b.status = 1
+        and c.status = 1
+        and c.user_id = #{teacherId,jdbcType=VARCHAR}
+        and c.work_id = #{workId,jdbcType=VARCHAR}
+        and a.school_id = #{schoolId,jdbcType=VARCHAR}
+        and b.school_id = #{schoolId,jdbcType=VARCHAR}
+        and c.school_id = #{schoolId,jdbcType=VARCHAR}
+        order by b.game_id
+        limit 10000
+    </select>
+
+    <select id="selectSynclassPlay" resultMap="LearningInfoPlay">
+        select a.work_game_id,a.work_id,a.school_id,a.user_id,c.real_name,c.icon,
+        a.max_score,a.play_times,a.finish_status,a.spendtime
+        from ct_synclass_work_play a,ct_synclass_work_student b,m_users c
+        where a.work_user_id = b.work_user_id
+        and a.user_id = c.user_id
+        and a.status = 1
+        and b.status = 1
+        and c.status != 0
+        and a.work_game_id = #{workGameId,jdbcType=VARCHAR}
+        and a.school_id = #{schoolId,jdbcType=VARCHAR}
+        and b.school_id = #{schoolId,jdbcType=VARCHAR}
+        and c.school_id = #{schoolId,jdbcType=VARCHAR}
+        order by a.max_score desc
+        limit 10000
+    </select>
+</mapper>

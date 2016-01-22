@@ -1,0 +1,20 @@
+#set($layout="layout/msgLayout.vm")
+#set($page_title="布置作业失败")
+#define($script)
+<link rel="stylesheet" href="$!{asset_host}/css/cloudteach/homework.css?version=${version}"/>
+#end
+
+<div class="success-fail">
+    <img src="$!{asset_host}/imgs/cloudteach/failed.png" alt="" class="status-icon"/>
+
+    <h2 class="status-result">发送失败</h2>
+
+
+    <p class="status-notes">$!{error},请重新发送</p>
+
+##<p class="status-notes">发送时遇到一个小问题，请重新发送</p>
+
+    <div class="actions">
+        <a href="$!{ctx}/workmanage/manager/extralist" class="confirm">确定</a>
+    </div>
+</div>

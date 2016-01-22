@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtBlackboardPublishFilesMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtBlackboardPublishFiles" >
+    <id column="file_id" property="fileId" jdbcType="VARCHAR" />
+    <result column="blackboard_id" property="blackboardId" jdbcType="VARCHAR" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="file_name" property="fileName" jdbcType="VARCHAR" />
+    <result column="extension" property="extension" jdbcType="VARCHAR" />
+    <result column="size" property="size" jdbcType="INTEGER" />
+    <result column="upload_time" property="uploadTime" jdbcType="TIMESTAMP" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="school_id" property="schoolId" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <resultMap id="FileInfoResultMap" type="net.xuele.cloudteach.view.FileInfoView" >
+    <id column="file_id" property="id" jdbcType="VARCHAR" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="extension" property="extension" jdbcType="VARCHAR" />
+    <result column="file_name" property="name" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from ct_blackboard_publish_files
+    where file_id = #{fileId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtBlackboardPublishFiles" >
+    insert into ct_blackboard_publish_files (file_id, blackboard_id, url, 
+      file_name, extension, size, 
+      upload_time, status,school_id)
+    values (#{fileId,jdbcType=VARCHAR}, #{blackboardId,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, 
+      #{fileName,jdbcType=VARCHAR}, #{extension,jdbcType=VARCHAR}, #{size,jdbcType=INTEGER}, 
+      now(), #{status,jdbcType=INTEGER} , #{schoolId,jdbcType=VARCHAR})
+  </insert>
+
+  <insert id="batchInsert" parameterType="java.util.List"  >
+    insert into ct_blackboard_publish_files (file_id, blackboard_id, url,
+    file_name, extension, size,
+    upload_time, status,school_id)
+    values
+    <foreach collection="list" item="item" index="index" separator="," >
+    (#{item.fileId,jdbcType=VARCHAR}, #{item.blackboardId,jdbcType=VARCHAR}, #{item.url,jdbcType=VARCHAR},
+    #{item.fileName,jdbcType=VARCHAR}, #{item.extension,jdbcType=VARCHAR}, #{item.size,jdbcType=INTEGER},
+    now(), #{item.status,jdbcType=INTEGER} , #{item.schoolId,jdbcType=VARCHAR})
+    </foreach>
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtBlackboardPublishFiles" >
+    update ct_blackboard_publish_files
+    set blackboard_id = #{blackboardId,jdbcType=VARCHAR},
+      url = #{url,jdbcType=VARCHAR},
+      file_name = #{fileName,jdbcType=VARCHAR},
+      extension = #{extension,jdbcType=VARCHAR},
+      size = #{size,jdbcType=INTEGER},
+      upload_time = #{uploadTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER}
+    where file_id = #{fileId,jdbcType=VARCHAR} and school_id = #{schoolId,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateStatusByBlackboardId" >
+    update ct_blackboard_publish_files
+    set
+    status = 0
+    where blackboard_id = #{blackboardId,jdbcType=VARCHAR} and school_id = #{schoolId,jdbcType=VARCHAR}
+  </update>
+
+  <update id="batchUpdateByUrl" >
+    update ct_blackboard_publish_files
+    set
+    blackboard_id = #{blackboardId,jdbcType=VARCHAR}
+    where school_id = #{schoolId,jdbcType=VARCHAR} and url in
+    <foreach collection="urlList" item="url" index="index" open="(" separator="," close=")">
+       #{url,jdbcType=VARCHAR}
+    </foreach>
+  </update>
+
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap"  >
+    select file_id, blackboard_id, url, file_name, extension, size, upload_time, status
+    from ct_blackboard_publish_files
+    where file_id = #{fileId,jdbcType=VARCHAR} and school_id = #{schoolId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select file_id, blackboard_id, url, file_name, extension, size, upload_time, status
+    from ct_blackboard_publish_files
+    where school_id = #{schoolId,jdbcType=VARCHAR} and status = 1
+  </select>
+
+  <select id="selectByUrl" resultMap="FileInfoResultMap" >
+    select file_id, url , extension , file_name
+    from ct_blackboard_publish_files
+    where school_id = #{schoolId,jdbcType=VARCHAR} and status = 1 and
+    url in
+    <foreach collection="fileKeyList" item="fileKey" index="index" open="(" separator="," close=")">
+        #{fileKey,jdbcType=VARCHAR}
+    </foreach>
+  </select>
+
+  <select id="selectByBlackboardId" resultMap="BaseResultMap"  >
+    select file_id, blackboard_id, url, file_name, extension, size, upload_time, status
+    from ct_blackboard_publish_files
+    where blackboard_id = #{blackboardId,jdbcType=VARCHAR} and school_id = #{schoolId,jdbcType=VARCHAR} and status = 1
+  </select>
+
+  <select id="selectBlackboardListByUnitId" resultMap="BaseResultMap"  >
+    select ct_blackboard_publish_files.*
+    from ct_blackboard_publish_files
+    inner join ct_blackboard_publish on ct_blackboard_publish.blackboard_id=ct_blackboard_publish_files.blackboard_id
+    where ct_blackboard_publish.unit_id=#{unitId,jdbcType=VARCHAR}
+      and ct_blackboard_publish_files.school_id = #{schoolId,jdbcType=VARCHAR}
+      and ct_blackboard_publish.user_id = #{userId,jdbcType=VARCHAR}
+      and ct_blackboard_publish_files.status = 1
+  </select>
+
+  <select id="selectAddLessionPlanBlackboardListByUnitId" resultMap="BaseResultMap"  >
+    select a.*
+    from ct_blackboard_publish_files a
+    inner join ct_blackboard_publish b
+    on a.blackboard_id=b.blackboard_id and b.unit_id =#{unitId,jdbcType=VARCHAR} and b.user_id = #{userId,jdbcType=VARCHAR}
+    and b.school_id = #{schoolId,jdbcType=VARCHAR} and b.add_lesson_plan = 1 and b.status = 1
+    where
+    a.school_id = #{schoolId,jdbcType=VARCHAR}
+    and a.status = 1
+  </select>
+</mapper>

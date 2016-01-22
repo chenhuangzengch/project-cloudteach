@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.QAnswerMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.QAnswer" >
+    <id column="a_id" property="aId" jdbcType="VARCHAR" />
+    <result column="q_id" property="qId" jdbcType="VARCHAR" />
+    <result column="sortid" property="sortid" jdbcType="INTEGER" />
+    <result column="iscorrect" property="iscorrect" jdbcType="INTEGER" />
+    <result column="a_content" property="aContent" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <resultMap id="QueAnswersMap" type="net.xuele.cloudteach.view.Magic2QueAnswerView" >
+    <id column="a_id" property="aId" jdbcType="VARCHAR" />
+    <result column="q_id" property="qId" jdbcType="VARCHAR" />
+    <result column="sortid" property="sortid" jdbcType="INTEGER" />
+    <result column="iscorrect" property="iscorrect" jdbcType="INTEGER" />
+    <result column="a_content" property="aContent" jdbcType="LONGVARCHAR" />
+    <collection property="qAnswers" javaType="ArrayList" column="parent_id=q_id,unit_id=unit_id"
+                ofType="net.xuele.cloudteach.domain.QAnswer"
+                select="selectByQId"/>
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from q_answer
+    where a_id = #{aId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="net.xuele.cloudteach.domain.QAnswer" >
+    insert into q_answer (a_id, q_id, sortid, 
+      iscorrect, a_content)
+    values (#{aId,jdbcType=VARCHAR}, #{qId,jdbcType=VARCHAR}, #{sortid,jdbcType=INTEGER}, 
+      #{iscorrect,jdbcType=INTEGER}, #{aContent,jdbcType=LONGVARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.QAnswer" >
+    update q_answer
+    set q_id = #{qId,jdbcType=VARCHAR},
+      sortid = #{sortid,jdbcType=INTEGER},
+      iscorrect = #{iscorrect,jdbcType=INTEGER},
+      a_content = #{aContent,jdbcType=LONGVARCHAR}
+    where a_id = #{aId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select a_id, q_id, sortid, iscorrect, a_content
+    from q_answer
+    where a_id = #{aId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select a_id, q_id, sortid, iscorrect, a_content
+    from q_answer
+  </select>
+<!--查询某一题的选项-->
+  <select id="selectByQId" resultMap="BaseResultMap" >
+    select a_id, q_id, sortid, iscorrect, a_content
+    from q_answer
+    where q_id = #{qId,jdbcType=VARCHAR}
+    order by sortid
+  </select>
+  <!--查询某一题的正确选项-->
+  <!--<select id="selectByQId" resultMap="BaseResultMap" >-->
+    <!--select a_id, q_id, sortid, iscorrect, a_content-->
+    <!--from q_answer-->
+    <!--where q_id = #{qId,jdbcType=VARCHAR}-->
+    <!--and iscorrect = 1-->
+    <!--order by sortid-->
+  <!--</select>-->
+</mapper>

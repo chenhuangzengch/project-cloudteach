@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context.xsd
+http://www.springframework.org/schema/mvc
+http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <!--mvc driven-->
+    <context:component-scan base-package="net.xuele.cloudteach.web"/>
+    <context:annotation-config/>
+
+    <mvc:annotation-driven>
+        <mvc:message-converters register-defaults="true">
+            <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+                <constructor-arg value="UTF-8"/>
+            </bean>
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+                <property name="supportedMediaTypes">
+                    <list>
+                        <value>*/*</value>
+                        <value>text/html</value>
+                        <value>application/json</value>
+                    </list>
+                </property>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+
+    <mvc:view-controller path="/" view-name="redirect:/home/index" />
+
+    <mvc:resources mapping="/tch/**" location="/tch/" />
+    <mvc:resources mapping="/crossdomain/**" location="/crossdomain/"/>
+    <mvc:resources mapping="/crossdomain.xml" location="/"/>
+
+    <!--velocityConfig-->
+    <bean id="velocityConfig" class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">
+        <property name="velocityProperties">
+            <props>
+                <prop key="input.encoding">UTF-8</prop>
+                <prop key="output.encoding">UTF-8</prop>
+                <prop key="contentType">text/html;charset=UTF-8</prop>
+            </props>
+        </property>
+        <property name="resourceLoaderPath" value="WEB-INF/velocity/"/>
+    </bean>
+
+    <bean id="velocitySecurityUtil" class="net.xuele.common.utils.VelocitySecurityUtil" />
+
+    <!--velocity view reslover-->
+    <bean id="viewReslover" class="org.springframework.web.servlet.view.velocity.VelocityLayoutViewResolver">
+        <property name="cache" value="false"/>
+        <property name="suffix" value=".vm"/>
+        <property name="contentType" value="text/html;charset=UTF-8"/>
+        <property name="exposeSessionAttributes" value="true"/>
+        <property name="layoutUrl" value="layout/defaultLayout.vm"/>
+        <property name="toolboxConfigLocation" value="/WEB-INF/toolbox.xml" />
+
+        <property name="attributesMap">
+            <map>
+                <entry key="sec">
+                    <ref bean="velocitySecurityUtil" />
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <!--web request interceptor-->
+    <mvc:interceptors>
+        <bean class="net.xuele.cloudteach.web.common.LayoutInterceptor"/>
+        <!--<mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <mvc:exclude-mapping path="/*/extfl/*"/>
+            <mvc:exclude-mapping path="/*/extpc/*"/>
+            <bean class="net.xuele.cloudteach.web.manager.IllegalCharacterInterceptor"/>
+        </mvc:interceptor>-->
+
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <bean class="net.xuele.member.web.manager.SessionInfoInterceptor"/>
+        </mvc:interceptor>
+
+        <bean class="net.xuele.member.web.manager.InitInterceptor"/>
+    </mvc:interceptors>
+
+    <!--异常处理-->
+    <bean class="net.xuele.member.web.manager.MemberExceptionHandler"></bean>
+
+    <!--Spring属性占位符-->
+    <bean id="placeholderConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="fileEncoding" value="UTF-8" />
+        <property name="location" value="classpath:application.properties" />
+    </bean>
+
+</beans>

@@ -1,0 +1,40 @@
+#set($layout="layout/bodyLayout.vm")
+#define($script)
+<script>seajs.use('$!{asset_host}/cjs/page/cloudteach/swf');</script>
+<link rel="stylesheet"  href="$!{asset_host}/css/cloudteach/giveLessons/pan.css?version=${version}">
+#end
+<div class="swfTop"></div>
+<div class="container">
+##    <div class="whos-nav">
+##        <a class="li-whos on" href="">我的课件</a>
+##        <a class="li-whos" href="teachingShare.html">大家的分享</a>
+##    </div>
+    <div class="two-column swfWraper">
+        <div id="J-createCourse"></div>
+        <div id="J-flash"></div>
+    </div>
+    <div class="video-wrapper">
+        <h2>视频教程</h2>
+        <div class="video-list clearfix">
+            <div class="video-item chinese-teaches fl">
+                <a href="javascript:;" class="xlpreview" data-ext="flv" data-filekey="6cd7a9fef435c0778c55c70f795c68c2" title="语文授课视频">语文授课视频</a>
+            </div>
+            <div class="video-item chinese-prepare fl">
+                <a href="javascript:;" class="xlpreview" data-ext="flv" data-filekey="6dbc5ec7761ee75bde5124d51ec1139f" title="语文备课视频">语文备课视频</a>
+            </div>
+            <div class="video-item english-teaches-real fl">
+                <a href="javascript:;" class="xlpreview" data-ext="flv" data-filekey="ebe277d09141311fd9903deb0ffb7855" title="英语授课视频真人版">英语授课视频真人版</a>
+            </div>
+            <div class="video-item english-teaches fl">
+                <a href="javascript:;" class="xlpreview" data-ext="flv" data-filekey="9f66afb562b47550fca4cc4ad4df67ce" title="英语授课视频">英语授课视频</a>
+            </div>
+            <div class="video-item mathe-teaches-real fl">
+                <a href="javascript:;" class="xlpreview" data-ext="flv" data-filekey="37bd31d22a941782577b3206a4e9d24e" title="数学授课视频真人版">数学授课视频真人版</a>
+            </div>
+            <div class="video-item mathe-teaches fl">
+                <a href="javascript:;" class="xlpreview" data-ext="flv" data-filekey="acb19ca79c3b98366959c05690fe8088" title="数学授课视频">数学授课视频</a>
+            </div>
+        </div>
+    </div>
+
+</div>

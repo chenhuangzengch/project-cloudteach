@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtTeacherWorkItemMapper">
+    <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtTeacherWorkItem">
+        <id column="work_item_id" property="workItemId" jdbcType="VARCHAR"/>
+        <result column="work_id" property="workId" jdbcType="VARCHAR"/>
+        <result column="item_id" property="itemId" jdbcType="VARCHAR"/>
+        <result column="unit_id" property="unitId" jdbcType="VARCHAR"/>
+        <result column="item_type" property="itemType" jdbcType="INTEGER"/>
+        <result column="sub_image" property="subImage" jdbcType="INTEGER"/>
+        <result column="sub_tape" property="subTape" jdbcType="INTEGER"/>
+        <result column="sub_video" property="subVideo" jdbcType="INTEGER"/>
+        <result column="sub_other" property="subOther" jdbcType="INTEGER"/>
+        <result column="context" property="context" jdbcType="VARCHAR"/>
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="voiceContext" property="voiceContext" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="TeacherWorkItemViewResultMap" type="net.xuele.cloudteach.view.TeacherWorkItemView">
+        <id column="work_item_id" property="workItemId" jdbcType="VARCHAR"/>
+        <result column="work_id" property="workId" jdbcType="VARCHAR"/>
+        <result column="item_id" property="itemId" jdbcType="VARCHAR"/>
+        <result column="unit_id" property="unitId" jdbcType="VARCHAR"/>
+        <result column="sub_image" property="subImage" jdbcType="INTEGER"/>
+        <result column="sub_tape" property="subTape" jdbcType="INTEGER"/>
+        <result column="sub_video" property="subVideo" jdbcType="INTEGER"/>
+        <result column="sub_other" property="subOther" jdbcType="INTEGER"/>
+        <result column="context" property="context" jdbcType="VARCHAR"/>
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="voiceContext" property="voiceContext" jdbcType="VARCHAR"/>
+        <collection property="itemFilesList" javaType="ArrayList" column="school_id=school_id,work_item_id=work_item_id"
+                    ofType="net.xuele.cloudteach.view.GuidanceItemFilesView" select="selectItemFileContainCloudDisk"/>
+    </resultMap>
+
+    <resultMap id="BankItemFilesViewResultMap" type="net.xuele.cloudteach.view.BankItemFilesView">
+        <id column="file_id" property="fileId" jdbcType="VARCHAR"/>
+        <result column="f_type" property="fType" jdbcType="INTEGER"/>
+        <result column="relation_id" property="relationId" jdbcType="VARCHAR"/>
+        <result column="disk_id" property="diskId" jdbcType="VARCHAR"/>
+        <result column="file_uri" property="fileUri" jdbcType="VARCHAR"/>
+        <result column="file_type" property="fileType" jdbcType="INTEGER"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="extension" property="extension" jdbcType="VARCHAR"/>
+        <result column="ext_type" property="extType" jdbcType="INTEGER"/>
+        <result column="ext_icon_type" property="extIconType" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtTeacherWorkItem">
+    insert into ct_teacher_work_item (work_item_id, work_id, item_id, 
+      unit_id, item_type, sub_image, 
+      sub_tape, sub_video, sub_other,context, school_id, status,voiceContext
+      )
+    values (#{workItemId,jdbcType=VARCHAR}, #{workId,jdbcType=VARCHAR}, #{itemId,jdbcType=VARCHAR}, 
+      #{unitId,jdbcType=VARCHAR}, #{itemType,jdbcType=INTEGER}, #{subImage,jdbcType=INTEGER}, 
+      #{subTape,jdbcType=INTEGER}, #{subVideo,jdbcType=INTEGER}, #{subOther,jdbcType=INTEGER}, #{context,jdbcType=VARCHAR}, #{schoolId,jdbcType=VARCHAR},
+      #{status,jdbcType=INTEGER}, #{voiceContext,jdbcType=INTEGER}
+      )
+  </insert>
+    <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtTeacherWorkItem">
+    update ct_teacher_work_item
+    set work_id = #{workId,jdbcType=VARCHAR},
+      item_id = #{itemId,jdbcType=VARCHAR},
+      unit_id = #{unitId,jdbcType=VARCHAR},
+      item_type = #{itemType,jdbcType=INTEGER},
+      sub_image = #{subImage,jdbcType=INTEGER},
+      sub_tape = #{subTape,jdbcType=INTEGER},
+      sub_video = #{subVideo,jdbcType=INTEGER},
+      sub_other = #{subOther,jdbcType=INTEGER},
+      context = #{context,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      voiceContext = #{voiceContext,jdbcType=INTEGER}
+    where school_id = #{schoolId,jdbcType=VARCHAR} and work_item_id = #{workItemId,jdbcType=VARCHAR}
+  </update>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    select work_item_id, work_id, item_id, unit_id, item_type, sub_image, sub_tape, sub_video, 
+    sub_other, context, school_id, status, voiceContext
+    from ct_teacher_work_item
+    where school_id = #{schoolId,jdbcType=VARCHAR} and work_item_id = #{workItemId,jdbcType=VARCHAR}
+  </select>
+
+    <!--通过workId得到itemId-->
+    <select id="getItemIdByWorkId" resultType="java.lang.String">
+        select a.item_id
+        from ct_teacher_work_item a
+        where a.school_id = #{schoolId,jdbcType=VARCHAR}
+        and a.work_id = #{workId,jdbcType=VARCHAR}
+        and a.status = 1
+    </select>
+
+    <!--获取初始化信息-->
+    <select id="getInitInfo" resultMap="BaseResultMap">
+        SELECT REPLACE(UUID(),'-','') work_item_id ,#{workId,jdbcType=VARCHAR} work_id,a.item_id,a.unit_id,a.item_type,
+        a.sub_image,a.sub_tape,a.sub_video,a.sub_other,
+        a.context,a.school_id,1 status,a.voiceContext
+        FROM ct_bank_item a
+        where a.item_id = #{itemId,jdbcType=VARCHAR}
+        and a.school_id = #{schoolId,jdbcType=VARCHAR}
+    </select>
+
+    <!--布置作业初始化-->
+    <insert id="initCtTeacherWorkItem" parameterType="net.xuele.cloudteach.domain.CtTeacherWorkItem">
+        INSERT INTO ct_teacher_work_item (
+        work_item_id, work_id,item_id,unit_id,item_type,
+        sub_image,sub_tape,sub_video,sub_other,
+        context,school_id,status,voiceContext)
+        values
+        <foreach collection="initInfoList" item="items" index="" separator=",">
+            (#{items.workItemId},#{items.workId},#{items.itemId},#{items.unitId},#{items.itemType},
+            #{items.subImage},#{items.subTape},#{items.subVideo},#{items.subOther},
+            #{items.context},#{items.schoolId},#{items.status},#{items.voiceContext})
+        </foreach>
+    </insert>
+
+    <!--教师删除作业-->
+    <update id="deleteTeacherWorkItem" parameterType="java.lang.String">
+       update ct_teacher_work_item
+       set status = 0
+       where school_id = #{schoolId,jdbcType=VARCHAR}
+       and work_id = #{workId,jdbcType=VARCHAR}
+    </update>
+
+    <select id="queryTeacherWorkItemList" resultMap="BaseResultMap">
+        select work_item_id, work_id, item_id, unit_id, item_type, sub_image, sub_tape, sub_video,
+              sub_other, context, school_id, status, voiceContext
+        from ct_teacher_work_item
+        where school_id = #{schoolId,jdbcType=VARCHAR} and work_id = #{workId,jdbcType=VARCHAR}
+              and status = 1
+    </select>
+
+    <select id="queryItemContainFilesList" resultMap="TeacherWorkItemViewResultMap">
+        select work_item_id, work_id, item_id, unit_id, sub_image, sub_tape, sub_video, sub_other,
+        context, school_id,status, voiceContext
+        from ct_teacher_work_item
+        where school_id = #{schoolId,jdbcType=VARCHAR} and work_id = #{workId,jdbcType=VARCHAR}
+    </select>
+    <select id="selectItemFileContainCloudDisk" resultMap="BankItemFilesViewResultMap">
+        select a.file_id, a.f_type, a.relation_id, a.disk_id,
+        d.file_uri,d.file_type,d.name,d.extension,d.ext_type,d.ext_icon_type
+        from ct_bank_item_files as a
+        INNER JOIN ct_cloud_disk as d on d.disk_id=a.disk_id
+        where a.school_id = #{school_id,jdbcType=VARCHAR} and a.relation_id = #{work_item_id,jdbcType=VARCHAR}
+    </select>
+
+    <!--通过作业ID得到作业题目信息-->
+    <select id="getTeacherWorkItemByWorkId" resultMap="BaseResultMap">
+        select work_item_id, work_id, item_id, unit_id, item_type, sub_image, sub_tape, sub_video,
+        sub_other, context, school_id, status, voiceContext
+        from ct_teacher_work_item
+        where school_id = #{schoolId,jdbcType=VARCHAR}
+        and work_id = #{workId,jdbcType=VARCHAR}
+        and status = 1
+    </select>
+
+</mapper>

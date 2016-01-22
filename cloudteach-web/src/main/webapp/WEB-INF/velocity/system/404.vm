@@ -1,0 +1,26 @@
+#set($layout="layout/systemLayout.vm")
+#set($page_title="404")
+#define($script)
+<style>
+    *{padding:0;margin:0;font-family: \5FAE\8F6F\96C5\9ED1}
+    html,body{background:#f3faff;height:100%;}
+    a{text-decoration:none;}
+    body{}
+    .wrapper{width:768px;margin:0 auto;text-align:center;background:url($!{asset_host}/g/imgs/sys.jpg) center top no-repeat;padding-top:230px;position:relative;z-index:1;}
+    .errnum{font-size:80px;color:#000;margin-bottom:20px;}
+    .errmsg{font-size:20px;}
+    .ctl{ font-size:16px; }
+    .ctl .back,.ctl .back:hover{display:block;width:120px;height:48px;border-bottom:2px solid #4899c8;background:#6cbbe9;text-align:center;color:#fff;line-height:48px;margin:30px auto 20px;}
+    .ctl .index, .ctl .index:hover{ color: #555; }
+    .footer{background:url($!{asset_host}/g/imgs/sys-end.jpg) center bottom repeat-x;height:190px;position:fixed;bottom:0;width:100%;_position:static;}
+</style>
+#end
+
+	<div class="wrapper">
+		<p class="errnum">404</p>
+		<p class="errmsg">很抱歉，您访问的页面不存在...</p>
+		<p class="ctl">
+			<a class="back" href="javascript:history.go(-1);">返回上一页</a>
+			<a class="index" href="/">访问首页</a>
+		</p>
+	</div>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtClassFeedbackMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtClassFeedback" >
+    <id column="fb_id" property="fbId" jdbcType="VARCHAR" />
+    <result column="student_id" property="studentId" jdbcType="VARCHAR" />
+    <result column="student_name" property="studentName" jdbcType="VARCHAR" />
+    <result column="coursewares_id" property="coursewaresId" jdbcType="VARCHAR" />
+    <result column="unit_id" property="unitId" jdbcType="VARCHAR" />
+    <result column="class_id" property="classId" jdbcType="VARCHAR" />
+    <result column="class_name" property="className" jdbcType="VARCHAR" />
+    <result column="filekey" property="filekey" jdbcType="VARCHAR" />
+    <result column="file_name" property="fileName" jdbcType="VARCHAR" />
+    <result column="extension" property="extension" jdbcType="VARCHAR" />
+    <result column="file_type" property="fileType" jdbcType="INTEGER" />
+    <result column="size" property="size" jdbcType="INTEGER" />
+    <result column="upload_time" property="uploadTime" jdbcType="TIMESTAMP" />
+    <result column="upload_user_id" property="uploadUserId" jdbcType="VARCHAR" />
+    <result column="school_id" property="schoolId" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from ct_class_feedback
+    where fb_id = #{fbId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtClassFeedback" >
+    insert into ct_class_feedback (fb_id, student_id, student_name, 
+      coursewares_id, unit_id, class_id, class_name,
+      filekey, file_name, extension, 
+      file_type, size, upload_time, 
+      upload_user_id, school_id, status
+      )
+    values (#{fbId,jdbcType=VARCHAR}, #{studentId,jdbcType=VARCHAR}, #{studentName,jdbcType=VARCHAR}, 
+      #{coursewaresId,jdbcType=VARCHAR}, #{unitId,jdbcType=VARCHAR}, #{classId,jdbcType=VARCHAR}, #{className,jdbcType=VARCHAR},
+      #{filekey,jdbcType=VARCHAR}, #{fileName,jdbcType=VARCHAR}, #{extension,jdbcType=VARCHAR}, 
+      #{fileType,jdbcType=INTEGER}, #{size,jdbcType=INTEGER}, #{uploadTime,jdbcType=TIMESTAMP}, 
+      #{uploadUserId,jdbcType=VARCHAR}, #{schoolId,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtClassFeedback" >
+    update ct_class_feedback
+    set student_id = #{studentId,jdbcType=VARCHAR},
+      student_name = #{studentName,jdbcType=VARCHAR},
+      coursewares_id = #{coursewaresId,jdbcType=VARCHAR},
+      unit_id = #{unitId,jdbcType=VARCHAR},
+      class_id = #{classId,jdbcType=VARCHAR},
+      class_name = #{className,jdbcType=VARCHAR},
+      filekey = #{filekey,jdbcType=VARCHAR},
+      file_name = #{fileName,jdbcType=VARCHAR},
+      extension = #{extension,jdbcType=VARCHAR},
+      file_type = #{fileType,jdbcType=INTEGER},
+      size = #{size,jdbcType=INTEGER},
+      upload_time = #{uploadTime,jdbcType=TIMESTAMP},
+      upload_user_id = #{uploadUserId,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER}
+    where fb_id = #{fbId,jdbcType=VARCHAR}
+    and school_id = #{schoolId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" >
+    select fb_id, student_id, student_name, coursewares_id, unit_id, class_id, class_name,filekey,
+    file_name, extension, file_type, size, upload_time, upload_user_id, school_id, status
+    from ct_class_feedback
+    where fb_id = #{fbId,jdbcType=VARCHAR}
+    and school_id = #{schoolId,jdbcType=VARCHAR}
+    and status =1
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select fb_id, student_id, student_name, coursewares_id, unit_id, class_id, class_name,filekey,
+    file_name, extension, file_type, size, upload_time, upload_user_id, school_id, status
+    from ct_class_feedback
+  </select>
+
+  <select id="selectClassFBByCwIdList" resultMap="BaseResultMap" >
+    select fb_id, student_id, student_name, coursewares_id, unit_id, class_id, class_name,filekey,
+    file_name, extension, file_type, size, upload_time, upload_user_id, school_id, status
+    from ct_class_feedback
+    where upload_user_id = #{uploadUserId,jdbcType=VARCHAR}
+        and coursewares_id = #{coursewaresId,jdbcType=VARCHAR}
+        and <![CDATA[upload_time>=#{begTime,jdbcType=VARCHAR}]]>
+        and <![CDATA[upload_time<=#{endTime,jdbcType=VARCHAR}]]>
+        and school_id = #{schoolId,jdbcType=VARCHAR}
+        <if test="classId != null">
+          and class_id = #{classId,jdbcType=VARCHAR}
+        </if>
+        and status = 1
+    order by upload_time desc
+  </select>
+
+  <!--分页查询随堂反馈图片-->
+  <select id="queryPageList" resultType="net.xuele.cloudteach.view.ClassFeedbackView" >
+    select a.fb_id fbId, a.student_id studentId, a.student_name studentName, u.icon icon,a.coursewares_id coursewaresId,
+    a.unit_id unitId, a.class_id classId, a.class_name className, a.filekey filekey,
+    a.file_name fileName, a.extension extension, a.file_type fileType, a.size size, a.upload_time uploadTime,
+    a.upload_user_id uploadUserId, a.school_id schoolId, a.status status
+    from ct_class_feedback a
+    left join m_users u
+    on a.student_id = u.user_id
+    where a.unit_id = #{unitId,jdbcType=VARCHAR}
+    and a.upload_user_id = #{uploadUserId,jdbcType=VARCHAR}
+    and a.school_id = #{schoolId,jdbcType=VARCHAR}
+    <if test="classId != null">
+      and a.class_id = #{classId,jdbcType=VARCHAR}
+    </if>
+    and a.status = 1
+    order by a.upload_time desc
+    limit #{page.start},#{pageSize}
+  </select>
+  <!--分页查询随堂反馈图片计数 -->
+  <select id="count" resultType="int" >
+    select count(1)
+    from ct_class_feedback
+    where unit_id = #{unitId,jdbcType=VARCHAR}
+    and upload_user_id = #{uploadUserId,jdbcType=VARCHAR}
+    and school_id = #{schoolId,jdbcType=VARCHAR}
+    and class_id = #{classId,jdbcType=VARCHAR}
+    and status = 1
+  </select>
+</mapper>

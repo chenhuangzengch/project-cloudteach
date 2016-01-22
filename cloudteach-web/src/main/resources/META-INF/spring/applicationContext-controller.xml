@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+
+    <!--作品服务 【活动，图片，视频，音频 等】-->
+
+    <!--云盘服务-->
+    <dubbo:reference id="redisService" interface="net.xuele.cloudteach.service.CloudTeachRedisService"/>
+    <dubbo:reference id="cloudDiskService" interface="net.xuele.cloudteach.service.CloudDiskService"/>
+    <dubbo:reference id="sharedResourceService" interface="net.xuele.cloudteach.service.CloudDiskShareService"/>
+    <dubbo:reference id="cloudTeachService" interface="net.xuele.cloudteach.service.CloudTeachService"/>
+    <dubbo:reference id="acOfficialResourceService" interface="net.xuele.cloudteach.service.AcOfficialResourceService"/>
+
+    <!--提分宝作业服务-->
+    <dubbo:reference id="magicWorkStuService" interface="net.xuele.cloudteach.service.MagicWorkStuService"/>
+    <dubbo:reference id="magicWorkService" interface="net.xuele.cloudteach.service.MagicWorkService"/>
+
+    <!--同步课堂作业服务-->
+    <dubbo:reference id="synclassWorkStuService" interface="net.xuele.cloudteach.service.SynclassWorkStuService"/>
+    <dubbo:reference id="synclassWorkService" interface="net.xuele.cloudteach.service.SynclassWorkService"/>
+    <!--教师作业录音-->
+    <dubbo:reference id="workTapeFilesService" interface="net.xuele.cloudteach.service.WorkTapeFilesService"/>
+    <!--教师作业管理-->
+    <dubbo:reference id="teacherWorkManageService" interface="net.xuele.cloudteach.service.TeacherWorkManageService"/>
+    <dubbo:reference id="teacherCloudTeachService" interface="net.xuele.cloudteach.service.TeacherCloudTeachService"/>
+    <!--作业统计-->
+    <dubbo:reference id="workStatisticsService" interface="net.xuele.cloudteach.service.WorkStatisticsService"/>
+    <!--学生作业-->
+    <dubbo:reference id="studentWorkService" interface="net.xuele.cloudteach.service.StudentCloudWorkService"/>
+    <dubbo:reference id="teacherWorkStuService" interface="net.xuele.cloudteach.service.TeacherWorkStuService"/>
+    <!--提分宝题库-->
+    <dubbo:reference id="magicQuestionService" interface="net.xuele.cloudteach.service.MagicQuestionService"/>
+    <!--授课课件-->
+    <dubbo:reference id="teachCoursewaresService" interface="net.xuele.cloudteach.service.TeachCoursewaresService"/>
+
+    <dubbo:reference id="teachCoursewaresShareService"
+                     interface="net.xuele.cloudteach.service.TeachCoursewaresShareService"/>
+
+
+    <dubbo:reference id="courseReappearService" interface="net.xuele.cloudteach.service.CourseReappearService"/>
+    <!--板书-->
+    <dubbo:reference id="blackboardPublishService" interface="net.xuele.cloudteach.service.BlackboardPublishService"/>
+    <!--教师题库-->
+    <dubbo:reference id="bankItemService" interface="net.xuele.cloudteach.service.BankItemService"/>
+    <dubbo:reference id="bankItemShareService" interface="net.xuele.cloudteach.service.BankItemShareService"/>
+    <!--教师作业-->
+    <dubbo:reference id="teacherWorkService" interface="net.xuele.cloudteach.service.TeacherWorkService"/>
+
+    <!--数据统计-->
+    <dubbo:reference id="sRCloudDiskService" interface="net.xuele.cloudteach.service.SRCloudDiskService"/>
+
+    <!--家长__云作业-->
+    <dubbo:reference id="parentCloudWorkManagerService"
+                     interface="net.xuele.cloudteach.service.ParentCloudWorkManagerService"/>
+    <!--积分-->
+    <dubbo:reference id="ctIntegrationService" interface="net.xuele.cloudteach.service.CTIntegrationService"/>
+    <!--随堂反馈-->
+    <dubbo:reference id="classFeedbackService" interface="net.xuele.cloudteach.service.ClassFeedbackService"/>
+
+    <!--提分宝2-->
+    <dubbo:reference id="magic2WorkService" interface="net.xuele.cloudteach.service.Magic2WorkService"/>
+
+    <dubbo:reference id="magic2QuestionService" interface="net.xuele.cloudteach.service.Magic2QuestionService"/>
+    <dubbo:reference id="magic2WorkStatisticsService" interface="net.xuele.cloudteach.service.Magic2WorkStatisticsService"/>
+
+    <!--引用其他子系统服务 start -->
+
+    <!--member模块服务-->
+    <dubbo:reference id="teacherService" interface="net.xuele.member.service.TeacherService"/>
+    <dubbo:reference id="resourceService" interface="net.xuele.member.service.ResourceService"/>
+    <dubbo:reference id="userService" interface="net.xuele.member.service.UserService"/>
+    <dubbo:reference id="classService" interface="net.xuele.member.service.ClassService"/>
+    <dubbo:reference id="studentService" interface="net.xuele.member.service.StudentService"/>
+    <dubbo:reference id="userDetailsService"
+                     interface="org.springframework.security.core.userdetails.UserDetailsService"/>
+    <dubbo:reference id="schoolService " interface="net.xuele.member.service.SchoolService "/>
+    <dubbo:reference id="familyRelationService " interface="net.xuele.member.service.FamilyRelationService "/>
+    <dubbo:reference id="schoolBookService " interface="net.xuele.member.service.SchoolBookService "/>
+
+    <!--notify模块服务-->
+    <dubbo:reference id="notifyService" interface="net.xuele.notify.service.NotifyService"/>
+
+    <!--appCenter 服务模块-->
+    <dubbo:reference id="acUnitsCourseWaresService" interface="net.xuele.appCenter.service.ACUnitsCourseWaresService"/>
+    <dubbo:reference id="viewCourseWaresService" interface="net.xuele.appCenter.service.ViewCourseWaresService"/>
+    <dubbo:reference id="translateFlashService" interface="net.xuele.appCenter.service.TranslateFlashService"/>
+    <dubbo:reference id="eliteSchoolService" interface="net.xuele.appCenter.service.EliteSchoolService"/>
+
+    <!--cloudsr-->
+    <dubbo:reference id="sRCloudDiskAreaService" interface="net.xuele.cloudsr.service.SRCloudDiskAreaService"/>
+    <dubbo:reference id="learningInfoWorkService" interface="net.xuele.cloudteach.service.LearningInfoWorkService"/>
+
+    <!-- 授课打点服务 -->
+    <dubbo:reference id="teachCoursewareLogService" interface="net.xuele.cloudteach.service.TeachCoursewareLogService"/>
+
+</beans>

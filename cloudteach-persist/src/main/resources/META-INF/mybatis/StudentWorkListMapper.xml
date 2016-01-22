@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.StudentWorkListMapper">
+
+    <resultMap id="StudentWorkListResultMap" type="net.xuele.cloudteach.view.StudentWorkListView">
+        <id column="work_id" property="workId" jdbcType="VARCHAR"/>
+        <result column="teacher_id" property="teacherId" jdbcType="VARCHAR"/>
+        <result column="icon" property="teacherHeadIcon" jdbcType="VARCHAR"/>
+        <result column="real_name" property="teacherName" jdbcType="VARCHAR"/>
+        <result column="work_type" property="workType" jdbcType="VARCHAR"/>
+        <result column="position_name" property="positionName" jdbcType="VARCHAR"/>
+        <result column="publish_time" property="publishTime" jdbcType="TIMESTAMP"/>
+        <result column="context" property="context" jdbcType="VARCHAR"/>
+        <result column="work_item_num" property="workItemCount" jdbcType="INTEGER"/>
+        <result column="end_time" property="endTime" jdbcType="TIMESTAMP"/>
+        <result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
+        <result column="subject_name" property="subjectName" jdbcType="VARCHAR"/>
+        <result column="sub_status" property="subStatus" jdbcType="INTEGER"/>
+        <result column="voiceContext" property="voiceContext" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="BasicWorkInfoViewResultMap" type="net.xuele.cloudteach.view.BasicWorkInfoView">
+        <id column="work_id" property="workId" jdbcType="VARCHAR"/>
+        <result column="teacher_id" property="teacherId" jdbcType="VARCHAR"/>
+        <result column="icon" property="teacherHeadIcon" jdbcType="VARCHAR"/>
+        <result column="real_name" property="teacherName" jdbcType="VARCHAR"/>
+        <result column="work_type" property="workType" jdbcType="VARCHAR"/>
+        <result column="position_name" property="positionName" jdbcType="VARCHAR"/>
+        <result column="publish_time" property="publishTime" jdbcType="TIMESTAMP"/>
+        <result column="context" property="context" jdbcType="VARCHAR"/>
+        <result column="work_item_num" property="workItemCount" jdbcType="INTEGER"/>
+        <result column="end_time" property="endTime" jdbcType="TIMESTAMP"/>
+        <result column="unit_id" property="unitId" jdbcType="VARCHAR"/>
+        <result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
+        <result column="subject_name" property="subjectName" jdbcType="VARCHAR"/>
+        <result column="bank_id" property="bankId" jdbcType="VARCHAR"/>
+        <result column="sub_image" property="subImage" jdbcType="INTEGER"/>
+        <result column="sub_tape" property="subTape" jdbcType="INTEGER"/>
+        <result column="sub_video" property="subVideo" jdbcType="INTEGER"/>
+        <result column="sub_other" property="subOther" jdbcType="INTEGER"/>
+        <result column="voiceContext" property="voiceContext" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--计算学生待完成列表记录数-->
+    <select id="getTodoListRecordCount" resultType="java.lang.Long">
+        select count(1)
+        from ct_work_gather a,ct_work_student_gather b
+        where a.school_id = #{schoolId,jdbcType=VARCHAR}
+        and b.school_id = #{schoolId,jdbcType=VARCHAR}
+        and a.work_id = b.work_id
+        and b.student_id = #{userId,jdbcType=VARCHAR}
+        and a.work_type not in (5,6)
+        and b.sub_status = 0
+        <if test="subjectId != null">
+            and a.subject_id = #{subjectId,jdbcType=VARCHAR}
+        </if>
+        <if test="workType != 0">
+            and a.work_type = #{workType,jdbcType=INTEGER}
+        </if>
+        and a.end_time > now()
+        and a.status = 1
+    </select>
+
+    <!--计算学生预习列表记录数-->
+    <select id="getPrepListRecordCount" resultType="java.lang.Long">
+        select count(1)
+        from ct_work_gather a,ct_work_student_gather b
+        where a.school_id = #{schoolId,jdbcType=VARCHAR}
+        and b.school_id = #{schoolId,jdbcType=VARCHAR}
+        and a.work_id = b.work_id
+        and b.student_id = #{userId,jdbcType=VARCHAR}
+        and a.work_type = 1
+        <if test="subjectId != null">
+            and a.subject_id = #{subjectId,jdbcType=VARCHAR}
+        </if>
+        and a.status = 1
+    </select>
+
+    <!--计算学生作业列表记录数-->
+    <select id="getWorkListRecordCount" resultType="java.lang.Long">
+        select count(1)
+        from ct_work_gather a,ct_work_student_gather b
+        where a.school_id = #{schoolId,jdbcType=VARCHAR}
+        and b.school_id = #{schoolId,jdbcType=VARCHAR}
+        and a.work_id = b.work_id
+        and b.student_id = #{userId,jdbcType=VARCHAR}
+        and a.work_type not in (1,5,6)
+        <if test="subjectId != null">
+            and a.subject_id = #{subjectId,jdbcType=VARCHAR}
+        </if>
+        <if test="workType != 0">
+            and a.work_type = #{workType,jdbcType=INTEGER}
+        </if>
+        and a.status = 1
+    </select>
+
+    <!--通过作业ID，获取教师作业基本信息-->
+    <select id="getBasicTeacherWorkInfo" resultMap="BasicWorkInfoViewResultMap">
+        SELECT
+        a.work_id,
+        b.user_id teacher_id,
+        b.icon,
+        case b.identity_id when 'SCHOOL_MANAGER' then '学校管理员' else b.real_name end as real_name,
+        case b.identity_id when 'SCHOOL_MANAGER' then '学校管理员' else c.position_name end as position_name,
+        a.publish_time,
+        a.work_type,
+        a.context,
+        a.work_item_num,
+        a.end_time,
+        a.subject_name,
+        a.unit_name,
+        null bank_id,
+        e.sub_image,
+        e.sub_tape,
+        e.sub_video,
+        e.sub_other,
+        a.voiceContext
+        FROM
+        ct_work_gather a
+        left join m_teacher c on a.user_id = c.user_id and c.school_id = #{schoolId,jdbcType=VARCHAR},
+        m_users b,
+        ct_work_student_gather d,
+        ct_teacher_work_item e
+        WHERE a.school_id = #{schoolId,jdbcType=VARCHAR}
+        AND b.school_id = #{schoolId,jdbcType=VARCHAR}
+        AND d.school_id = #{schoolId,jdbcType=VARCHAR}
+        and e.school_id = #{schoolId,jdbcType=VARCHAR}
+        AND d.student_id = #{userId,jdbcType=VARCHAR}
+        and a.work_id = #{workId,jdbcType=VARCHAR}
+        and e.work_id = a.work_id
+        AND a.work_id = d.work_id
+        AND a.user_id = b.user_id
+        AND a.status = 1
+        limit 1
+    </select>
+
+    <!--通过作业ID，获取提分宝作业基本信息-->
+    <select id="getBasicMagicWorkInfo" resultMap="BasicWorkInfoViewResultMap">
+        SELECT
+        a.work_id,
+        b.user_id teacher_id,
+        b.icon,
+        case b.identity_id when 'SCHOOL_MANAGER' then '学校管理员' else b.real_name end as real_name,
+        case b.identity_id when 'SCHOOL_MANAGER' then '学校管理员' else c.position_name end as position_name,
+        a.publish_time,
+        a.work_type,
+        a.context,
+        a.work_item_num,
+        a.end_time,
+        a.subject_name,
+        a.unit_id,
+        a.unit_name,
+        e.bank_id,
+        e.sub_image,
+        e.sub_tape,
+        e.sub_video,
+        e.sub_other,
+        a.voiceContext
+        FROM
+        ct_work_gather a,
+        m_users b,
+        m_teacher c,
+        ct_work_student_gather d,
+        ct_magic_work e
+        WHERE a.school_id = #{schoolId,jdbcType=VARCHAR}
+        AND b.school_id = #{schoolId,jdbcType=VARCHAR}
+        AND c.school_id = #{schoolId,jdbcType=VARCHAR}
+        AND d.school_id = #{schoolId,jdbcType=VARCHAR}
+        and e.school_id = #{schoolId,jdbcType=VARCHAR}
+        AND d.student_id = #{userId,jdbcType=VARCHAR}
+        and a.work_id = #{workId,jdbcType=VARCHAR}
+        and e.work_id = a.work_id
+        AND a.work_id = d.work_id
+        AND a.user_id = b.user_id
+        AND a.user_id = c.user_id
+        AND a.status = 1
+        limit 1
+    </select>
+
+    <!--通过作业ID，获取同步课堂作业基本信息-->
+    <select id="getBasicSynClassWorkInfo" resultMap="BasicWorkInfoViewResultMap">
+        SELECT
+        a.work_id,
+        b.user_id teacher_id,
+        b.icon,
+        case b.identity_id when 'SCHOOL_MANAGER' then '学校管理员' else b.real_name end as real_name,
+        case b.identity_id when 'SCHOOL_MANAGER' then '学校管理员' else c.position_name end as position_name,
+        a.publish_time,
+        a.work_type,
+        a.context,
+        a.work_item_num,
+         a.end_time,
+        a.subject_name,
+        a.unit_name,
+        null bank_id,
+        null sub_image,
+        null sub_tape,
+        null sub_video,
+        null sub_other,
+        a.voiceContext
+        FROM
+        ct_work_gather a,
+        m_users b,
+        m_teacher c,
+        ct_work_student_gather d
+        WHERE a.school_id = #{schoolId,jdbcType=VARCHAR}
+        AND b.school_id = #{schoolId,jdbcType=VARCHAR}
+        AND c.school_id = #{schoolId,jdbcType=VARCHAR}
+        AND d.school_id = #{schoolId,jdbcType=VARCHAR}
+        AND d.student_id = #{userId,jdbcType=VARCHAR}
+        and a.work_id = #{workId,jdbcType=VARCHAR}
+        AND a.work_id = d.work_id
+        AND a.user_id = b.user_id
+        AND a.user_id = c.user_id
+        and a.work_type = 3
+        AND a.status = 1
+        limit 1
+    </select>
+
+    <!--待完成列表-->
+    <select id="myToDoList" resultMap="StudentWorkListResultMap">
+        select
+        a.work_id,
+        a.user_id teacher_id,
+        b.icon,
+        case b.identity_id when 'SCHOOL_MANAGER' then '学校管理员' else b.real_name end as real_name,
+        case b.identity_id when 'SCHOOL_MANAGER' then '学校管理员' else c.position_name end as position_name,
+        a.publish_time,
+        a.work_type,
+        a.context,
+        a.work_item_num,
+        a.end_time,
+        a.subject_name,
+        a.unit_name,
+        a.status,
+        d.sub_status,
+        a.voiceContext
+        from
+        ct_work_gather a
+        left join m_teacher c on a.user_id = c.user_id and c.school_id = #{schoolId,jdbcType=VARCHAR},
+        m_users b,
+        ct_work_student_gather d
+        where a.school_id = #{schoolId,jdbcType=VARCHAR}
+        and b.school_id = #{schoolId,jdbcType=VARCHAR}
+        and d.school_id = #{schoolId,jdbcType=VARCHAR}
+        and d.student_id = #{userId,jdbcType=VARCHAR}
+        and a.work_id = d.work_id
+        and a.user_id = b.user_id
+        and a.work_type not in (5,6)
+        and d.sub_status = 0
+        <if test="subjectId != null">
+            and a.subject_id = #{subjectId,jdbcType=VARCHAR}
+        </if>
+        <if test="workType != 0">
+            and a.work_type = #{workType,jdbcType=INTEGER}
+        </if>
+        and <![CDATA[a.publish_time<#{publishTime,jdbcType=VARCHAR}]]>
+        and a.end_time > now()
+        and a.status = 1
+        order by a.publish_time desc
+        limit #{pageSize}
+    </select>
+
+    <!--预习列表-->
+    <select id="myPrepList" resultMap="StudentWorkListResultMap">
+        select
+        a.work_id,
+        a.user_id teacher_id,
+        b.icon,
+        case b.identity_id when 'SCHOOL_MANAGER' then '学校管理员' else b.real_name end as real_name,
+        case b.identity_id when 'SCHOOL_MANAGER' then '学校管理员' else c.position_name end as position_name,
+        a.publish_time,
+        a.work_type,
+        a.context,
+        a.work_item_num,
+        a.end_time,
+        a.subject_name,
+        a.unit_name,
+        a.status,
+        d.sub_status,
+        a.voiceContext
+        from
+        ct_work_gather a,
+        m_users b,
+        m_teacher c,
+        ct_work_student_gather d
+        where a.school_id = #{schoolId,jdbcType=VARCHAR}
+        and b.school_id = #{schoolId,jdbcType=VARCHAR}
+        and c.school_id = #{schoolId,jdbcType=VARCHAR}
+        and d.school_id = #{schoolId,jdbcType=VARCHAR}
+        and d.student_id = #{userId,jdbcType=VARCHAR}
+        and a.work_id = d.work_id
+        and a.user_id = b.user_id
+        and a.user_id = c.user_id
+        and a.work_type = 1
+        <if test="subjectId != null">
+            and a.subject_id = #{subjectId,jdbcType=VARCHAR}
+        </if>
+        and <![CDATA[a.publish_time<#{publishTime,jdbcType=VARCHAR}]]>
+        and a.status = 1
+        order by a.publish_time desc
+        limit #{pageSize}
+    </select>
+
+    <!--作业列表-->
+    <select id="myWorkList" resultMap="StudentWorkListResultMap">
+        select
+        a.work_id,
+        a.user_id teacher_id,
+        b.icon,
+        case b.identity_id when 'SCHOOL_MANAGER' then '学校管理员' else b.real_name end as real_name,
+        case b.identity_id when 'SCHOOL_MANAGER' then '学校管理员' else c.position_name end as position_name,
+        a.publish_time,
+        a.work_type,
+        a.context,
+        a.work_item_num,
+        a.end_time,
+        a.subject_name,
+        a.unit_name,
+        a.status,
+        d.sub_status,
+        a.voiceContext
+        from
+        ct_work_gather a
+        left join m_teacher c on a.user_id = c.user_id and c.school_id = #{schoolId,jdbcType=VARCHAR},
+        m_users b,
+        ct_work_student_gather d
+        where a.school_id = #{schoolId,jdbcType=VARCHAR}
+        and b.school_id = #{schoolId,jdbcType=VARCHAR}
+        and d.school_id = #{schoolId,jdbcType=VARCHAR}
+        and d.student_id = #{userId,jdbcType=VARCHAR}
+        and a.work_id = d.work_id
+        and a.user_id = b.user_id
+        and a.work_type not in (1,5,6)
+        <if test="subjectId != null">
+            and a.subject_id = #{subjectId,jdbcType=VARCHAR}
+        </if>
+        <if test="workType != 0">
+            and a.work_type = #{workType,jdbcType=INTEGER}
+        </if>
+        and <![CDATA[a.publish_time<#{publishTime,jdbcType=VARCHAR}]]>
+        and a.status = 1
+        order by a.publish_time desc
+        limit #{pageSize}
+    </select>
+
+</mapper>

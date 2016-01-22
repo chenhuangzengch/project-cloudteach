@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	   http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	   http://code.alibabatech.com/schema/dubbo
+	   http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <!--member模块服务-->
+    <dubbo:reference id="teacherService" interface="net.xuele.member.service.TeacherService"/>
+    <dubbo:reference id="userService" interface="net.xuele.member.service.UserService"/>
+    <dubbo:reference id="studentService" interface="net.xuele.member.service.StudentService"/>
+    <dubbo:reference id="schoolBookService" interface="net.xuele.member.service.SchoolBookService"/>
+    <dubbo:reference id="schoolPeriodService " interface="net.xuele.member.service.SchoolPeriodService "/>
+    <dubbo:reference id="schoolService " interface="net.xuele.member.service.SchoolService "/>
+    <dubbo:reference id="familyRelationService " interface="net.xuele.member.service.FamilyRelationService "/>
+    <dubbo:reference id="classService" interface="net.xuele.member.service.ClassService"/>
+
+    <!--notify模块服务-->
+    <dubbo:reference id="notifyService" interface="net.xuele.notify.service.NotifyService"/>
+
+    <!--appCenter 服务模块-->
+    <dubbo:reference id="viewCourseWaresService" interface="net.xuele.appCenter.service.ViewCourseWaresService"/>
+    <dubbo:reference id="translateFlashService" interface="net.xuele.appCenter.service.TranslateFlashService"/>
+    <dubbo:reference id="dUnitsService" interface="net.xuele.appCenter.service.DUnitsService"/>
+    <dubbo:reference id="aCCourseWaresService" interface="net.xuele.appCenter.service.ACCourseWaresService"/>
+
+    <!--teacheval 访问日志服务 异步处理-->
+    <dubbo:reference id="writeAccessLogService" interface="net.xuele.teacheval.service.WriteAccessLogService" async="true" />
+
+</beans>

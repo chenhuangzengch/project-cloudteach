@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CTBlueActMapper">
+
+    <resultMap id="studentSubWorkMap" type="net.xuele.cloudteach.view.BlueStudentSubWorkView">
+        <id column="answer_id" property="answerId" jdbcType="VARCHAR"/>
+        <result column="student_id" property="studentId" jdbcType="VARCHAR"/>
+        <result column="teacher_id" property="teacherId" jdbcType="VARCHAR"/>
+        <result column="sub_time" property="subTime" jdbcType="TIMESTAMP"/>
+        <result column="work_id" property="workId" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="teacherCorrectWorkMap" type="net.xuele.cloudteach.view.BlueTeacherCorrectWorkView">
+        <id column="answer_id" property="answerId" jdbcType="VARCHAR"/>
+        <result column="student_id" property="studentId" jdbcType="VARCHAR"/>
+        <result column="teacher_id" property="teacherId" jdbcType="VARCHAR"/>
+        <result column="correct_time" property="correctTime" jdbcType="TIMESTAMP"/>
+        <result column="work_id" property="workId" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--时间段内，教师批改的所有预习/电子作业的数量-->
+    <select id="selectCorrectWork" resultMap="teacherCorrectWorkMap">
+       select a.answer_id,a.user_id student_id,b.user_id teacher_id,a.correct_time,b.work_id
+       from ct_teacher_work_item_answer a,ct_teacher_work b
+       where a.work_id = b.work_id
+       and b.user_id = #{teacherId,jdbcType=VARCHAR}
+       and a.correct_time between #{begin,jdbcType=TIMESTAMP} and #{end,jdbcType=TIMESTAMP}
+       and a.school_id = #{schoolId,jdbcType=VARCHAR}
+       and b.school_id = #{schoolId,jdbcType=VARCHAR}
+       and a.correct_status = 1
+       and b.work_type in (1,4,8)
+       and a.score in (1,2,3,4)
+       and a.status = 1
+       and b.status = 1
+    </select>
+
+    <!--时间段内，教师布置并且学生提交的所有预习/电子作业的数量-->
+    <select id="selectSubedWork" resultMap="studentSubWorkMap">
+       select a.answer_id,a.user_id student_id,b.user_id teacher_id,a.sub_time,b.work_id
+       from ct_teacher_work_item_answer a,ct_teacher_work b
+       where a.work_id = b.work_id
+       and b.user_id = #{teacherId,jdbcType=VARCHAR}
+       and b.publish_time between #{actBegin,jdbcType=TIMESTAMP} and #{end,jdbcType=TIMESTAMP}
+       and a.sub_time between #{begin,jdbcType=TIMESTAMP} and #{end,jdbcType=TIMESTAMP}
+       and a.school_id = #{schoolId,jdbcType=VARCHAR}
+       and b.school_id = #{schoolId,jdbcType=VARCHAR}
+       and b.work_type in (1,4,8)
+       and a.sub_status = 1
+       and a.status = 1
+       and b.status = 1
+    </select>
+
+    <!--时间段内，学生提交的所有预习/电子作业的数量-->
+    <select id="selectStudentSubedWork" resultMap="studentSubWorkMap">
+       select a.answer_id,a.user_id student_id,b.user_id teacher_id,a.sub_time,b.work_id
+       from ct_teacher_work_item_answer a,ct_teacher_work b
+       where a.work_id = b.work_id
+       and a.user_id = #{studentId,jdbcType=VARCHAR}
+       and a.sub_time between #{begin,jdbcType=TIMESTAMP} and #{end,jdbcType=TIMESTAMP}
+       and a.school_id = #{schoolId,jdbcType=VARCHAR}
+       and b.school_id = #{schoolId,jdbcType=VARCHAR}
+       and a.sub_status = 1
+       and b.work_type in (1,4,8)
+       and a.status = 1
+       and b.status = 1
+    </select>
+
+</mapper>

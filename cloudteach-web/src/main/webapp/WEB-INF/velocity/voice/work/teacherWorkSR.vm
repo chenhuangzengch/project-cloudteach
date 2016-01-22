@@ -1,0 +1,91 @@
+#set($layout="layout/bodyLayout.vm")
+#set($page_title="教师作业管理-口语作业统计")
+#define($script)
+<link rel="stylesheet" href="http://asset.xueleyun.com/g/css/global.min.css?version=${version}" />
+<script src="http://asset.xueleyun.com/g/lib/gallery/swfobject.js?version=${version}"></script>
+<link rel="stylesheet" href="http://asset.xueleyun.com/css/cloudteach/homework-manage.css?version=${version}" />
+<script src="http://asset.xueleyun.com/js/cloudteach/highchart.js?version=${version}"></script>
+<script src="http://asset.xueleyun.com/js/cloudteach/task-static.js?version=${version}"></script>
+#end
+<div class="detail-head">
+    <a class="li-whos" href="initDetail?workType=7&workId=$!{workId}&classId=$!{classId}">完成详情</a>
+    <a class="li-whos on" href="javascript:void(0)">作业统计</a>
+    <a class="li-whos" href="workItemDetail?workId=$!{workId}&classId=$!{classId}">作业题目</a>
+</div>
+<div class="container">
+    <div class="detail-wrap">
+        <div class="classes-wrap">
+            <ul class="ul-classes">
+                #foreach($WorkClassViewDTO in $voiceWorkClassList)
+                    <li #if ($!{WorkClassViewDTO.classId} == $!{classId})class="sel"#end><a href="teacherWorkSR?workId=$!{workId}&classId=$!{WorkClassViewDTO.classId}">$!{WorkClassViewDTO.className}</a></li>
+                #end
+            </ul>
+        </div>
+        <div class="static-right">
+            <div class="complete-rate">
+                <div class="pie">
+                    <h3>完成率</h3>
+                    <div class="picdata" data-rate="$!{sRTeacherWorkDTO.finshPect}"></div>
+                    <p class="pie-note">$!{sRTeacherWorkDTO.finshPect}%($!{sRTeacherWorkDTO.subStuNum}/$!{sRTeacherWorkDTO.classStuNum})</p>
+                </div>
+                <div class="correct-result">
+                    <h3>批改结果</h3>
+                    <ul class="ul-result">
+                        <li>
+                            <div class="total">
+                                <div class="complete" style="width: $!{sRTeacherWorkDTO.scoreAPect}%"></div>
+                                <em class="rate">$!{sRTeacherWorkDTO.scoreAPect}%（$!{sRTeacherWorkDTO.scoreAStuList.size()}人)</em>
+                            </div>
+                            <span class="level-name">A（85 - 100）</span>
+                        </li>
+                        <li>
+                            <div class="total">
+                                <div class="complete" style="width: $!{sRTeacherWorkDTO.scoreBPect}%"></div>
+                                <em class="rate">$!{sRTeacherWorkDTO.scoreBPect}%（$!{sRTeacherWorkDTO.scoreBStuList.size()}人)</em>
+                            </div>
+                            <span class="level-name">B（70 - 84）</span>
+                        </li>
+                        <li>
+                            <div class="total">
+                                <div class="complete" style="width: $!{sRTeacherWorkDTO.scoreCPect}%"></div>
+                                <em class="rate">$!{sRTeacherWorkDTO.scoreCPect}%（$!{sRTeacherWorkDTO.scoreCStuList.size()}人)</em>
+                            </div>
+                            <span class="level-name">C（55 - 69）</span>
+                        </li>
+                        <li>
+                            <div class="total">
+                                <div class="complete" style="width: $!{sRTeacherWorkDTO.scoreDPect}%"></div>
+                                <em class="rate">$!{sRTeacherWorkDTO.scoreDPect}%（$!{sRTeacherWorkDTO.scoreDStuList.size()}人)</em>
+                            </div>
+                            <span class="level-name">D（0 - 54）</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="spoken-rank-list rank-list">
+                <ul class="list-head">
+                    <li class="rank">排名</li>
+                    <li class="stu-name">学生名称</li>
+                    <li class="best-score">最好成绩</li>
+                </ul>
+                #foreach($SRTeacherWorkStuDTO in $sRTeacherWorkDTO.orderStuList)
+                    <ul class="list-content">
+                        <li class="rank">
+                            <i class="#if(${velocityCount} == 1 )first-rank
+                                        #elseif(${velocityCount} == 2 )second-rank
+                                        #elseif(${velocityCount} == 3 )third-rank
+                                        #else normal-rank #end">$!{velocityCount}</i>
+                        </li>
+                        <li class="stu-name">
+                            <img class="stu-portrait" src="http://avatar.xueleyun.com/images/48x48_$!{SRTeacherWorkStuDTO.headUrl}.jpg" alt="">
+                            <span>$!{SRTeacherWorkStuDTO.studentName}</span>
+                        </li>
+                        <li class="best-score">$!{SRTeacherWorkStuDTO.score}分</li>
+                    </ul>
+                #end
+
+            </div>
+        </div>
+    </div>
+</div>
+

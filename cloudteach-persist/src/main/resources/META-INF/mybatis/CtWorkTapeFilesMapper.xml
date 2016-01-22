@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtWorkTapeFilesMapper">
+    <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtWorkTapeFiles">
+        <id column="file_id" property="fileId" jdbcType="VARCHAR"/>
+        <result column="work_id" property="workId" jdbcType="VARCHAR"/>
+        <result column="work_type" property="workType" jdbcType="INTEGER"/>
+        <result column="url" property="url" jdbcType="VARCHAR"/>
+        <result column="file_name" property="fileName" jdbcType="VARCHAR"/>
+        <result column="extension" property="extension" jdbcType="VARCHAR"/>
+        <result column="size" property="size" jdbcType="INTEGER"/>
+        <result column="upload_time" property="uploadTime" jdbcType="TIMESTAMP"/>
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <update id="removeWorkTapeFile">
+    update ct_work_tape_files set status=0
+    where school_id = #{schoolId,jdbcType=VARCHAR} and file_id = #{fileId,jdbcType=VARCHAR}
+  </update>
+
+    <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtWorkTapeFiles">
+    insert into ct_work_tape_files (file_id, work_id, work_type, 
+      url, file_name, extension, 
+      size, upload_time, school_id,status
+      )
+    values (#{fileId,jdbcType=VARCHAR}, #{workId,jdbcType=VARCHAR}, #{workType,jdbcType=INTEGER}, 
+      #{url,jdbcType=VARCHAR}, #{fileName,jdbcType=VARCHAR}, #{extension,jdbcType=VARCHAR}, 
+      #{size,jdbcType=INTEGER}, #{uploadTime,jdbcType=TIMESTAMP}, #{schoolId,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}
+      )
+  </insert>
+    <update id="WorkTapeFile" parameterType="net.xuele.cloudteach.domain.CtWorkTapeFiles">
+    update ct_work_tape_files
+    set work_id = #{workId,jdbcType=VARCHAR},
+      work_type = #{workType,jdbcType=INTEGER},
+      url = #{url,jdbcType=VARCHAR},
+      file_name = #{fileName,jdbcType=VARCHAR},
+      extension = #{extension,jdbcType=VARCHAR},
+      size = #{size,jdbcType=INTEGER},
+      upload_time = #{uploadTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER}
+    where school_id = #{schoolId,jdbcType=VARCHAR} and file_id = #{fileId,jdbcType=VARCHAR}
+  </update>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    select file_id, work_id, work_type, url, file_name, extension, size, upload_time, 
+    status
+    from ct_work_tape_files
+    where school_id = #{schoolId,jdbcType=VARCHAR} and file_id = #{fileId,jdbcType=VARCHAR}
+  </select>
+
+    <select id="queryListByWorkId" resultMap="BaseResultMap">
+    select file_id, work_id, work_type, url, file_name, extension, size, upload_time,
+    status
+    from ct_work_tape_files
+    where school_id = #{schoolId,jdbcType=VARCHAR} and status = 1 and work_id = #{workId,jdbcType=VARCHAR}
+  </select>
+    <!--查询作业对应的录音附件-->
+    <select id="selectTapeFile" resultMap="BaseResultMap">
+    select file_id, work_id, work_type, url, file_name, extension, size, upload_time,
+    status
+    from ct_work_tape_files
+    where school_id = #{schoolId,jdbcType=VARCHAR} and status = 1 and work_id = #{workId,jdbcType=VARCHAR}
+  </select>
+    <!--逻辑删除作业对应录音附件-->
+    <update id="removeTapeFile">
+    update ct_work_tape_files set status=0
+    where school_id = #{schoolId,jdbcType=VARCHAR} and status = 1 and work_id = #{workId,jdbcType=VARCHAR}
+  </update>
+
+    <select id="getWorkTapeFilesByWorkId" resultMap="BaseResultMap">
+    select file_id, work_id, work_type, url, file_name, extension, size, upload_time,
+    status
+    from ct_work_tape_files
+    where school_id = #{schoolId,jdbcType=VARCHAR} and status = 1 and work_id = #{workId,jdbcType=VARCHAR}
+  </select>
+
+    <select id="getWorkTapeFilesByWorkIdList" resultMap="BaseResultMap" parameterType="java.util.List">
+        select file_id, a.work_id, a.work_type, url, file_name, extension, size, upload_time
+        from ct_work_tape_files a
+        inner join ct_work_gather b on a.work_id = b.work_id and b.status=1
+        where a.status = 1 and a.work_id in
+        <foreach collection="workIdList" item="workId" index="index" open="(" close=")" separator=",">
+            #{workId,jdbcType=VARCHAR}
+        </foreach>
+    </select>
+
+
+</mapper>

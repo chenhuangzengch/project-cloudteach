@@ -1,0 +1,38 @@
+-- -- insert some data
+-- insert into ct_cloud_disk_share(
+-- shareId,
+-- disk_id,
+-- user_id,
+-- unit_id,
+-- file_type,
+-- name,
+-- status,
+-- file_pk,
+-- file_uri
+-- )
+-- VALUES (
+-- '1',
+-- '1',
+-- '001',
+-- '001',
+-- '1',
+-- 'test_name1',
+-- '10',
+-- 'QWEQWEQWE',
+-- '11111111'
+-- );
+--
+-- insert into ct_cloud_disk_share_statistics (
+-- uf_id,
+-- UF_Downloaded,
+-- UF_Saved,
+-- UF_Readed,
+-- UF_Like_Count
+-- )
+-- VALUES (
+-- '1',
+-- 10,
+-- 20,
+-- 50,
+-- 100
+-- );

@@ -1,0 +1,79 @@
+#set($layout="layout/bodyLayout.vm")
+#set($page_title="同步课堂作业")
+#define($script)
+<link rel="stylesheet" href="$!{asset_host}/css/cloudteach/stu.css?version=${version}" />
+<script src="$!{asset_host}/js/cloudteach/stu-write-sync.js?version=${version}"></script>
+<script src="$!{asset_host}/g/lib/gallery/swfobject.js?version=${version}"></script>
+#end
+<div class="detail-head">
+    <a class="li-whos on" href="javascript:void(0)">写作业</a>
+    <a class="li-whos"
+       href="$!{ctx}/studentcloudwork/parent/synclassWorkCommunication?workId=$!{workDetail.basicWorkInfo.workId}&studentId=$!{studentId}&workType=3">作业交流</a>
+</div>
+<div class="container">
+    <div class="write-wrap">
+        <div class="task-info">
+            <div class="detail-title">
+                <div class="task-title">
+                    <img src="$!{avatar_host}/images/48x48_$!{workDetail.basicWorkInfo.teacherHeadIcon}.jpg" class="portrait"/>
+                    <h3 class="detail-info">
+                        <span class="tch-name">$!{workDetail.basicWorkInfo.teacherName}</span><br/>
+                    </h3>
+                    <ul class="homework-explain">
+                        <li class="subject-name">$!{workDetail.basicWorkInfo.subjectName} </li>
+                        <li class="course-name"> $!{workDetail.basicWorkInfo.unitName} </li>
+                        <li class="homework-num">$!{workDetail.basicWorkInfo.workItemCount}题</li>
+                    </ul>
+                    <p class="p-detail">$!{workDetail.basicWorkInfo.context.replaceAll("\r\n", "<br>").replaceAll("\r", "<br>").replaceAll("\n", "<br>").replaceAll(" ","&nbsp;")}
+                    </p>
+                    <div class="video-wrap" data-url="$!{workDetail.workTapeFilesDTO.url}">
+                        <div id="spoken-detail"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="attachment-wrap">
+                <h3>同步课堂</h3>
+                <div class="sync-class">
+                    <ul class="seatwork_main">
+                        #foreach($!{synclassGameInfoVo} in $!{workDetail.synclassGameInfo})
+                            <li>
+                                <div class="img-wrap">
+                                    <img src="http://resource.xueleyun.com/syncclass/gameicons/$!{synclassGameInfoVo.CID}.jpg " class="seatwork_img">
+                                    <span class="exercise-name">$!{synclassGameInfoVo.gameName}</span><br>
+                                </div>
+                                <div class="relative-info">
+                                    <span class="experience"
+                                          data-url="http://www.xueleyun.com/appcenter/synClassFlash/cloudteachPlay?ucID=$!{synclassGameInfoVo.gameId}&cReal=$!{synclassGameInfoVo.CReal}&uType=2&uID=">挑战100分</span>
+                                </div>
+                            </li>
+                        #end
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="hand-info">
+            <div class="hand-time method-time">最晚交作业时间：$!{day}天之内 </div>
+            <p class="hand-content">$!{workDetail.stuAnswerInfo.context.replaceAll("\r\n", "<br>").replaceAll("\r", "<br>").replaceAll("\n", "<br>").replaceAll(" ","&nbsp;")}</p>
+            #if($!{workDetail.stuAnswerInfo.subStatus}==1)
+                <div class="sync-finish" style="display: block">
+                    <ul class="items-score">
+                        #foreach($!{stuGamePlay} in $!{workDetail.stuGamePlayResult})
+                            <li class="item-score">$!{stuGamePlay.gameName}:$!{stuGamePlay.maxScore}分</li>
+
+                         #end
+                    </ul>
+                    <div class="finish-time">
+                        作业完成时间: $!{compliteTime}##$!{workDetail.stuAnswerInfo.subTime}
+                    </div>
+                </div>
+             #end
+            #if($!{workDetail.stuAnswerInfo.subStatus}==0)
+                <div class="before-finish" style="display: block">
+                    <div class="child-finish-no">
+                        学生尚未完成此项作业
+                    </div>
+                </div>
+            #end
+        </div>
+    </div>
+</div>

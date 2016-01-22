@@ -1,0 +1,35 @@
+#set($page_title="教务管理-课外作业")
+#set($currPage="teacherWorkMg")
+#define($script)
+<link rel="stylesheet" href="$!{asset_host}/css/cloudteach/homework-manage.css?version=${version}"/>
+<script src="$!{asset_host}/js/cloudteach/task-list.js?version=${version}"></script>
+#end
+
+<div class="container">
+    <div class="homework-top-wrap">
+        <div class="broad-wrap">
+            <div class="lists">
+                <a class="list-info sel" href="$!{ctx}/workmanage/manager/initExtraWorkList">作业管理</a>
+                <a class="list-info" href="$!{ctx}/workmanage/manager/extralist">作业列表</a>
+            </div>
+            <a href="$!{ctx}/workmanage/manager/tonewpublish" class="new-homework"><i
+                    class="icon-add"></i>新建课外作业</a>
+        </div>
+    </div>
+    <div class="two-column">
+        <div class="right-content spe-content">
+            <div class="empty" style="display: block">
+                <p class="empty-msg">没有课外作业题目</p>
+
+                <p class="empty-who">您可以先去发布作业，然后查看作业完成情况</p>
+
+                <p class="empty-ctls"><a href="$!{ctx}/workmanage/manager/tonewpublish" class=""><i
+                        class="icon-add"></i>新建题目</a>
+                </p>
+            </div>
+
+            <div class="homework-content-wrap">
+            </div>
+        </div>
+    </div>
+</div>

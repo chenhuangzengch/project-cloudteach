@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtMagicWorkClassMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtMagicWorkClass" >
+    <id column="work_class_id" property="workClassId" jdbcType="VARCHAR" />
+    <result column="work_id" property="workId" jdbcType="VARCHAR" />
+    <result column="class_id" property="classId" jdbcType="VARCHAR" />
+    <result column="school_id" property="schoolId" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="WorkClassViewResultMap" type="net.xuele.cloudteach.view.WorkClassView">
+    <id column="work_class_id" property="workClassId" jdbcType="VARCHAR"/>
+    <result column="work_id" property="workId" jdbcType="VARCHAR"/>
+    <result column="class_id" property="classId" jdbcType="VARCHAR"/>
+    <result column="status" property="status" jdbcType="INTEGER"/>
+    <result column="years" property="years" jdbcType="INTEGER"/>
+    <result column="code_sharing" property="codeSharing" jdbcType="INTEGER"/>
+  </resultMap>
+
+  <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtMagicWorkClass" >
+    insert into ct_magic_work_class (work_class_id, work_id, class_id, 
+      school_id, status)
+    values (#{workClassId,jdbcType=VARCHAR}, #{workId,jdbcType=VARCHAR}, #{classId,jdbcType=VARCHAR}, 
+      #{schoolId,jdbcType=VARCHAR},#{status,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtMagicWorkClass" >
+    update ct_magic_work_class
+    set work_id = #{workId,jdbcType=VARCHAR},
+      class_id = #{classId,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER}
+    where school_id = #{schoolId,jdbcType=VARCHAR} AND work_class_id = #{workClassId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    select work_class_id, work_id, class_id, school_id, status
+    from ct_magic_work_class
+    where school_id = #{schoolId,jdbcType=VARCHAR} AND work_class_id = #{workClassId,jdbcType=VARCHAR}
+  </select>
+  <!--根据作业id查询对应的班级详细信息-->
+  <select id="queryMagicWorkClassList" resultMap="WorkClassViewResultMap">
+    select c.work_class_id workClassId,c.work_id workId, c.class_id classId, c.status status,
+    mc.years years,mc.code_sharing codeSharing,mc.name className
+    from ct_magic_work_class as c
+    inner join m_class as mc on c.class_id=mc.class_id
+    where c.status=1 and c.work_id = #{workId,jdbcType=VARCHAR}
+    and c.school_id = #{schoolId,jdbcType=VARCHAR}
+  </select>
+  <!--根据提分宝作业id对应的班级信息-->
+  <update id="deleteByWorkId"  >
+    update ct_magic_work_class
+    set status = 0
+    where work_id = #{workId,jdbcType=VARCHAR}
+    and status=1
+    and school_id = #{schoolId,jdbcType=VARCHAR}
+  </update>
+  <!--根据作业id查询对应的班级列表-->
+  <select id="selectByWorkId" resultMap="BaseResultMap">
+    select work_class_id, work_id, class_id, status
+    from ct_magic_work_class
+    where work_id = #{workId,jdbcType=VARCHAR}
+    and status=1
+    and school_id = #{schoolId,jdbcType=VARCHAR}
+  </select>
+  <!--根据班级id对应的班级信息-->
+  <update id="deleteByClassId"  >
+    update ct_magic_work_class
+    set status = 0
+    where class_id = #{classId,jdbcType=VARCHAR}
+    and work_id = #{workId,jdbcType=VARCHAR}
+    and school_id = #{schoolId,jdbcType=VARCHAR}
+  </update>
+  <!--查询班级对应的学生回答信息-->
+  <select id="selectWorkAnswer" resultType="net.xuele.cloudteach.domain.CtMagicWorkAnswer">
+    select REPLACE(UUID(),'-','') answerId,#{workClass.workId,jdbcType=VARCHAR} workId,stu.user_id userId,#{workClass.classId,jdbcType=VARCHAR} classId,'' context,0 score,'' challengeId,0 subStatus,
+    0 correctStatus,null subTime,null correctTime,now() updateTime,stu.user_id updateUserId,#{workClass.schoolId,jdbcType=VARCHAR} schoolId,1 status
+      from m_student stu INNER join m_users us
+      on stu.user_id=us.user_id and stu.school_id=us.school_id
+      where stu.class_id = #{workClass.classId,jdbcType=VARCHAR}
+      and stu.school_id = #{workClass.schoolId,jdbcType=VARCHAR}
+      and us.status != 0
+</select>
+
+</mapper>

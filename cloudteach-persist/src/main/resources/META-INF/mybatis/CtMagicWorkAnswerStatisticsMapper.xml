@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtMagicWorkAnswerStatisticsMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtMagicWorkAnswerStatistics" >
+    <id column="answer_id" property="answerId" jdbcType="VARCHAR" />
+    <result column="comment_times" property="commentTimes" jdbcType="INTEGER" />
+    <result column="praise_times" property="praiseTimes" jdbcType="INTEGER" />
+    <result column="school_id" property="schoolId" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+  </resultMap>
+  <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtMagicWorkAnswerStatistics" >
+    insert into ct_magic_work_answer_statistics (answer_id, comment_times, praise_times, 
+      school_id, status)
+    values (#{answerId,jdbcType=VARCHAR}, #{commentTimes,jdbcType=INTEGER}, #{praiseTimes,jdbcType=INTEGER}, 
+      #{schoolId,jdbcType=VARCHAR},#{status,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtMagicWorkAnswerStatistics" >
+    update ct_magic_work_answer_statistics
+    set comment_times = #{commentTimes,jdbcType=INTEGER},
+      praise_times = #{praiseTimes,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER}
+    where school_id = #{schoolId,jdbcType=VARCHAR} AND answer_id = #{answerId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" >
+    select answer_id, comment_times, praise_times, school_id, status
+    from ct_magic_work_answer_statistics
+    where school_id = #{schoolId,jdbcType=VARCHAR} AND answer_id = #{answerId,jdbcType=VARCHAR}
+  </select>
+  <!--逻辑删除提分宝作业回答表对应的统计表记录-->
+  <update id="deleteByWorkId"  >
+    update ct_magic_work_answer_statistics
+    set status = 0
+    where answer_id in(
+      select answer_id
+      from ct_magic_work_answer
+      where work_id = #{workId,jdbcType=VARCHAR}
+      and school_id = #{schoolId,jdbcType=VARCHAR}
+      )
+  </update>
+  <!--逻辑删除提分宝作业回答表对应的统计表记录.单条-->
+  <update id="delete"  >
+    update ct_magic_work_answer_statistics
+    set status = 0
+    where answer_id = #{answerId,jdbcType=VARCHAR}
+    and school_id = #{schoolId,jdbcType=VARCHAR}
+  </update>
+  <!--用户发布提分宝作业时 提分宝作业回答统计表初始化-->
+  <insert id="initialize" parameterType="java.util.List">
+     insert into ct_magic_work_answer_statistics (answer_id, comment_times, praise_times,
+      school_id,status)
+    VALUES
+    <foreach collection="answerList" item="answer" index="index" separator=",">
+      ( #{answer.answerId},0,0,#{answer.schoolId},#{answer.status})
+    </foreach>
+  </insert>
+</mapper>

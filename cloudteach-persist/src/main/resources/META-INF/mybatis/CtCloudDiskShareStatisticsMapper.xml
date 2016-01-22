@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtCloudDiskShareStatisticsMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtCloudDiskShareStatistics" >
+    <id column="share_id" property="shareId" jdbcType="VARCHAR" />
+    <result column="download_times" property="downloadTimes" jdbcType="INTEGER" />
+    <result column="save_times" property="saveTimes" jdbcType="INTEGER" />
+    <result column="read_times" property="readTimes" jdbcType="INTEGER" />
+    <result column="praise_times" property="praiseTimes" jdbcType="INTEGER" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from ct_cloud_disk_share_statistics
+    where share_id = #{shareId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtCloudDiskShareStatistics" >
+    insert into ct_cloud_disk_share_statistics (share_id, download_times, save_times,
+      read_times, praise_times)
+    values (#{shareId,jdbcType=VARCHAR}, #{downloadTimes,jdbcType=INTEGER}, #{saveTimes,jdbcType=INTEGER},
+      #{readTimes,jdbcType=INTEGER}, #{praiseTimes,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtCloudDiskShareStatistics" >
+    update ct_cloud_disk_share_statistics
+    set  download_times = download_times+ifnull(#{downloadTimes,jdbcType=INTEGER},0),
+          save_times = save_times+ifnull(#{saveTimes,jdbcType=INTEGER},0),
+          read_times = read_times+ifnull(#{readTimes,jdbcType=INTEGER},0),
+          praise_times = praise_times+ifnull(#{praiseTimes,jdbcType=INTEGER},0)
+    where share_id = #{shareId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select share_id, download_times, save_times, read_times, praise_times
+    from ct_cloud_disk_share_statistics
+    where share_id = #{shareId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select share_id, download_times, save_times, read_times, praise_times
+    from ct_cloud_disk_share_statistics
+  </select>
+
+</mapper>

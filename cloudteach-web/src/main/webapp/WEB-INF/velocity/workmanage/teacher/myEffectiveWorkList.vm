@@ -1,0 +1,79 @@
+#set($page_title="教师作业管理-进行中作业")
+#set($currPage="teacherWorkMg")
+#define($script)
+<link rel="stylesheet" href="$!{asset_host}/css/cloudteach/homework-manage.css?version=${version}"/>
+<script src="$!{asset_host}/js/cloudteach/task-list.js?version=${version}"></script>
+#end
+
+<div class="container">
+    <div class="homework-manage-top">
+        <div class="homework-choose-class">
+            <p class="homework-class-name" data-type="">
+                <img src="$!{asset_host}/imgs/cloudteach/homework_manage_01.png" class="homework-class-medal"/>
+                <span>全部班级</span>
+                <img src="$!{asset_host}/imgs/cloudteach/homework_manage_02.png" class="homework-next"/>
+            </p>
+
+            <div class="homework-choose-classname">
+                <div class="class-wrap">
+                    #foreach($gradeNum in $teachGradeList)
+                        <div class="homework-class-main">
+                            <h2>${gradeNum}年级</h2>
+                            <ul>
+                                #foreach($classInfoDTO in $teachClassList)
+                                    #if (${classInfoDTO.gradeNum} == ${gradeNum})
+                                        <li data-type="${classInfoDTO.classId}"><i class="icon-grades icon"></i><span
+                                                class="name">${classInfoDTO.className}</span></li>
+                                    #end
+                                #end
+                            </ul>
+                        </div>
+                    #end
+
+                </div>
+            </div>
+        </div>
+        <div class="homework-manage-course">
+            <p class="homework-course-name" data-type="">
+                <span>全部科目</span>
+                <img src="$!{asset_host}/imgs/cloudteach/homework_manage_02.png" class="homework-next"/>
+            </p>
+            <ul class="homework-course-main">
+                <li data-type="">全部科目</li>
+                #foreach($subjectGatherViewDTO in $subjectGatherViewDTOList)
+                    <li data-type="${subjectGatherViewDTO.subjectId}">${subjectGatherViewDTO.subjectName}</li>
+                #end
+            </ul>
+        </div>
+        <div class="homework-manage-type">
+            <p class="homework-type-name" data-type="">
+                <span>全部类型</span>
+                <img src="$!{asset_host}/imgs/cloudteach/homework_manage_02.png" class="homework-next"/>
+            </p>
+            <ul class="homework-type-main">
+                <li data-type="">全部类型</li>
+                <li data-type="1">预习</li>
+                <li data-type="2">提分宝</li>
+                <li data-type="3">同步课堂</li>
+                <li data-type="4">电子作业</li>
+                <li data-type="7">口语作业</li>
+                <li data-type="8">课外作业</li>
+            </ul>
+        </div>
+    #*<p class="correct-all">
+        <img src="$!{asset_host}/imgs/cloudteach/homework_manage_10.png" />
+        <span>全部快速批阅</span>
+    </p>*#
+    </div>
+    <div class="empty">
+        <p class="empty-msg">没有进行中的作业</p>
+
+        <p class="empty-who">您可以先在云教学中先布置作业，等学生完成后再来看看</p>
+
+        <p class="empty-ctls"><a href="$!{ctx}/teacher/initWorkPage" class=""><i class="icon-add"></i>去布置作业</a></p>
+    </div>
+
+    <div class="homework-content-wrap">
+    </div>
+</div>
+

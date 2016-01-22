@@ -1,0 +1,82 @@
+#set($layout="layout/bodyLayout.vm")
+#set($page_title="提分宝")
+#define($script)
+<link rel="stylesheet" href="$!{asset_host}/css/cloudteach/magic.css?version=${version}"/>
+#*<script src="http://asset.xueleyun.com/g/lib/gallery/math/MathJax.js?config=TeX-MML-AM_HTMLorMML-full"></script>*#
+<script src="$!{asset_host}/js/cloudteach/magic.js?version=${version}"></script>
+
+#end
+
+<div class="magic-wrap">
+
+    <div class="detail-head" >
+        <div class="upgrade-head">
+            <em class="em-upgrade-head">提分宝</em>
+            #if($!{identityId} == "STUDENT" )
+                <div class="quit">
+                    <i class="quit-icon"></i>
+                    <span>结束练习</span>
+                </div>
+            #end
+
+        </div>
+    </div>
+    <h3 class="course-name">$!{unitName}</h3>
+    <div class="loading-wrap">
+        <div class="loading"></div>
+        <p class="p-loading">正在加载提分宝，请稍后...</p>
+    </div>
+    <div class="magic-start">
+        <div class="magic-notice">
+            <h2>应用简介</h2>
+            <p class="p-sum">提分宝是与学校数学、物理和化学课本配套的练习和练习题的讲解视频，学生通过提分宝的练习可以做到知识的巩固和考试成绩的提升。提分宝以优化学生学习和提升考试分数为目标：
+            </p>
+            <p class="p-list">
+                1. 与学校课本深度整合，减轻学生学习负担；<br/>
+                2. 提分宝都配套对应的题目讲解视频，解决学生不懂或不会做的困惑；<br/>
+                3. 为学生设定不同的练习目标，不同学习进度的学生都可获得提升；<br/>
+                4. 为学生的练习结果输出科学的评测结果，帮助矫正学习目标；<br/>
+                5. 知识原本是课本或老师的，通过提分宝就能真正称谓学生自己的能力。
+            </p>
+            <p class="p-grade">
+                系统会根据你的完成情况，评测你的知识掌握水平，并相应获得以下的徽章。<br/>
+                徽章等级为：
+                <img src="http://asset.xueleyun.com/imgs/cloudteach/magic-level.png" alt=""/>
+            </p>
+            <em class="e-vital">*试运营期间所有用户都可免费试用。</em>
+        </div>
+        <div class="start-rect">
+            <p class="note">认真学习，必成学霸</p>
+            <div class="btn-start">开始答题</div>
+        </div>
+    </div>
+    <div class="magic-content">
+        <div class="task-wrap task-result">
+        </div>
+        <div class="hand-info">
+            <div class="before">
+                <div class="count">
+                    答题计时：
+                    <em class="time">00 : 00 : 00</em>
+                </div>
+                <ul class="task-num">
+                </ul>
+                <div class="btn-hand">确认交卷</div>
+            </div>
+            <div class="after">
+                <ul class="ul-ans">
+                    <li>正确：<em class="r-num"></em></li>
+                    <li>错误: <em class="w-num"></em></li>
+                    <li class="li-time">所花时间: <em class="e-time"></em></li>
+                </ul>
+                <div class="score-level">
+                    <i class=""></i>
+
+                    <div class="level-notes"></div>
+                </div>
+                <a href="" class="btn-again useable">再次挑战</a>
+            </div>
+        </div>
+    </div>
+</div>
+

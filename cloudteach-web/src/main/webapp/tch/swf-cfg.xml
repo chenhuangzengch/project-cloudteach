@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<SKConfig>
+    <Parameters>userid|pwd|jcid|kcid|skid|url</Parameters>
+    <Interfaces>
+        <AllResource url="http://cloudteach.app.xuele.net:8080/cloudteach-web/onlineTeach/getFileByUnitCodeByWebC" desc="所有资源">kcid</AllResource>
+        <TeacherEdit url="http://cloudteach.app.xuele.net:8080/cloudteach-web/onlineTeach/coursewareGetByID" desc="编辑,授课时候调用获取课件信息">id|kcid</TeacherEdit>
+            <SaveURL url="http://cloudteach.app.xuele.net:8080/cloudteach-web/onlineTeach/coursewareEdit" desc="用户保存课件编辑">content|id|kcid</SaveURL>
+        <TeacherShare url="http://cloudteach.app.xuele.net:8080/cloudteach-web/onlineTeach/coursewareGetByShare" desc="预览分享课件">id|kcid</TeacherShare>
+        <AutoSave url="http://cloudteach.app.xuele.net:8080/cloudteach-web/onlineTeach/coursewareSetTemp" desc="自动保存">content|id|kcid</AutoSave>
+        <DZKBInfo url="http://cloudteach.app.xuele.net:8080/cloudteach-web/onlineTeach/getEBookByCoursewareId" desc="获取电子教材信息">kcid</DZKBInfo>
+        <Homework url="http://cloudteach.app.xuele.net:8080/cloudteach-web/onlineTeach/getSSQuanByUserIDClasss" desc="电子作业">g|c</Homework>
+        <Talkwork url="http://cloudteach.app.xuele.net:8080/cloudteach-web/onlineTeach/getGLDListByUserClass" desc="讨论作业">kcid|g|c</Talkwork>
+        <TeacherClass url="http://cloudteach.app.xuele.net:8080/cloudteach-web/onlineTeach/getTeacherClass" desc="教师所带教室">kcid</TeacherClass>
+    </Interfaces>
+</SKConfig>

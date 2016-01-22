@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtMagicQuestionVideoMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtMagicQuestionVideo" >
+    <id column="video_id" property="videoId" jdbcType="VARCHAR" />
+    <result column="que_id" property="queId" jdbcType="VARCHAR" />
+    <result column="video_file_key" property="videoFileKey" jdbcType="VARCHAR" />
+    <result column="video_suffix" property="videoSuffix" jdbcType="VARCHAR" />
+    <result column="video_desc" property="videoDesc" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="create_user" property="createUser" jdbcType="VARCHAR" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="update_user" property="updateUser" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from ct_magic_question_video
+    where video_id = #{videoId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtMagicQuestionVideo" >
+    insert into ct_magic_question_video (video_id, que_id, video_file_key, 
+      video_suffix, video_desc, status, 
+      create_time, create_user, update_time, 
+      update_user)
+    values (#{videoId,jdbcType=VARCHAR}, #{queId,jdbcType=VARCHAR}, #{videoFileKey,jdbcType=VARCHAR}, 
+      #{videoSuffix,jdbcType=VARCHAR}, #{videoDesc,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{createUser,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{updateUser,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtMagicQuestionVideo" >
+    update ct_magic_question_video
+    set que_id = #{queId,jdbcType=VARCHAR},
+      video_file_key = #{videoFileKey,jdbcType=VARCHAR},
+      video_suffix = #{videoSuffix,jdbcType=VARCHAR},
+      video_desc = #{videoDesc,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=VARCHAR}
+    where video_id = #{videoId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select video_id, que_id, video_file_key, video_suffix, video_desc, status, create_time, 
+    create_user, update_time, update_user
+    from ct_magic_question_video
+    where video_id = #{videoId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByQueId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select video_id, que_id, video_file_key, video_suffix, video_desc, status, create_time,
+    create_user, update_time, update_user
+    from ct_magic_question_video
+    where que_id = #{queId,jdbcType=VARCHAR}
+    and status = 1
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select video_id, que_id, video_file_key, video_suffix, video_desc, status, create_time, 
+    create_user, update_time, update_user
+    from ct_magic_question_video
+  </select>
+</mapper>

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtBlackboardPublishStudentMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtBlackboardPublishStudent" >
+    <id column="blackboard_user_id" property="blackboardUserId" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="class_id" property="classId" jdbcType="VARCHAR" />
+    <result column="blackboard_id" property="blackboardId" jdbcType="VARCHAR" />
+    <result column="read_status" property="readStatus" jdbcType="INTEGER" />
+    <result column="read_time" property="readTime" jdbcType="TIMESTAMP" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="school_id" property="schoolId" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from ct_blackboard_publish_student
+    where blackboard_user_id = #{blackboardUserId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="batchInsert" parameterType="java.util.List"  >
+    insert into ct_blackboard_publish_student (blackboard_user_id, user_id, class_id,blackboard_id,
+      read_status,  status , school_id
+      )
+    values
+    <foreach collection="list" item="item" index="index" separator="," >
+    (#{item.blackboardUserId,jdbcType=VARCHAR}, #{item.userId,jdbcType=VARCHAR},#{item.classId,jdbcType=VARCHAR},
+      #{item.blackboardId,jdbcType=VARCHAR},
+      #{item.readStatus,jdbcType=INTEGER}, #{item.status,jdbcType=INTEGER},#{item.schoolId,jdbcType=VARCHAR}
+      )
+    </foreach>
+  </insert>
+
+  <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtBlackboardPublishStudent" >
+    insert into ct_blackboard_publish_student (blackboard_user_id, user_id,class_id, blackboard_id,
+    read_status, read_time, status , school_id
+    )
+    values (#{blackboardUserId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR},  #{classId,jdbcType=VARCHAR},#{blackboardId,jdbcType=VARCHAR},
+    #{readStatus,jdbcType=INTEGER}, #{readTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER},#{schoolId,jdbcType=VARCHAR}
+    )
+  </insert>
+
+  <!--获取初始化信息-->
+  <select id="getInitInfo" resultMap="BaseResultMap">
+    select REPLACE(UUID(),'-','') blackboard_user_id,s.user_id,
+    s.class_id,#{blackboardId,jdbcType=VARCHAR} blackboard_id,0 read_status,1 status,s.school_id
+    from m_student s
+    inner join m_users  u on s.user_id = u.user_id and u.status != 0
+    where s.school_id = #{schoolId,jdbcType=VARCHAR}
+    and s.class_id in
+    <foreach collection="classList" item="classId" index="index" open="(" close=")" separator=",">
+      #{classId}
+    </foreach>
+    limit 10000
+  </select>
+
+
+
+  <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtBlackboardPublishStudent" >
+    update ct_blackboard_publish_student
+    set user_id = #{userId,jdbcType=VARCHAR},
+      class_id = #{classId,jdbcType=VARCHAR},
+      blackboard_id = #{blackboardId,jdbcType=VARCHAR},
+      read_status = #{readStatus,jdbcType=INTEGER},
+      read_time = #{readTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER}
+    where blackboard_user_id = #{blackboardUserId,jdbcType=VARCHAR} and school_id = #{schoolId,jdbcType=VARCHAR}
+  </update>
+
+
+  <update id="batchUpdateByClassIdList"  >
+    update ct_blackboard_publish_student
+    set
+    status = 0
+    where  school_id = #{schoolId,jdbcType=VARCHAR} and class_id in
+    <foreach collection="list" item="classes" index="index" open="(" close=")" separator=",">
+      #{classes}
+    </foreach>
+  </update>
+
+
+  <select id="getStudentNumByClassIdList" resultType="int" >
+    select count(1)
+    from ct_blackboard_publish_student
+    where  status = 1 AND read_status = 1 and school_id = #{schoolId,jdbcType=VARCHAR} AND class_id in
+    <foreach collection="list" item="classId"  open="(" separator="," close=")">
+      #{classId,jdbcType=VARCHAR}
+    </foreach>
+  </select>
+
+
+  <update id="updateByBlackboardIdAndUserIdSelective" parameterType="net.xuele.cloudteach.domain.CtBlackboardPublishStudent" >
+    update ct_blackboard_publish_student
+    <set >
+      <if test="readStatus != null" >
+        read_status = #{readStatus,jdbcType=INTEGER},
+      </if>
+      <if test="readTime != null" >
+        read_time = #{readTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where  school_id = #{schoolId,jdbcType=VARCHAR} and user_id = #{userId,jdbcType=VARCHAR}
+    AND blackboard_id = #{blackboardId,jdbcType=VARCHAR} AND status = 1
+  </update>
+
+  <update id="updateStatusByBlackboardId" >
+    update ct_blackboard_publish_student
+    SET
+    status = 0
+    WHERE blackboard_id = #{blackboardId,jdbcType=VARCHAR} and school_id = #{schoolId,jdbcType=VARCHAR}
+  </update>
+
+
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    select blackboard_user_id, user_id,class_id, blackboard_id, read_status, read_time, status
+    from ct_blackboard_publish_student
+    where blackboard_user_id = #{blackboardUserId,jdbcType=VARCHAR} and school_id = #{schoolId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select blackboard_user_id, user_id,class_id, blackboard_id, read_status, read_time, status
+    from ct_blackboard_publish_student
+    where school_id = #{schoolId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getCountByBlackboardId" resultType="int" >
+    select count(1)
+    from ct_blackboard_publish_student
+    where blackboard_id = #{blackboardId,jdbcType=VARCHAR} AND  status = 1 and school_id = #{schoolId,jdbcType=VARCHAR}
+  </select>
+</mapper>

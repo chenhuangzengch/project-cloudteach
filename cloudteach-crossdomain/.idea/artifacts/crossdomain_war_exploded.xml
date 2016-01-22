@@ -1,0 +1,16 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="crossdomain:war exploded">
+    <output-path>$PROJECT_DIR$/cloudteach-crossdomain/target/crossdomain</output-path>
+    <root id="root">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="crossdomain" />
+        </element>
+      </element>
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="D:\work\cloudteach\cloudteach-crossdomain\target/MANIFEST.MF" />
+      </element>
+      <element id="javaee-facet-resources" facet="crossdomain/web/Web" />
+    </root>
+  </artifact>
+</component>

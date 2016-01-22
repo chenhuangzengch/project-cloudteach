@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtBankItemMapper">
+    <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtBankItem">
+        <id column="item_id" property="itemId" jdbcType="VARCHAR"/>
+        <result column="creator" property="creator" jdbcType="VARCHAR"/>
+        <result column="unit_id" property="unitId" jdbcType="VARCHAR"/>
+        <result column="is_collect" property="isCollect" jdbcType="INTEGER"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="pid" property="pid" jdbcType="VARCHAR"/>
+        <result column="item_type" property="itemType" jdbcType="INTEGER"/>
+        <result column="sub_image" property="subImage" jdbcType="INTEGER"/>
+        <result column="sub_tape" property="subTape" jdbcType="INTEGER"/>
+        <result column="sub_video" property="subVideo" jdbcType="INTEGER"/>
+        <result column="sub_other" property="subOther" jdbcType="INTEGER"/>
+        <result column="context" property="context" jdbcType="VARCHAR"/>
+        <result column="stick_status" property="stickStatus" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="share_status" property="shareStatus" jdbcType="INTEGER"/>
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="voicecontext" property="voiceContext" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!-- 题目库视图结果集 -->
+    <resultMap id="ViewResultMap" type="net.xuele.cloudteach.view.BankItemView">
+        <id column="item_id" property="itemId" jdbcType="VARCHAR"/>
+        <result column="creator" property="creator" jdbcType="VARCHAR"/>
+        <result column="unit_id" property="unitId" jdbcType="VARCHAR"/>
+        <result column="is_collect" property="isCollect" jdbcType="INTEGER"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="pid" property="pid" jdbcType="VARCHAR"/>
+        <result column="item_type" property="itemType" jdbcType="INTEGER"/>
+        <result column="sub_image" property="subImage" jdbcType="INTEGER"/>
+        <result column="sub_tape" property="subTape" jdbcType="INTEGER"/>
+        <result column="sub_video" property="subVideo" jdbcType="INTEGER"/>
+        <result column="sub_other" property="subOther" jdbcType="INTEGER"/>
+        <result column="context" property="context" jdbcType="VARCHAR"/>
+        <result column="stick_status" property="stickStatus" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="share_status" property="shareStatus" jdbcType="INTEGER"/>
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="voicecontext" property="voiceContext" jdbcType="VARCHAR"/>
+        <association column="{itemId=item_id,schoolId=school_id}" property="filesAmount" javaType="long"
+                     select="net.xuele.cloudteach.persist.CtBankItemFilesMapper.selectAttachmentAmount"
+                />
+    </resultMap>
+
+    <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtBankItem">
+    insert into ct_bank_item (item_id, creator, unit_id, 
+      is_collect, user_id, pid, 
+      item_type, sub_image, sub_tape, 
+      sub_video, sub_other, context,
+      stick_status, create_time, update_time, 
+      share_status, school_id, status, voicecontext
+      )
+    values (#{itemId,jdbcType=VARCHAR}, #{creator,jdbcType=VARCHAR}, #{unitId,jdbcType=VARCHAR}, 
+      #{isCollect,jdbcType=INTEGER}, #{userId,jdbcType=VARCHAR}, #{pid,jdbcType=VARCHAR}, 
+      #{itemType,jdbcType=INTEGER}, #{subImage,jdbcType=INTEGER}, #{subTape,jdbcType=INTEGER}, 
+      #{subVideo,jdbcType=INTEGER}, #{subOther,jdbcType=INTEGER}, #{context,jdbcType=VARCHAR},
+      #{stickStatus,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{shareStatus,jdbcType=INTEGER}, #{schoolId,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{voiceContext,jdbcType=VARCHAR}
+      )
+  </insert>
+    <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtBankItem">
+    update ct_bank_item
+    set creator = #{creator,jdbcType=VARCHAR},
+      unit_id = #{unitId,jdbcType=VARCHAR},
+      is_collect = #{isCollect,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=VARCHAR},
+      pid = #{pid,jdbcType=VARCHAR},
+      item_type = #{itemType,jdbcType=INTEGER},
+      sub_image = #{subImage,jdbcType=INTEGER},
+      sub_tape = #{subTape,jdbcType=INTEGER},
+      sub_video = #{subVideo,jdbcType=INTEGER},
+      sub_other = #{subOther,jdbcType=INTEGER},
+      context = #{context,jdbcType=VARCHAR},
+      stick_status = #{stickStatus,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      share_status = #{shareStatus,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER},
+      voicecontext = #{voiceContext,jdbcType=VARCHAR}
+    where item_id = #{itemId,jdbcType=VARCHAR}
+      and school_id = #{schoolId,jdbcType=VARCHAR}
+  </update>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    SELECT item_id, creator, unit_id, is_collect, user_id, pid, item_type, sub_image,
+    sub_tape, sub_video, sub_other, context, stick_status, create_time, update_time,
+    share_status, school_id, status, voicecontext
+    FROM ct_bank_item
+    WHERE school_id = #{schoolId,jdbcType=VARCHAR}
+    AND item_id = #{itemId,jdbcType=VARCHAR}
+  </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+    select item_id, creator, unit_id, is_collect, user_id, pid, item_type, sub_image, 
+    sub_tape, sub_video, sub_other, context, stick_status, create_time, update_time,
+    share_status, school_id, status, voicecontext
+    from ct_bank_item
+  </select>
+
+    <!--查询我的题目列表-->
+    <select id="selectMyItemList" resultMap="ViewResultMap">
+        SELECT
+        item_id,
+        creator,
+        unit_id,
+        is_collect,
+        user_id,
+        pid,
+        item_type,
+        sub_image,
+        sub_tape,
+        sub_video,
+        sub_other,
+        context,
+        stick_status,
+        create_time,
+        update_time,
+        share_status,
+        school_id,
+        status,
+        voicecontext
+        FROM
+        ct_bank_item cbi
+        WHERE
+        cbi.school_id = #{schoolId}
+        AND cbi.creator = #{creator}
+        AND cbi.unit_id = #{unitId}
+        AND cbi.item_type = #{type}
+        <if test="isCollect!=null">
+            AND cbi.is_collect = #{isCollect}
+        </if>
+        AND cbi.status = 1
+        ORDER BY cbi.stick_status DESC,cbi.create_time DESC
+    </select>
+
+    <!--根据来源id，收藏用户，获取题目分享中收藏对应的的题目-->
+    <select id="selectMyCollect" resultMap="BaseResultMap">
+    select item_id, creator, unit_id, is_collect, user_id, pid, item_type, sub_image,
+    sub_tape, sub_video, sub_other, context, stick_status, create_time, update_time,
+    share_status, school_id, status, voicecontext
+    from ct_bank_item
+    where pid = #{pid,jdbcType=VARCHAR}
+    and school_id = #{schoolId,jdbcType=VARCHAR}
+    and creator = #{creator,jdbcType=VARCHAR}
+    and is_collect = 1
+    and status = 1
+  </select>
+
+    <!--删除题目-->
+    <update id="removeItem">
+        UPDATE ct_bank_item
+        SET status = 0
+        WHERE school_id = #{schoolId,jdbcType=VARCHAR}
+        AND item_id = #{itemId,jdbcType=VARCHAR}
+    </update>
+
+    <!--置顶我的题目-->
+    <update id="stickyItem">
+        update ct_bank_item
+        set stick_status = 1
+        where school_id = #{schoolId,jdbcType=VARCHAR}
+        AND  item_id = #{itemId,jdbcType=VARCHAR}
+    </update>
+
+    <!--取消置顶我的题目-->
+    <update id="cancelStickyItem">
+        update ct_bank_item
+        set stick_status = 0
+        where school_id = #{schoolId,jdbcType=VARCHAR}
+        AND  item_id = #{itemId,jdbcType=VARCHAR}
+    </update>
+
+    <!--我的题目提交分享审核-->
+    <update id="shareItem">
+        UPDATE ct_bank_item
+        SET share_status = 1
+        WHERE  school_id = #{schoolId,jdbcType=VARCHAR}
+        AND  item_id = #{itemId,jdbcType=VARCHAR}
+    </update>
+
+    <!--我的题目分享审核成功-->
+    <update id="shareItemSuc">
+        UPDATE ct_bank_item
+        SET share_status = 2
+        WHERE  school_id = #{schoolId,jdbcType=VARCHAR}
+        AND  item_id = #{itemId,jdbcType=VARCHAR}
+    </update>
+
+    <!--我的题目分享审核失败-->
+    <update id="shareItemFail">
+        UPDATE ct_bank_item
+        SET share_status = 3
+        WHERE  school_id = #{schoolId,jdbcType=VARCHAR}
+        AND  item_id = #{itemId,jdbcType=VARCHAR}
+    </update>
+
+    <!--我的题目取消分享-->
+    <update id="unShareItem">
+        UPDATE ct_bank_item
+        SET share_status = 0
+        WHERE  school_id = #{schoolId,jdbcType=VARCHAR}
+        AND  item_id = #{itemId,jdbcType=VARCHAR}
+    </update>
+    <!--取消收藏我的题目-->
+    <update id="unCollectItem">
+        update ct_bank_item
+        set share_status = 0
+        where school_id = #{schoolId,jdbcType=VARCHAR}
+        AND  pid = #{itemId,jdbcType=VARCHAR}
+        and status = 1
+    </update>
+
+    <!--查询用户在某个时间段内分享成功的题目总数-->
+    <select id="selectSharedCount" resultType="long">
+        SELECT
+        COUNT(1) num
+        FROM
+        ct_bank_item
+        WHERE
+        school_id = #{schoolId}
+        AND user_id = #{userId}
+        <if test="itemType!=null and itemType != 0">
+            AND item_type = #{itemType}
+        </if>
+        AND share_status = 2
+        AND status = 1
+        AND create_time BETWEEN #{start} AND #{end}
+    </select>
+</mapper>

@@ -1,0 +1,80 @@
+#set($layout="layout/bodyLayout.vm")
+#set($page_title="发布预习作业")
+#set($currPage="guidance")
+#define($script)
+<link rel="stylesheet" href="$!{asset_host}/css/cloudteach/homework.css?version=${version}"/>
+<script src="$!{asset_host}/g/lib/gallery/datepicker/WdatePicker.js?version=${version}"></script>
+<script src="$!{asset_host}/js/cloudteach/publish-cloud.js?version=${version}"></script>
+#end
+
+<div class="publish-wrap">
+    <form action="$!{ctx}/guidance/work/addGuidanceWork" method="post">
+        <div class="publish-head">
+            <h2>
+                <em class="head-name">发布给学生</em>
+                <input type="submit" class="publish" value="发布">
+                <a class="cancel" href="$!{ctx}/guidance/item/index">取消</a>
+            </h2>
+        </div>
+        <div class="publish-content">
+            <div class="publish-set">
+                <div class="addclass-rect">
+                    <div class="addClass"><em>+ 添加班级</em></div>
+                    <img src="$!{asset_host}/imgs/cloudteach/add_class.png" class="classchoose"/>
+                    <input type="hidden" name="country" value=""/>
+                </div>
+                <div class="set-time">
+                    <div class="set-publish-time">
+                        <font>最晚交作业时间：</font>
+                        <ul class="ul-times">
+                            <li>
+                                <i class="radio-icon radio-yes"></i>
+                                <span>1天以内</span>
+                                <input type="radio" name="lastCommitRange" value="1" checked/>
+                            </li>
+                            <li>
+                                <i class="radio-icon radio-no"></i>
+                                <span>3天以内</span>
+                                <input type="radio" name="lastCommitRange" value="3"/>
+                            </li>
+                            <li>
+                                <i class="radio-icon radio-no"></i>
+                                <span>5天以内</span>
+                                <input type="radio" name="lastCommitRange" value="5"/>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="set-submit-time">
+                        <font>定时发布：</font>
+
+                        <div class="choose-date">
+                            <i class="radio-icon radio-yes"></i>
+                            <img src="$!{asset_host}/imgs/cloudteach/setwork_time.png" class="set-date"/>
+                            <span class="choose" onclick="WdatePicker()">选择预定日期</span>
+                            <input type="radio" name="publishTime" value="" checked/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" name="unitId" value="$!{unitId}"/>
+        <input type="hidden" name="classList" value=""/>
+        <input type="hidden" name="classJson" value=""/>
+        <input type="hidden" name="itemList" value="$!{itemList}"/>
+    </form>
+##    <div class="popup">
+##        <div class="popup-info">
+##            <h4 class="popup-head">
+##                <span class="popup-name"></span>
+##                <i class="close-icon"></i>
+##            </h4>
+##
+##            <div class="popup-content">
+##            </div>
+##            <div class="popup-act">
+##                <a href="javascript:void(0)" class="popup-cancel">取消</a>
+##                <a href="javascript:void(0)" class="popup-confirm">确定</a>
+##            </div>
+##        </div>
+##    </div>
+</div>

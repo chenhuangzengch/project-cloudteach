@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+       xsi:schemaLocation="
+            http://www.springframework.org/schema/beans
+                http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/context
+                http://www.springframework.org/schema/context/spring-context.xsd
+            http://www.springframework.org/schema/rabbit
+                http://www.springframework.org/schema/rabbit/spring-rabbit-1.0.xsd">
+
+    <!-- 属性文件读取 -->
+    <context:property-placeholder location="classpath:application.properties" ignore-unresolvable="true"/>
+
+    <!-- 连接服务器配置 -->
+    <rabbit:connection-factory id="connectionFactory" host="${rabbitmq.server.host}"
+                               username="${rabbitmq.server.username}" password="${rabbitmq.server.password}"
+                               port="${rabbitmq.server.port}" channel-cache-size="${channel.size}"/>
+
+    <rabbit:admin connection-factory="connectionFactory"/>
+
+    <!-- queues队列声明 -->
+    <rabbit:queue id="coursewarePackQueue" name="${queues.coursepack.name}" durable="true" auto-delete="false"
+                  exclusive="false"/>
+
+    <!-- 交换机和队列通过routingKey绑定 -->
+    <rabbit:direct-exchange id="mqExchange" name="${exchange.name}" durable="true" auto-delete="false">
+        <rabbit:bindings>
+            <rabbit:binding queue="coursewarePackQueue" key="courseware.pack"></rabbit:binding>
+        </rabbit:bindings>
+    </rabbit:direct-exchange>
+
+    <!-- 消息转换器 生产的数据转换后存入队列-->
+    <bean id="messageConverter" class="net.xuele.common.rabbitmq.FastJsonMessageConverter"></bean>
+
+    <rabbit:template id="rabbitTemplate" connection-factory="connectionFactory" exchange="${exchange.name}"
+                     message-converter="messageConverter"/>
+    <context:component-scan base-package="net.xuele.cloudteach.service.mq">
+        <!-- 细化扫描粒度 -->
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Component"/>
+    </context:component-scan>
+
+    <!-- 消费者与队列绑定[移至coursePack项目] -->
+    <!--<rabbit:listener-container connection-factory="connectionFactory" acknowledge="auto" concurrency="30">-->
+        <!--<rabbit:listener queues="coursewarePackQueue" ref="packCoursewareConsumer"/>-->
+    <!--</rabbit:listener-container>-->
+
+
+</beans>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtTeachCoursewaresShareCollectMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtTeachCoursewaresShareCollect" >
+    <id column="share_collect_id" property="shareCollectId" jdbcType="VARCHAR" />
+    <result column="share_id" property="shareId" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="collect_time" property="collectTime" jdbcType="TIMESTAMP" />
+    <result column="collect_status" property="collectStatus" jdbcType="INTEGER" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="map" >
+    delete from ct_teach_coursewares_share_collect
+    where share_id = #{shareId,jdbcType=VARCHAR}
+      and user_id = #{userId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtTeachCoursewaresShareCollect" >
+    insert into ct_teach_coursewares_share_collect (share_collect_id,share_id, user_id, collect_time,
+      collect_status)
+    values (REPLACE(UUID(),'-',''),#{shareId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{collectTime,jdbcType=TIMESTAMP},
+      #{collectStatus,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtTeachCoursewaresShareCollect" >
+    update ct_teach_coursewares_share_collect
+    set collect_time = #{collectTime,jdbcType=TIMESTAMP},
+      collect_status = #{collectStatus,jdbcType=INTEGER}
+    where share_id = #{shareId,jdbcType=VARCHAR}
+      and user_id = #{userId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="map" >
+    select share_collect_id,share_id, user_id, collect_time, collect_status
+    from ct_teach_coursewares_share_collect
+    where share_id = #{shareId,jdbcType=VARCHAR}
+      and user_id = #{userId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select shareCollectId,share_id, user_id, collect_time, collect_status
+    from ct_teach_coursewares_share_collect
+  </select>
+</mapper>

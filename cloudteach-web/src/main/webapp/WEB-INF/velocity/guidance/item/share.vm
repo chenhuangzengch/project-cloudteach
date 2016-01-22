@@ -1,0 +1,40 @@
+#set($page_title="大家的分享")
+#set($currPage="guidance")
+#define($script)
+<link rel="stylesheet" href="$!{asset_host}/css/cloudteach/homework.css?version=${version}" />
+<script  src="$!{asset_host}/js/cloudteach/guide-common.js?version=${version}"></script>
+<script  src="$!{asset_host}/js/cloudteach/guide-others.js?version=${version}"></script>
+#end
+
+<div class="container">
+    <div class="task-nav">
+        <a class="task-type " href="$!{ctx}/guidance/item/index">我的预习题</a>
+        <a class="task-type on" href="$!{ctx}/guidance/itemShare/index">大家的分享</a>
+    </div>
+    <div class="two-column">
+        <div class="left-nav">
+        ##LEFT 引入教材左侧页面片段
+            #parse("common/curriculumLeftBar.vm")
+        </div>
+        <div class="right-content">
+            <div class="current-type">
+                <div class="share-type">
+                    <p class="current-share">
+                        <span data-type="0">全部分享</span>
+                        <img src="$!{asset_host}/imgs/cloudteach/homework_manage_02.png" class="homework_course_next" />
+                    </p>
+                    <ul class="share-type-list">
+                        <li data-type="0">全部分享</li>
+                        <li data-type="1">大家的分享</li>
+                        <li data-type="2">我的分享</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="empty">
+                <p class="empty-msg">还没有任何分享内容</p>
+            </div>
+            <div class="others-details">
+            </div>
+        </div>
+    </div>
+</div>

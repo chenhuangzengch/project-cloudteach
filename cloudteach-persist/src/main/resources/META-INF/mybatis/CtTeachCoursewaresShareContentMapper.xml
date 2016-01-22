@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtTeachCoursewaresShareContentMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtTeachCoursewaresShareContent" >
+    <id column="coursewares_id" property="coursewaresId" jdbcType="VARCHAR" />
+    <result column="belong_type" property="belongType" jdbcType="INTEGER" />
+    <result column="content" property="content" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from ct_teach_coursewares_share_content
+    where coursewares_id = #{coursewaresId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtTeachCoursewaresShareContent" >
+    insert into ct_teach_coursewares_share_content (coursewares_id, belong_type, content
+      )
+    values (#{coursewaresId,jdbcType=VARCHAR}, #{belongType,jdbcType=INTEGER}, #{content,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtTeachCoursewaresShareContent" >
+    update ct_teach_coursewares_share_content
+    set belong_type = #{belongType,jdbcType=INTEGER},
+      content = #{content,jdbcType=LONGVARCHAR}
+    where coursewares_id = #{coursewaresId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select coursewares_id, belong_type, content
+    from ct_teach_coursewares_share_content
+    where coursewares_id = #{coursewaresId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select coursewares_id, belong_type, content
+    from ct_teach_coursewares_share_content
+  </select>
+</mapper>

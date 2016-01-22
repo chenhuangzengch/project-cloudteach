@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtMagicWorkChallengeMapper">
+    <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtMagicWorkChallenge">
+        <id column="challenge_id" property="challengeId" jdbcType="VARCHAR"/>
+        <result column="work_id" property="workId" jdbcType="VARCHAR"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="bank_id" property="bankId" jdbcType="VARCHAR"/>
+        <result column="order_num" property="orderNum" jdbcType="INTEGER"/>
+        <result column="begin_time" property="beginTime" jdbcType="TIMESTAMP"/>
+        <result column="end_time" property="endTime" jdbcType="TIMESTAMP"/>
+        <result column="total_quenum" property="totalQuenum" jdbcType="INTEGER"/>
+        <result column="right_quenum" property="rightQuenum" jdbcType="INTEGER"/>
+        <result column="score" property="score" jdbcType="INTEGER"/>
+        <result column="scorecontext" property="scorecontext" jdbcType="VARCHAR"/>
+        <result column="share_status" property="shareStatus" jdbcType="INTEGER"/>
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+    </resultMap>
+    <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtMagicWorkChallenge">
+    insert into ct_magic_work_challenge (challenge_id, work_id, user_id,
+      bank_id, order_num, begin_time, 
+      end_time, total_quenum, right_quenum, 
+      score, scorecontext, share_status, 
+      school_id, status)
+    values (#{challengeId,jdbcType=VARCHAR}, #{workId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR},
+      #{bankId,jdbcType=VARCHAR}, #{orderNum,jdbcType=INTEGER}, #{beginTime,jdbcType=TIMESTAMP}, 
+      #{endTime,jdbcType=TIMESTAMP}, #{totalQuenum,jdbcType=INTEGER}, #{rightQuenum,jdbcType=INTEGER}, 
+      #{score,jdbcType=INTEGER}, #{scorecontext,jdbcType=VARCHAR}, #{shareStatus,jdbcType=INTEGER}, 
+      #{schoolId,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER})
+  </insert>
+    <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtMagicWorkChallenge">
+    update ct_magic_work_challenge
+    set work_id = #{workId,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=VARCHAR},
+      bank_id = #{bankId,jdbcType=VARCHAR},
+      order_num = #{orderNum,jdbcType=INTEGER},
+      begin_time = #{beginTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      total_quenum = #{totalQuenum,jdbcType=INTEGER},
+      right_quenum = #{rightQuenum,jdbcType=INTEGER},
+      score = #{score,jdbcType=INTEGER},
+      scorecontext = #{scorecontext,jdbcType=VARCHAR},
+      share_status = #{shareStatus,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER}
+    where school_id = #{schoolId,jdbcType=VARCHAR} and challenge_id = #{challengeId,jdbcType=VARCHAR}
+  </update>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    select challenge_id, work_id, user_id, bank_id, order_num, begin_time, end_time,
+    total_quenum, right_quenum, score, scorecontext, share_status, school_id, status
+    from ct_magic_work_challenge
+    where school_id = #{schoolId,jdbcType=VARCHAR} and challenge_id = #{challengeId,jdbcType=VARCHAR}
+  </select>
+    <!--根据作业id删除对应的学生挑战记录-->
+    <update id="delMagicWorkChallenge">
+    update ct_magic_work_challenge
+    set
+    status = 0
+    where school_id = #{schoolId,jdbcType=VARCHAR}
+    and work_id = #{workId,jdbcType=VARCHAR}
+  </update>
+    <!--根据作业id学生id删除某个学生挑战记录-->
+    <update id="delStuMagicWorkChallenge">
+        update ct_magic_work_challenge
+        set
+        status = 0
+        where school_id = #{schoolId,jdbcType=VARCHAR}
+        and work_id = #{workId,jdbcType=VARCHAR}
+        and user_id = #{userId,jdbcType=VARCHAR}
+    </update>
+    <!--通过挑战ID得到挑战记录信息-->
+    <select id="getMagicWorkChallengeInfo" resultMap="BaseResultMap">
+    select challenge_id, work_id, user_id, bank_id, order_num, begin_time, end_time,
+    total_quenum, right_quenum, score, scorecontext, share_status, school_id, status
+    from ct_magic_work_challenge
+    where school_id = #{schoolId,jdbcType=VARCHAR}
+    and challenge_id = #{challengeId,jdbcType=VARCHAR}
+    and status = 1
+  </select>
+
+    <!--得到一个提分宝作业的挑战次数-->
+    <select id="getChallengeTimesByAnswerId" resultType="int">
+       select count(1)
+       from ct_magic_work_challenge
+       where school_id = #{schoolId,jdbcType=VARCHAR}
+       and work_id = #{workId,jdbcType=VARCHAR}
+       and status = 1
+   </select>
+    <!--学生提交作业时更改分享状态:0不分享1分享到作业交流2提交给老师-->
+    <update id="updateShareStatus">
+        update ct_magic_work_challenge
+        set share_status = #{shareStatus,jdbcType=INTEGER}
+        where school_id = #{schoolId,jdbcType=VARCHAR}
+        and challenge_id = #{challengeId,jdbcType=VARCHAR}
+    </update>
+
+    <!--获取提分宝挑战记录信息-->
+    <select id="getMagicWorkChallengeRecordByWork" resultMap="BaseResultMap">
+        select challenge_id, work_id, user_id, bank_id, order_num, begin_time, end_time,
+        total_quenum, right_quenum, score, scorecontext, share_status, school_id, status
+        from ct_magic_work_challenge
+        where school_id = #{schoolId,jdbcType=VARCHAR}
+        and user_id = #{studentId,jdbcType=VARCHAR}
+        <if test="workId != null">
+            and work_id = #{workId,jdbcType=VARCHAR}
+        </if>
+        <if test="workId == null">
+            and bank_id = #{bankId,jdbcType=VARCHAR}
+        </if>
+        and status = 1
+        order by end_time desc
+    </select>
+    <!--获取提分宝挑战次数-->
+    <select id="selectStuCount" resultType="int">
+        select count(1)
+        from ct_magic_work_challenge
+        where school_id = #{schoolId,jdbcType=VARCHAR}
+        and user_id = #{studentId,jdbcType=VARCHAR}
+        and work_id = #{workId,jdbcType=VARCHAR}
+        and status = 1
+    </select>
+
+</mapper>

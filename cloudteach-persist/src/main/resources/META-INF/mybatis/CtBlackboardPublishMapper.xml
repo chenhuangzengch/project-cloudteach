@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtBlackboardPublishMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtBlackboardPublish" >
+    <id column="blackboard_id" property="blackboardId" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="school_id" property="schoolId" jdbcType="VARCHAR" />
+    <result column="unit_id" property="unitId" jdbcType="VARCHAR" />
+    <result column="context" property="context" jdbcType="VARCHAR" />
+    <result column="publish_time" property="publishTime" jdbcType="TIMESTAMP" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="add_lesson_plan" property="addLessonPlan" jdbcType="INTEGER" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from ct_blackboard_publish
+    where blackboard_id = #{blackboardId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtBlackboardPublish" >
+    insert into ct_blackboard_publish (blackboard_id, user_id, school_id,
+      unit_id, context, publish_time, 
+      status,add_lesson_plan)
+    values (#{blackboardId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{schoolId,jdbcType=VARCHAR},
+      #{unitId,jdbcType=VARCHAR}, #{context,jdbcType=VARCHAR}, #{publishTime,jdbcType=TIMESTAMP}, 
+      #{status,jdbcType=INTEGER},#{addLessonPlan,jdbcType=INTEGER})
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtBlackboardPublish" >
+    update ct_blackboard_publish
+        user_id = #{userId,jdbcType=VARCHAR},
+        unit_id = #{unitId,jdbcType=VARCHAR},
+        context = #{context,jdbcType=VARCHAR},
+        publish_time = #{publishTime,jdbcType=TIMESTAMP},
+        status = #{status,jdbcType=INTEGER}
+        add_lesson_plan = #{addLessonPlan,jdbcType=INTEGER}
+    where blackboard_id = #{blackboardId,jdbcType=VARCHAR} and school_id = #{schoolId,jdbcType=VARCHAR} and status = 1
+  </update>
+
+  <update id="updateByPrimaryKeyOpt" parameterType="net.xuele.cloudteach.domain.CtBlackboardPublish" >
+    update ct_blackboard_publish
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="unitId != null" >
+        unit_id = #{unitId,jdbcType=VARCHAR},
+      </if>
+      <if test="context != null" >
+        context = #{context,jdbcType=VARCHAR},
+      </if>
+      <if test="publishTime != null" >
+        publish_time = #{publishTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="addLessonPlan != null" >
+        add_lesson_plan = #{addLessonPlan,jdbcType=INTEGER},
+      </if>
+    </set>
+    where blackboard_id = #{blackboardId,jdbcType=VARCHAR} and school_id = #{schoolId,jdbcType=VARCHAR} and status = 1
+  </update>
+
+  <update id="updateStatusByPrimaryKey" >
+    update ct_blackboard_publish
+    SET
+    status = 0
+    WHERE blackboard_id = #{blackboardId,jdbcType=VARCHAR} and school_id = #{schoolId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" >
+    select blackboard_id, user_id, school_id, unit_id, context, publish_time, status
+    from ct_blackboard_publish
+    where blackboard_id = #{blackboardId,jdbcType=VARCHAR} and school_id = #{schoolId,jdbcType=VARCHAR} and status =1
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select blackboard_id, user_id, school_id, unit_id, context, publish_time, status,add_lesson_plan
+    from ct_blackboard_publish
+    where  school_id = #{schoolId,jdbcType=VARCHAR}  and status =1
+  </select>
+
+  <select id="selectCount" resultType="long" >
+    select count(1)
+    from ct_blackboard_publish cbp ,ct_blackboard_publish_student cbps
+    where cbp.blackboard_id =  cbps.blackboard_id AND cbp.status = 1 AND cbps.user_id = #{userId,jdbcType=VARCHAR}
+    and cbps.school_id = #{schoolId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectPage" resultMap="BaseResultMap" >
+    select cbp.blackboard_id, cbp.user_id, cbp.school_id, cbp.unit_id, cbp.context, cbp.publish_time,cbp.add_lesson_plan
+    from ct_blackboard_publish cbp ,ct_blackboard_publish_student cbps
+    where cbp.blackboard_id =  cbps.blackboard_id AND cbp.status = 1 AND cbps.user_id = #{userId,jdbcType=VARCHAR}
+    and cbps.school_id = #{schoolId,jdbcType=VARCHAR}
+    LIMIT #{page.start},#{pageSize}
+  </select>
+
+  <select id="selectNewBlackboardPublish" resultMap="BaseResultMap" >
+    select blackboard_id, user_id, school_id, unit_id, context, publish_time, status,add_lesson_plan
+    from ct_blackboard_publish
+    where  school_id = #{schoolId,jdbcType=VARCHAR}
+      and unit_id = #{unitId,jdbcType=VARCHAR}
+      and user_id = #{userId,jdbcType=VARCHAR}
+      and status=1
+    order by publish_time desc
+    LIMIT 1
+  </select>
+</mapper>

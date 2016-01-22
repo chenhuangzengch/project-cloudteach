@@ -1,0 +1,772 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtWorkGatherMapper">
+    <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtWorkGather">
+        <id column="work_id" property="workId" jdbcType="VARCHAR"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="publish_time" property="publishTime" jdbcType="TIMESTAMP"/>
+        <result column="end_time" property="endTime" jdbcType="TIMESTAMP"/>
+        <result column="subject_id" property="subjectId" jdbcType="VARCHAR"/>
+        <result column="subject_name" property="subjectName" jdbcType="VARCHAR"/>
+        <result column="unit_id" property="unitId" jdbcType="VARCHAR"/>
+        <result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
+        <result column="context" property="context" jdbcType="VARCHAR"/>
+        <result column="files" property="files" jdbcType="VARCHAR"/>
+        <result column="work_type" property="workType" jdbcType="INTEGER"/>
+        <result column="work_item_num" property="workItemNum" jdbcType="INTEGER"/>
+        <result column="work_class_num" property="workClassNum" jdbcType="INTEGER"/>
+        <result column="work_class_json" property="workClassJson" jdbcType="VARCHAR"/>
+        <result column="work_student_num" property="workStudentNum" jdbcType="INTEGER"/>
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="voiceContext" property="voiceContext" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="SubjectViewResultMap" type="net.xuele.cloudteach.view.SubjectGatherView">
+        <result column="subject_id" property="subjectId" jdbcType="VARCHAR"/>
+        <result column="subject_name" property="subjectName" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="WorkResultMap" type="net.xuele.cloudteach.domain.SRWork">
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="work_id" property="workId" jdbcType="VARCHAR"/>
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+        <result column="publish_time" property="publishTime" jdbcType="TIMESTAMP"/>
+        <result column="subject_name" property="subjectName" jdbcType="VARCHAR"/>
+        <result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
+        <result column="context" property="context" jdbcType="VARCHAR"/>
+        <result column="work_type" property="workType" jdbcType="INTEGER"/>
+        <result column="work_item_num" property="workItemNum" jdbcType="INTEGER"/>
+        <result column="work_class_json" property="workClassJson" jdbcType="VARCHAR"/>
+        <result column="work_student_num" property="workStudentNum" jdbcType="INTEGER"/>
+        <result column="work_sub_student_num" property="subStudentNum" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <resultMap id="BlackboardResultMap" type="net.xuele.cloudteach.domain.SRBlackboard">
+        <result column="work_id" property="workId" jdbcType="VARCHAR"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="publish_time" property="publishTime" jdbcType="TIMESTAMP"/>
+        <result column="subject_name" property="subjectName" jdbcType="VARCHAR"/>
+        <result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
+        <result column="context" property="context" jdbcType="VARCHAR"/>
+        <result column="work_class_json" property="workClassJson" jdbcType="VARCHAR"/>
+        <result column="files" property="files" jdbcType="VARCHAR"/>
+        <result column="school_name" property="schoolName" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="SchoolStatisticResultMap" type="net.xuele.cloudteach.domain.SRSchoolStatistic">
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+        <result column="school_name" property="schoolName" jdbcType="VARCHAR"/>
+        <result column="real_name" property="headmasterName" jdbcType="VARCHAR"/>
+        <result column="teacher_num" property="teacherNum" jdbcType="INTEGER"/>
+        <result column="work_num" property="workNum" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <resultMap id="TeacherStatisticResultMap" type="net.xuele.cloudteach.domain.TeacherStatistic">
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+        <result column="school_name" property="schoolName" jdbcType="VARCHAR"/>
+        <result column="user_id" property="teacherId" jdbcType="VARCHAR"/>
+        <result column="real_name" property="teacherName" jdbcType="VARCHAR"/>
+        <result column="subject_name" property="subjectName" jdbcType="VARCHAR"/>
+        <result column="work_num" property="workNum" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <resultMap id="CoursewareTeacherWorkViewResultMap" type="net.xuele.cloudteach.view.CoursewareTeacherWorkView">
+        <id column="work_id" property="workId" jdbcType="VARCHAR"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="publish_time" property="publishTime" jdbcType="TIMESTAMP"/>
+        <result column="end_time" property="endTime" jdbcType="TIMESTAMP"/>
+        <result column="subject_id" property="subjectId" jdbcType="VARCHAR"/>
+        <result column="subject_name" property="subjectName" jdbcType="VARCHAR"/>
+        <result column="unit_id" property="unitId" jdbcType="VARCHAR"/>
+        <result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
+        <result column="context" property="context" jdbcType="VARCHAR"/>
+        <result column="files" property="files" jdbcType="VARCHAR"/>
+        <result column="work_type" property="workType" jdbcType="INTEGER"/>
+        <result column="work_item_num" property="workItemNum" jdbcType="INTEGER"/>
+        <result column="work_class_num" property="workClassNum" jdbcType="INTEGER"/>
+        <result column="work_class_json" property="workClassJson" jdbcType="VARCHAR"/>
+        <result column="work_student_num" property="workStudentNum" jdbcType="INTEGER"/>
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="voiceContext" property="voiceContext" jdbcType="VARCHAR"/>
+        <collection property="workItemList" javaType="ArrayList" column="workId=work_id,schoolId=school_id"
+                    ofType="net.xuele.cloudteach.view.TeacherWorkItemView"
+                    select="net.xuele.cloudteach.persist.CtTeacherWorkItemMapper.queryItemContainFilesList"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtWorkGather">
+    insert into ct_work_gather (work_id, user_id,
+      publish_time, end_time, subject_id, subject_name,
+      unit_id, unit_name,context, files, work_type,
+      work_item_num, work_class_num, work_class_json,
+      work_student_num, school_id, status, voiceContext
+      )
+    values (#{workId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR},
+      #{publishTime,jdbcType=TIMESTAMP},#{endTime,jdbcType=TIMESTAMP}, #{subjectId,jdbcType=VARCHAR},
+      #{subjectName,jdbcType=VARCHAR},#{unitId,jdbcType=VARCHAR},#{unitName,jdbcType=VARCHAR},
+      #{context,jdbcType=VARCHAR}, #{files,jdbcType=VARCHAR}, #{workType,jdbcType=INTEGER},
+      #{workItemNum,jdbcType=INTEGER}, #{workClassNum,jdbcType=INTEGER}, #{workClassJson,jdbcType=VARCHAR},
+      #{workStudentNum,jdbcType=INTEGER}, #{schoolId,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{voiceContext,jdbcType=VARCHAR}
+      )
+  </insert>
+
+    <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtWorkGather">
+    update ct_work_gather
+    set user_id = #{userId,jdbcType=VARCHAR},
+      publish_time = #{publishTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      subject_id = #{subjectId,jdbcType=VARCHAR},
+      subject_name = #{subjectName,jdbcType=VARCHAR},
+      unit_id = #{unitId,jdbcType=VARCHAR},
+      unit_name = #{unitName,jdbcType=VARCHAR},
+      context = #{context,jdbcType=VARCHAR},
+      files = #{files,jdbcType=VARCHAR},
+      work_type = #{workType,jdbcType=INTEGER},
+      work_item_num = #{workItemNum,jdbcType=INTEGER},
+      work_class_num = #{workClassNum,jdbcType=INTEGER},
+      work_class_json = #{workClassJson,jdbcType=VARCHAR},
+      work_student_num = #{workStudentNum,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER},
+      voiceContext = #{voiceContext,jdbcType=VARCHAR}
+    where school_id = #{schoolId,jdbcType=VARCHAR} and work_id = #{workId,jdbcType=VARCHAR}
+  </update>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    select work_id, user_id, publish_time, end_time, subject_id, subject_name,
+      unit_id, unit_name, context,files, work_type, work_item_num, work_class_num,
+      work_class_json, work_student_num, school_id, status, voiceContext
+    from ct_work_gather
+    where school_id = #{schoolId,jdbcType=VARCHAR}
+    and work_id = #{workId,jdbcType=VARCHAR}
+    and status = 1
+  </select>
+
+    <!--获取某个教师某个课程对应某种教师作业（预习、电子、口语）信息,用于授课课件接口-->
+    <select id="queryCoursewareTeacherWorkList" resultMap="CoursewareTeacherWorkViewResultMap">
+        select work_id, user_id, publish_time, end_time, subject_id, subject_name,
+        unit_id, unit_name, context,files, work_type, work_item_num, work_class_num,
+        work_class_json, work_student_num, school_id, status, voiceContext
+        from ct_work_gather
+        where school_id=#{schoolId,jdbcType=VARCHAR} and status=1
+        and unit_id=#{unitId,jdbcType=VARCHAR}
+        and user_id=#{userId,jdbcType=VARCHAR}
+        <if test="workType==0">
+            and work_type in (1,4,7)
+        </if>
+        <if test="workType>0">
+            and work_type=#{workType,jdbcType=INTEGER}
+        </if>
+    </select>
+
+    <!--删除提分宝作业时逻辑删除作业汇总表信息-->
+    <update id="delWorkGather">
+    update ct_work_gather
+    set
+    status = 0
+    where school_id = #{schoolId,jdbcType=VARCHAR} and work_id = #{workId,jdbcType=VARCHAR}
+  </update>
+
+    <update id="updateStatusByWorkId">
+    update ct_work_gather
+    set
+    status = #{status,jdbcType=INTEGER}
+    where school_id = #{schoolId,jdbcType=VARCHAR} and work_id = #{workId,jdbcType=VARCHAR}
+  </update>
+
+    <!--获取教师已布置作业的所有科目类型-->
+    <select id="queryTeacherWorkSubjectList" resultMap="SubjectViewResultMap">
+    select ct_work_gather.subject_id,d_summary.summary_name subject_name
+      from ct_work_gather
+      inner join d_summary on d_summary.summary_code = ct_work_gather.subject_id
+      where ct_work_gather.school_id = #{schoolId,jdbcType=VARCHAR}
+        and ct_work_gather.user_id=#{userId,jdbcType=VARCHAR}
+        and ct_work_gather.status = 1
+      group by ct_work_gather.subject_id
+  </select>
+
+    <!--获取班级对应已布置作业的所有科目类型-->
+    <select id="queryClassWorkSubjectList" resultMap="SubjectViewResultMap">
+    select ct_work_gather.subject_id,d_summary.summary_name subject_name
+      from ct_work_class_gather
+      inner join ct_work_gather on ct_work_gather.work_id=ct_work_class_gather.work_id
+      inner join d_summary on d_summary.summary_code = ct_work_gather.subject_id
+      where ct_work_class_gather.school_id = #{schoolId,jdbcType=VARCHAR}
+        and ct_work_class_gather.class_id=#{classId,jdbcType=INTEGER}
+        and ct_work_class_gather.status = 1
+      group by ct_work_gather.subject_id
+  </select>
+
+    <!--获取学生对应已布置作业的所有科目类型-->
+    <select id="queryStudentWorkSubjectList" resultMap="SubjectViewResultMap">
+    select ct_work_gather.subject_id,d_summary.summary_name subject_name
+      from ct_work_student_gather
+      inner join ct_work_gather on ct_work_gather.work_id=ct_work_student_gather.work_id
+      inner join d_summary on d_summary.summary_code = ct_work_gather.subject_id
+      where ct_work_student_gather.school_id = #{schoolId,jdbcType=VARCHAR}
+        and ct_work_student_gather.student_id=#{studentId,jdbcType=INTEGER}
+        and ct_work_student_gather.status = 1
+      group by ct_work_gather.subject_id
+  </select>
+
+    <!--老师作业条数-->
+    <select id="getWorkNum" resultType="java.lang.Integer">
+        select sum(e.work_num) work_num FROM
+        (
+        select count(1) work_num
+        from ct_work_gather a
+        left join m_school b on a.school_id = b.id and b.status =1
+        left join ct_units c on c.unit_id = a.unit_id
+        left join ct_book d on d.book_id = c.book_id
+        inner join ct_work_statistics e on a.work_id = e.work_id
+        where 1=1
+        <if test="startTime!=null and startTime!=''">
+            and <![CDATA[a.publish_time>=#{startTime,jdbcType=TIMESTAMP}]]>
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            and <![CDATA[a.publish_time<=#{endTime,jdbcType=TIMESTAMP}]]>
+        </if>
+        <if test="subjectId!=null and subjectId!=''">
+            and a.subject_id = #{subjectId,jdbcType=VARCHAR}
+        </if>
+        <if test="schoolId!=null and schoolId!=''">
+            and a.school_id = #{schoolId,jdbcType=VARCHAR}
+        </if>
+        <if test="userId!=null and userId!=''">
+            and a.user_id = #{userId,jdbcType=VARCHAR}
+        </if>
+        <if test="areaId!=null and areaId!=''">
+            and b.area like concat(#{areaId,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="grade!=null and grade!=''">
+            and d.grade = #{grade,jdbcType=INTEGER}
+        </if>
+        and a.status = 1 and a.work_type not in (3,5,6)
+        UNION all
+        select count(1) work_num
+        from ct_work_gather as a
+        left join m_school as b on a.school_id=b.id and b.status =1
+        left join d_units c ON c.U_Code = a.unit_id
+        left join d_books d ON d.book_id = SUBSTRING(c.U_Code FROM 1 FOR 12)
+        inner join ct_work_statistics e on a.work_id = e.work_id
+        where 1=1
+        <if test="startTime!=null and startTime!=''">
+            and <![CDATA[a.publish_time>=#{startTime,jdbcType=TIMESTAMP}]]>
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            and <![CDATA[a.publish_time<=#{endTime,jdbcType=TIMESTAMP}]]>
+        </if>
+        <if test="subjectId!=null and subjectId!=''">
+            and a.subject_id = #{subjectId,jdbcType=VARCHAR}
+        </if>
+        <if test="schoolId!=null and schoolId!=''">
+            and a.school_id = #{schoolId,jdbcType=VARCHAR}
+        </if>
+        <if test="userId!=null and userId!=''">
+            and a.user_id = #{userId,jdbcType=VARCHAR}
+        </if>
+        <if test="areaId!=null and areaId!=''">
+            and b.area like concat(#{areaId,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="grade!=null and grade!=''">
+            and d.grade_num = #{grade,jdbcType=INTEGER}
+        </if>
+        and a.status = 1 and a.work_type =3
+        ) e
+    </select>
+
+    <!--老师板书条数-->
+    <select id="getBlackboardNum" resultType="java.lang.Integer">
+        select count(1)
+        from ct_work_gather a
+        left join m_school b on a.school_id = b.id and b.status =1
+        left join ct_units c on c.unit_id = a.unit_id
+        left join ct_book d on d.book_id = c.book_id
+        where 1=1
+        <if test="startTime!=null and startTime!=''">
+            and <![CDATA[a.publish_time>=#{startTime,jdbcType=TIMESTAMP}]]>
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            and <![CDATA[a.publish_time<=#{endTime,jdbcType=TIMESTAMP}]]>
+        </if>
+        <if test="subjectId!=null and subjectId!=''">
+            and a.subject_id = #{subjectId,jdbcType=VARCHAR}
+        </if>
+        <if test="schoolId!=null and schoolId!=''">
+            and a.school_id = #{schoolId,jdbcType=VARCHAR}
+        </if>
+        <if test="userId!=null and userId!=''">
+            and a.user_id = #{userId,jdbcType=VARCHAR}
+        </if>
+        <if test="areaId!=null and areaId!=''">
+            and b.area like concat(#{areaId,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="grade!=null and grade!=''">
+            and d.grade = #{grade,jdbcType=INTEGER}
+        </if>
+        and a.status = 1 and a.work_type = 6
+    </select>
+
+
+    <!--老师作业列表-->
+    <select id="getWorkList" resultMap="WorkResultMap">
+        select * from(
+        select a.user_id ,publish_time, a.subject_name, a.unit_name,a.work_id,a.school_id, context, work_type,
+        work_item_num,
+        work_class_json, work_student_num, work_sub_student_num
+        from ct_work_gather a
+        left join m_school e on a.school_id = e.id and e.status =1
+        left join ct_units f on f.unit_id = a.unit_id
+        left join ct_book g on f.book_id = g.book_id
+        inner join ct_work_statistics b on a.work_id = b.work_id
+        where 1=1
+        <if test="startTime!=null and startTime!=''">
+            and <![CDATA[a.publish_time>=#{startTime,jdbcType=TIMESTAMP}]]>
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            and <![CDATA[a.publish_time<=#{endTime,jdbcType=TIMESTAMP}]]>
+        </if>
+        <if test="subjectId!=null and subjectId!=''">
+            and a.subject_id = #{subjectId,jdbcType=VARCHAR}
+        </if>
+        <if test="schoolId!=null and schoolId!=''">
+            and a.school_id = #{schoolId,jdbcType=VARCHAR}
+        </if>
+        <if test="userId!=null and userId!=''">
+            and a.user_id = #{userId,jdbcType=VARCHAR}
+        </if>
+        <if test="areaId!=null and areaId!=''">
+            and e.area like concat(#{areaId,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="grade!=null and grade!=''">
+            and g.grade = #{grade,jdbcType=INTEGER}
+        </if>
+        and a.status = 1 and a.work_type not in (3,5,6)
+        union all
+        select a.user_id ,publish_time, a.subject_name, a.unit_name,a.work_id,a.school_id, context, work_type,
+        work_item_num,
+        work_class_json, work_student_num, work_sub_student_num
+        from ct_work_gather as a
+        left join m_school as b on a.school_id=b.id and b.status =1
+        left join d_units c ON c.U_Code = a.unit_id
+        left join d_books d ON d.book_id = SUBSTRING(c.U_Code FROM 1 FOR 12)
+        inner join ct_work_statistics e on a.work_id = e.work_id
+        where 1=1
+        <if test="startTime!=null and startTime!=''">
+            and <![CDATA[a.publish_time>=#{startTime,jdbcType=TIMESTAMP}]]>
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            and <![CDATA[a.publish_time<=#{endTime,jdbcType=TIMESTAMP}]]>
+        </if>
+        <if test="subjectId!=null and subjectId!=''">
+            and a.subject_id = #{subjectId,jdbcType=VARCHAR}
+        </if>
+        <if test="schoolId!=null and schoolId!=''">
+            and a.school_id = #{schoolId,jdbcType=VARCHAR}
+        </if>
+        <if test="userId!=null and userId!=''">
+            and a.user_id = #{userId,jdbcType=VARCHAR}
+        </if>
+        <if test="areaId!=null and areaId!=''">
+            and b.area like concat(#{areaId,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="grade!=null and grade!=''">
+            and d.grade_num = #{grade,jdbcType=INTEGER}
+        </if>
+        and a.status = 1 and a.work_type =3
+        ) e
+        order by publish_time desc
+        limit #{page.start},#{pageSize}
+    </select>
+
+    <!--老师板书列表-->
+    <select id="getBlackboardList" resultMap="BlackboardResultMap">
+        select a.work_id,a.user_id ,publish_time, a.subject_name, a.unit_name, context,
+        work_class_json, files ,e.name
+        from ct_work_gather a
+        left join m_school e on a.school_id = e.id and e.status =1
+        left join ct_units f on f.unit_id = a.unit_id
+        left join ct_book g on f.book_id = g.book_id
+        inner join ct_work_statistics b on a.work_id = b.work_id
+        where 1=1
+        <if test="startTime!=null and startTime!=''">
+            and <![CDATA[a.publish_time>=#{startTime,jdbcType=TIMESTAMP}]]>
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            and <![CDATA[a.publish_time<=#{endTime,jdbcType=TIMESTAMP}]]>
+        </if>
+        <if test="subjectId!=null and subjectId!=''">
+            and a.subject_id = #{subjectId,jdbcType=VARCHAR}
+        </if>
+        <if test="schoolId!=null and schoolId!=''">
+            and a.school_id = #{schoolId,jdbcType=VARCHAR}
+        </if>
+        <if test="userId!=null and userId!=''">
+            and a.user_id = #{userId,jdbcType=VARCHAR}
+        </if>
+        <if test="grade!=null and grade!=''">
+            and g.grade = #{grade,jdbcType=INTEGER}
+        </if>
+        <if test="areaId!=null and areaId!=''">
+            and e.area like concat(#{areaId,jdbcType=VARCHAR},'%')
+        </if>
+        and a.status = 1 and a.work_type = 6
+        ORDER BY a.publish_time desc
+        limit #{page.start},#{pageSize}
+    </select>
+
+
+    <!--查询区域下全部的作业数量-->
+    <select id="getAllWorkAmount" resultType="java.lang.Integer">
+        select count(1)
+        from ct_work_gather a
+        left join m_school b on a.school_id = b.id and b.status =1
+        left join ct_units c on c.unit_id = a.unit_id
+        left join ct_book d on d.book_id = c.book_id
+        where 1=1
+        <if test="startTime!=null and startTime!=''">
+            and <![CDATA[a.publish_time>=#{startTime,jdbcType=TIMESTAMP}]]>
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            and <![CDATA[a.publish_time<=#{endTime,jdbcType=TIMESTAMP}]]>
+        </if>
+        <if test="subjectId!=null and subjectId!=''">
+            and a.subject_id = #{subjectId,jdbcType=VARCHAR}
+        </if>
+        <if test="areaId!=null and areaId!=''">
+            and b.area like concat(#{areaId,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="grade!=null and grade!=''">
+            and d.grade = #{grade,jdbcType=INTEGER}
+        </if>
+        and a.status = 1 and a.work_type not in (5,6)
+    </select>
+
+    <!--获得区域下老师的个数-->
+    <select id="getTeacherAmount" parameterType="java.util.List" resultMap="SchoolStatisticResultMap">
+        select count(1) teacher_num,school_id from m_teacher
+        where school_id in
+        <foreach collection="list" item="schoolId" index="index" separator="," open="(" close=")">
+            #{schoolId,jdbcType=VARCHAR}
+        </foreach>
+        GROUP BY school_id;
+    </select>
+
+    <!--根据学校分页获得作业数量-->
+    <select id="getWorkAmount" resultMap="SchoolStatisticResultMap">
+        select school_id,max(work_num) work_num, school_name
+        from
+        (
+        select * from (
+        select school_id,sum(work_num) work_num, school_name
+        from
+        (
+        (select a.school_id,count(1) work_num , b.name school_name
+        from ct_work_gather as a
+        left join m_school as b on a.school_id=b.id and b.status =1
+        left join ct_units c on c.unit_id = a.unit_id
+        left join ct_book d on d.book_id = c.book_id
+        where 1=1
+        <if test="startTime!=null and startTime!=''">
+            and <![CDATA[a.publish_time>=#{startTime,jdbcType=TIMESTAMP}]]>
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            and <![CDATA[a.publish_time<=#{endTime,jdbcType=TIMESTAMP}]]>
+        </if>
+        <if test="subjectId!=null and subjectId!=''">
+            and a.subject_id = #{subjectId,jdbcType=VARCHAR}
+        </if>
+        <if test="areaId!=null and areaId!=''">
+            and b.area like concat(#{areaId,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="grade!=null and grade!=''">
+            and d.grade = #{grade,jdbcType=INTEGER}
+        </if>
+        and a.status=1 and a.work_type not in (3,5,6)
+        group by a.school_id)
+        union all
+        (select a.school_id,count(1) work_num , b.name school_name
+        from ct_work_gather as a
+        left join m_school as b on a.school_id=b.id and b.status =1
+        left join d_units c ON c.U_Code = a.unit_id
+        left join d_books d ON d.book_id = SUBSTRING(c.U_Code FROM 1 FOR 12)
+        where 1=1
+        <if test="startTime!=null and startTime!=''">
+            and <![CDATA[a.publish_time>=#{startTime,jdbcType=TIMESTAMP}]]>
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            and <![CDATA[a.publish_time<=#{endTime,jdbcType=TIMESTAMP}]]>
+        </if>
+        <if test="subjectId!=null and subjectId!=''">
+            and a.subject_id = #{subjectId,jdbcType=VARCHAR}
+        </if>
+        <if test="areaId!=null and areaId!=''">
+            and b.area like concat(#{areaId,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="grade!=null and grade!=''">
+            and d.grade_num = #{grade,jdbcType=INTEGER}
+        </if>
+        and a.status=1 and a.work_type = 3
+        group by a.school_id)
+        )e
+        group by school_id
+        order by work_num desc
+        ) as t1
+        union all
+        select id school_id,0 work_num ,name school_name
+        from m_school
+        where status =1
+        <if test="areaId!=null and areaId!=''">
+            and area like concat(#{areaId,jdbcType=VARCHAR},'%')
+        </if>
+        order by work_num desc
+        )f
+        group by school_id
+        order by work_num desc ,school_id desc
+        limit #{page.start},#{pageSize}
+    </select>
+
+    <!--根据学校分页获得板书数量-->
+    <select id="getBlackboardAmount" resultMap="SchoolStatisticResultMap">
+        select school_id,max(work_num) as work_num, school_name
+        from
+        (
+        select * from (
+        select a.school_id,count(1) work_num , b.name school_name
+        from ct_work_gather as a
+        left join m_school as b on a.school_id=b.id and b.status =1
+        left join ct_units c on c.unit_id = a.unit_id
+        left join ct_book d on d.book_id = c.book_id
+        where 1=1
+        <if test="startTime!=null and startTime!=''">
+            and <![CDATA[a.publish_time>=#{startTime,jdbcType=TIMESTAMP}]]>
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            and <![CDATA[a.publish_time<=#{endTime,jdbcType=TIMESTAMP}]]>
+        </if>
+        <if test="subjectId!=null and subjectId!=''">
+            and a.subject_id = #{subjectId,jdbcType=VARCHAR}
+        </if>
+        <if test="areaId!=null and areaId!=''">
+            and b.area like concat(#{areaId,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="grade!=null and grade!=''">
+            and d.grade = #{grade,jdbcType=INTEGER}
+        </if>
+        and a.status=1 and a.work_type = 6
+        group by a.school_id
+        order by work_num desc
+        ) as t1
+        union all
+        select id school_id,0 work_num ,name school_name
+        from m_school
+        where status =1
+        <if test="areaId!=null and areaId!=''">
+            and area like concat(#{areaId,jdbcType=VARCHAR},'%')
+        </if>
+        order by work_num desc
+        ) e
+        group by school_id
+        order by work_num desc ,school_id desc
+        limit #{page.start},#{pageSize}
+    </select>
+
+    <!--获得区域下的学校信息 -->
+    <select id="getSchoolStatistic" resultMap="SchoolStatisticResultMap">
+        select b.school_id ,real_name FROM
+        m_users b
+        inner join m_teacher c on c.user_id = b.user_id and c.position_id = 'PRINCIPAL'
+        where b.status != 0 and b.school_id in
+        <foreach collection="list" item="schoolId" index="index" separator="," open="(" close=")">
+            #{schoolId,jdbcType=VARCHAR}
+        </foreach>
+    </select>
+
+    <!--获得区域下的学校数量 -->
+    <select id="getSchoolStatisticAmount" resultType="java.lang.Integer">
+        select count(1) FROM
+        m_school
+        where status =1
+        <if test="areaId!=null">
+            and area like concat(#{areaId,jdbcType=VARCHAR},'%')
+        </if>
+    </select>
+
+
+    <!--根据老师分页获得作业-->
+    <select id="getWorkByTeacher" resultMap="TeacherStatisticResultMap">
+        select user_id,max(work_num) work_num, school_name,school_id
+        from(
+        select * from (
+        select e.user_id,sum(e.workNum) as work_num,e.name school_name,e.school_id
+        from
+        (
+        (select a.user_id,count(1) workNum , b.name,a.school_id
+        from ct_work_gather as a
+        left join m_school as b on a.school_id=b.id and b.status =1
+        left join ct_units c on c.unit_id = a.unit_id
+        left join ct_book d on d.book_id = c.book_id
+        where 1=1
+        <if test="startTime!=null and startTime!=''">
+            and <![CDATA[a.publish_time>=#{startTime,jdbcType=TIMESTAMP}]]>
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            and <![CDATA[a.publish_time<=#{endTime,jdbcType=TIMESTAMP}]]>
+        </if>
+        <if test="subjectId!=null and subjectId!=''">
+            and a.subject_id = #{subjectId,jdbcType=VARCHAR}
+        </if>
+        <if test="schoolId!=null and schoolId != ''">
+            and a.school_id = #{schoolId,jdbcType=VARCHAR}
+        </if>
+        <if test="areaId!=null and areaId!=''">
+            and b.area like concat(#{areaId,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="grade!=null and grade != ''">
+            and d.grade = #{grade,jdbcType=INTEGER}
+        </if>
+        and a.status=1 and a.work_type not in (3,5,6)
+        group by a.user_id)
+        union all
+        (select a.user_id,count(1) workNum , b.name,a.school_id
+        from ct_work_gather as a
+        left join m_school as b on a.school_id=b.id and b.status =1
+        left JOIN d_units c ON c.U_Code = a.unit_id
+        left JOIN d_books d ON d.book_id = SUBSTRING(c.U_Code FROM 1 FOR 12)
+        where 1=1
+        <if test="startTime!=null and startTime!=''">
+            and <![CDATA[a.publish_time>=#{startTime,jdbcType=TIMESTAMP}]]>
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            and <![CDATA[a.publish_time<=#{endTime,jdbcType=TIMESTAMP}]]>
+        </if>
+        <if test="subjectId!=null and subjectId!=''">
+            and a.subject_id = #{subjectId,jdbcType=VARCHAR}
+        </if>
+        <if test="schoolId!=null and schoolId != ''">
+            and a.school_id = #{schoolId,jdbcType=VARCHAR}
+        </if>
+        <if test="areaId!=null and areaId!=''">
+            and b.area like concat(#{areaId,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="grade!=null and grade!=''">
+            and d.grade_num = #{grade,jdbcType=INTEGER}
+        </if>
+        and a.status=1 and a.work_type = 3
+        group by a.user_id)
+        ) e
+        group by e.user_id
+        order by work_num desc
+        ) as t1
+        union all
+        select b.user_id,0 as work_num ,name,id from m_school a
+        inner join m_users b on a.id =b.school_id and b.status != 0 and b.identity_id = 'TEACHER'
+        where a.status = 1
+        <if test="areaId!=null and areaId!=''">
+            and a.area like concat(#{areaId,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="schoolId!=null and schoolId != ''">
+            and a.id = #{schoolId,jdbcType=VARCHAR}
+        </if>
+        order by work_num desc
+        ) f
+        group by user_id
+        order by work_num desc ,user_id desc
+        limit #{page.start},#{pageSize}
+    </select>
+
+    <!--根据老师分页获得板书数量-->
+    <select id="getBlackboardByTeacher" resultMap="TeacherStatisticResultMap">
+        select user_id, max(work_num) work_num,school_name,school_id
+        from(
+        select * from (
+        select a.user_id,count(1) work_num , b.name school_name,a.school_id
+        from ct_work_gather as a
+        left join m_school as b on a.school_id=b.id and b.status =1
+        left join ct_units c on c.unit_id = a.unit_id
+        left join ct_book d on d.book_id = c.book_id
+        where 1=1
+        <if test="startTime!=null and startTime!=''">
+            and <![CDATA[a.publish_time>=#{startTime,jdbcType=TIMESTAMP}]]>
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            and <![CDATA[a.publish_time<=#{endTime,jdbcType=TIMESTAMP}]]>
+        </if>
+        <if test="subjectId!=null and subjectId!=''">
+            and a.subject_id = #{subjectId,jdbcType=VARCHAR}
+        </if>
+        <if test="schoolId!=null and schoolId != ''">
+            and a.school_id = #{schoolId,jdbcType=VARCHAR}
+        </if>
+        <if test="areaId!=null and areaId!=''">
+            and b.area like concat(#{areaId,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="grade!=null and grade != ''">
+            and d.grade = #{grade,jdbcType=INTEGER}
+        </if>
+        and a.status=1 and a.work_type = 6
+        group by a.user_id
+        order by work_num desc
+        ) as t1
+        union all
+        select b.user_id,0 as work_num ,name school_name,id school_id from m_school a
+        inner join m_users b on a.id =b.school_id and b.status != 0 and b.identity_id = 'TEACHER'
+        where 1=1
+        <if test="areaId!=null and areaId!=''">
+            and a.area like concat(#{areaId,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="schoolId!=null and schoolId != ''">
+            and a.id = #{schoolId,jdbcType=VARCHAR}
+        </if>
+        order by work_num desc
+        ) f
+        group by user_id
+        order by work_num desc ,school_id desc
+        limit #{page.start},#{pageSize}
+    </select>
+
+    <!--获得老师对应的名称 -->
+    <select id="getTeacherName" resultMap="TeacherStatisticResultMap">
+    select  user_id ,real_name  FROM
+    m_users
+    where  user_id =#{userId,jdbcType=VARCHAR} and school_id = #{schoolId,jdbcType=VARCHAR}
+  </select>
+
+    <!--获得老师对应的授课科目 -->
+    <select id="getSubjectByUser" resultMap="TeacherStatisticResultMap">
+    select subject_name, c.user_id ,c.real_name
+    from m_users c
+    left join m_teacher a on c.user_id = a.user_id
+    left join ct_book b on a.book_id = b.book_id
+    where  c.user_id =#{userId,jdbcType=VARCHAR} and c.school_id = #{schoolId,jdbcType=VARCHAR}
+  </select>
+
+    <!--获得老师数量-->
+    <select id="getTeacherAmout" resultType="java.lang.Integer" parameterType="java.lang.String">
+        select count(1)
+        from m_school a
+        INNER JOIN m_users b on a.id = b.school_id and b.status != 0 and b.identity_id = 'TEACHER'
+        where a.status =1
+        <if test="areaId!=null">
+            and a.area like concat(#{areaId,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="schoolId!=null and schoolId != ''">
+            and a.id = #{schoolId,jdbcType=VARCHAR}
+        </if>
+    </select>
+
+   <select id="selectWorkList" resultType="net.xuele.cloudteach.view.LearningInfoWorkView">
+       select a.work_id workId,a.context context,a.work_class_json workClassJson
+       from ct_work_gather a
+       where a.unit_id = #{unitId,jdbcType=VARCHAR}
+       and a.user_id = #{teacherId,jdbcType=VARCHAR}
+       and a.work_type = #{workType,jdbcType=INTEGER}
+       and a.school_id = #{schoolId,jdbcType=VARCHAR}
+       and a.publish_time between '2015-09-01 00:00:00' and now()
+       and a.status = 1
+       order by a.publish_time desc
+       limit 10000
+  </select>
+
+
+</mapper>

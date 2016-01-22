@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtCloudDiskShareMapper">
+    <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtCloudDiskShare">
+        <id column="share_id" property="shareId" jdbcType="VARCHAR"/>
+        <result column="disk_id" property="diskId" jdbcType="VARCHAR"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="unit_id" property="unitId" jdbcType="VARCHAR"/>
+        <result column="file_pk" property="filePk" jdbcType="VARCHAR"/>
+        <result column="file_uri" property="fileUri" jdbcType="VARCHAR"/>
+        <result column="file_type" property="fileType" jdbcType="INTEGER"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="description" property="description" jdbcType="VARCHAR"/>
+        <result column="extention" property="extention" jdbcType="VARCHAR"/>
+        <result column="ext_type" property="extType" jdbcType="INTEGER"/>
+        <result column="ext_icon_type" property="extIconType" jdbcType="VARCHAR"/>
+        <result column="size" property="size" jdbcType="INTEGER"/>
+        <result column="add_time" property="addTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="boutique" property="boutique" jdbcType="INTEGER"/>
+        <result column="share_time" property="shareTime" jdbcType="TIMESTAMP"/>
+        <result column="audit_instructions" property="auditInstructions" jdbcType="VARCHAR"/>
+        <result column="share_type" property="shareType" jdbcType="INTEGER"/>
+        <result column="area_id" property="areaId" jdbcType="VARCHAR"/>
+        <result column="area_name" property="areaName" jdbcType="VARCHAR"/>
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+        <result column="school_name" property="schoolName" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="audit_user_id" property="auditUserId" jdbcType="VARCHAR"/>
+    </resultMap>
+    <update id="deleteByPrimaryKey" parameterType="java.lang.String">
+    UPDATE ct_cloud_disk_share set status = 0
+    where share_id = #{shareId,jdbcType=VARCHAR}
+  </update>
+    <!--取消分享-->
+    <update id="cancelShare" parameterType="java.lang.String">
+        UPDATE ct_cloud_disk_share set status = 0
+        where disk_id = #{diskId,jdbcType=VARCHAR} and status = 2
+    </update>
+    <!--分享审核-->
+    <update id="shareAudit" parameterType="net.xuele.cloudteach.domain.CtCloudDiskShare">
+        UPDATE ct_cloud_disk_share
+        set status = #{status,jdbcType=INTEGER},audit_instructions=#{auditInstructions,jdbcType=VARCHAR}
+        where share_id = #{shareId,jdbcType=VARCHAR}
+    </update>
+    <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtCloudDiskShare">
+    insert into ct_cloud_disk_share (share_id, disk_id, user_id, user_name,
+      unit_id, file_pk, file_uri, 
+      file_type, name, description, 
+      extention, ext_type, ext_icon_type,size, add_time,
+      update_time, boutique, share_time,
+      audit_instructions, share_type, area_id, area_name,
+      school_id, school_name, status, audit_user_id)
+    values (#{shareId,jdbcType=VARCHAR}, #{diskId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR},  #{userName,jdbcType=VARCHAR},
+      #{unitId,jdbcType=VARCHAR}, #{filePk,jdbcType=VARCHAR}, #{fileUri,jdbcType=VARCHAR}, 
+      #{fileType,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
+      #{extention,jdbcType=VARCHAR},#{extType,jdbcType=INTEGER},#{extIconType,jdbcType=VARCHAR},
+      #{size,jdbcType=INTEGER}, #{addTime,jdbcType=TIMESTAMP},
+      #{updateTime,jdbcType=TIMESTAMP}, #{boutique,jdbcType=INTEGER}, #{shareTime,jdbcType=TIMESTAMP},
+      #{auditInstructions,jdbcType=VARCHAR}, #{shareType,jdbcType=INTEGER}, #{areaId,jdbcType=VARCHAR}, #{areaName,jdbcType=VARCHAR},
+      #{schoolId,jdbcType=VARCHAR}, #{schoolName,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{auditUserId,jdbcType=VARCHAR})
+  </insert>
+    <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtCloudDiskShare">
+    update ct_cloud_disk_share
+    set status = #{status,jdbcType=INTEGER}
+    where share_id = #{shareId,jdbcType=VARCHAR}
+  </update>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select share_id, disk_id, user_id, unit_id, file_pk, file_uri, file_type, name, description,
+    extention, ext_type, ext_icon_type,size, add_time, update_time, boutique, share_time, audit_instructions,
+    share_type, area_id, school_id, status
+    from ct_cloud_disk_share
+    where share_id = #{shareId,jdbcType=VARCHAR}
+  </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+    select share_id, disk_id, user_id, unit_id, file_pk, file_uri, file_type, name, description,
+    extention, ext_type,ext_icon_type,size, add_time, update_time, boutique, share_time, audit_instructions,
+    share_type, area_id, school_id, status
+    from ct_cloud_disk_share
+  </select>
+    <!--查询总数-->
+    <select id="count" resultType="int" parameterType="net.xuele.cloudteach.domain.CtCloudDiskShare">
+        select COUNT(1)
+        from ct_cloud_disk_share a
+        WHERE a.unit_id = #{unitId,jdbcType=VARCHAR}<!--课程ID-->
+        <if test="fileType!=null">
+            and a.file_type = #{fileType}<!--类型(教案，学案，课件等)-->
+        </if>
+        <choose>
+            <!--分享范围（1学校，2市域，3县域，0全国）-->
+            <when test="shareType == 0">
+                and a.share_type = 0
+            </when>
+            <when test="shareType == 1">
+                and a.share_type = 1 and a.school_id = #{schoolId,jdbcType=VARCHAR}
+            </when>
+            <when test="shareType == 2">
+                and a.share_type = 2 and a.area_id like concat(SUBSTRING(#{areaId,jdbcType=VARCHAR},1,4),'%')
+            </when>
+            <when test="shareType == 3">
+                and a.share_type = 3 and a.area_id = #{areaId,jdbcType=VARCHAR}
+            </when>
+            <otherwise>
+                and (a.share_type = 0
+                OR (a.share_type = 1 and a.school_id = #{schoolId,jdbcType=VARCHAR})
+                OR (a.share_type = 2 and a.area_id like concat(SUBSTRING(#{areaId,jdbcType=VARCHAR},1,4),'%'))
+                OR (a.share_type = 3 and a.area_id = #{areaId,jdbcType=VARCHAR})
+                )
+            </otherwise>
+        </choose>
+        <!--分类筛选-->
+        <if test="extType!=null">
+            and a.ext_type = #{extType,jdbcType=INTEGER}
+        </if>
+        and a.status = 2
+    </select>
+    <!--我的收藏计数-->
+    <select id="myCount" resultType="int" parameterType="net.xuele.cloudteach.domain.CtCloudDiskShare">
+        <!--select COUNT(1)
+        from ct_cloud_disk
+        WHERE unit_id = #{unitId,jdbcType=VARCHAR}&lt;!&ndash;课程ID&ndash;&gt;
+        and user_id = #{userId,jdbcType=VARCHAR}
+        and school_id = #{schoolId,jdbcType=VARCHAR}
+        <if test="fileType!=null">
+            and file_type = #{fileType}&lt;!&ndash;类型(教案，学案，课件等)&ndash;&gt;
+        </if>
+        &lt;!&ndash;分类筛选&ndash;&gt;
+        <if test="extType!=null">
+            and ext_type = #{extType,jdbcType=INTEGER}
+        </if>
+        and status = 1 and collect_status=1-->
+        SELECT count(1)
+        FROM ct_cloud_disk_share a
+        WHERE
+        a.share_id in
+        <foreach collection="list" item="pid" index="index" open="(" separator="," close=")">
+        #{pid}
+        </foreach>
+        <choose>
+            <!--分享范围（1学校，2市域，3县域，0全国）-->
+            <when test="record.shareType == 0">
+                and a.share_type = 0
+            </when>
+            <when test="record.shareType == 1">
+                and a.share_type = 1 and a.school_id = #{record.schoolId,jdbcType=VARCHAR}
+            </when>
+            <when test="record.shareType == 2">
+                and a.share_type = 2 and a.area_id like concat(SUBSTRING(#{record.areaId,jdbcType=VARCHAR},1,4),'%')
+            </when>
+            <when test="record.shareType == 3">
+                and a.share_type = 3 and a.area_id = #{record.areaId,jdbcType=VARCHAR}
+            </when>
+            <otherwise>
+                and (a.share_type = 0
+                OR (a.share_type = 1 and a.school_id = #{record.schoolId,jdbcType=VARCHAR})
+                OR (a.share_type = 2 and a.area_id like concat(SUBSTRING(#{record.areaId,jdbcType=VARCHAR},1,4),'%'))
+                OR (a.share_type = 3 and a.area_id = #{record.areaId,jdbcType=VARCHAR})
+                )
+            </otherwise>
+        </choose>
+        and a.status = 2
+    </select>
+    <!--根据fileType分类计数-->
+    <select id="countByFileType" resultType="net.xuele.cloudteach.domain.CtCloudDiskShareCount">
+        select a.file_type fileType,COUNT(1) num
+        from ct_cloud_disk_share a
+        WHERE a.unit_id = #{unitId,jdbcType=VARCHAR}<!--课程ID-->
+        and (a.share_type = 0
+        OR (a.share_type = 1 and a.school_id = #{schoolId,jdbcType=VARCHAR})
+        OR (a.share_type = 2 and a.area_id like concat(SUBSTRING(#{areaId,jdbcType=VARCHAR},1,4),'%'))
+        OR (a.share_type = 3 and a.area_id = #{areaId,jdbcType=VARCHAR})
+        )
+        and a.status = 2
+        GROUP BY a.file_type
+    </select>
+    <!--查询大家的分享-->
+    <select id="query" resultType="net.xuele.cloudteach.view.CtCloudDiskShareView" >
+        SELECT a.share_id shareId, a.disk_id diskId, a.user_id userId, a.user_name userName,a.unit_id unitId, a.file_pk filePk, a.file_uri fileUri,
+        a.file_type fileType, a.name , a.description,a.extention, a.ext_type extType,a.ext_icon_type extIconType,a.size,a.add_time addTime,
+        a.update_time upateTime,a.boutique, a.share_time shareTime, a.audit_instructions auditInstructions,a.share_type shareType,
+        a.area_id areaId, a.area_name areaName, a.school_id schoolId , a.school_name schoolName,a.status, b.save_times saveTimes, b.praise_times praiseTimes,
+        IF(pra.share_id IS NULL,0,1) praiseState
+        ,if(a.user_id =#{record.userId,jdbcType=VARCHAR},1,0 ) shareState,0 collectState
+        FROM ct_cloud_disk_share a
+        <!--查统计数-->
+        inner join ct_cloud_disk_share_statistics b on a.share_id = b.share_id
+        <!--判断是否点赞-->
+        LEFT JOIN ct_disk_share_praise pra
+        ON pra.share_id=a.share_id
+        AND pra.user_id=#{record.userId,jdbcType=VARCHAR} AND pra.STATUS=1
+        WHERE
+        <choose>
+            <when test="order==4" >a.share_id in <foreach collection="list" item="pid" index="index" open="(" separator="," close=")">
+                #{pid}
+            </foreach>
+            </when>
+            <otherwise>
+                a.unit_id = #{record.unitId,jdbcType=VARCHAR}<!--课程ID-->
+                <if test="record.fileType!=null">
+                    and a.file_type = #{record.fileType}<!--类型(教案，学案，课件等)-->
+                </if>
+                <!--分类筛选-->
+                <if test="record.extType!=null">
+                    and a.ext_type = #{record.extType,jdbcType=INTEGER}
+                </if>
+            </otherwise>
+        </choose>
+        <choose>
+            <!--分享范围（1学校，2市域，3县域，0全国）-->
+            <when test="record.shareType == 0">
+                and a.share_type = 0
+            </when>
+            <when test="record.shareType == 1">
+                and a.share_type = 1 and a.school_id = #{record.schoolId,jdbcType=VARCHAR}
+            </when>
+            <when test="record.shareType == 2">
+                and a.share_type = 2 and a.area_id like concat(SUBSTRING(#{record.areaId,jdbcType=VARCHAR},1,4),'%')
+            </when>
+            <when test="record.shareType == 3">
+                and a.share_type = 3 and a.area_id = #{record.areaId,jdbcType=VARCHAR}
+            </when>
+            <otherwise>
+                and (a.share_type = 0
+                OR (a.share_type = 1 and a.school_id = #{record.schoolId,jdbcType=VARCHAR})
+                OR (a.share_type = 2 and a.area_id like concat(SUBSTRING(#{record.areaId,jdbcType=VARCHAR},1,4),'%'))
+                OR (a.share_type = 3 and a.area_id = #{record.areaId,jdbcType=VARCHAR})
+                )
+            </otherwise>
+        </choose>
+        and a.status = 2
+        order by
+        <!--默认排序-->
+        <if test="order==0">b.save_times desc,b.praise_times desc,b.download_times desc,b.read_times desc,</if>
+        <!--点赞数排序-->
+        <if test="order==1">b.praise_times desc,</if>
+        <!--收藏量排序-->
+        <if test="order==2">b.save_times desc,</if>
+        <!--分享时间倒序-->
+        a.share_time desc
+        limit #{page.start},#{pageSize}
+    </select>
+    <!--置顶/取消置顶大家的分享-->
+    <update id="stickyShareFile" parameterType="net.xuele.cloudteach.domain.CtCloudDiskShare">
+        UPDATE ct_cloud_disk_share
+        SET
+        boutique = #{boutique,jdbcType=INTEGER}
+        WHERE share_id = #{shareId,jdbcType=VARCHAR}
+    </update>
+
+    <!--根据diskId查询分享-->
+    <select id="selectByDiskId" resultMap="BaseResultMap">
+        select share_id, disk_id, user_id, unit_id, file_pk, file_uri, file_type, name, description,
+        extention, ext_type,ext_icon_type,size, add_time, update_time, boutique, share_time, audit_instructions,
+        share_type, area_id, school_id, status
+        from ct_cloud_disk_share
+        where disk_id = #{diskId,jdbcType=VARCHAR}
+        and status = 2
+    </select>
+    <!--判断是否自己分享-->
+    <select id="isMyShare" resultType="int" parameterType="map">
+    select count(1)
+    from ct_cloud_disk_share
+    where user_id = #{userId,jdbcType=VARCHAR}
+    and share_id = #{shareId,jdbcType=VARCHAR}
+    and status = 2
+</select>
+
+    <!--课件查询大家的分享计数-->
+    <select id="queryTcExtFLCount" resultType="int" >
+        select COUNT(1)
+        FROM ct_cloud_disk_share a
+        WHERE (a.share_type = 0
+        OR (a.share_type = 1 and a.school_id = #{schoolId,jdbcType=VARCHAR})
+        OR (a.share_type = 2 and a.area_id like concat(SUBSTRING(#{areaId,jdbcType=VARCHAR},1,4),'%'))
+        OR (a.share_type = 3 and a.area_id = #{areaId,jdbcType=VARCHAR})
+        )
+        and a.unit_id = #{unitId,jdbcType=VARCHAR}
+        <if test="extType==null">
+        and a.ext_type in (2,4,5,6)
+        </if>
+        <if test="extType==2">
+            and a.ext_type = 2
+        </if>
+        <if test="extType==5">
+            and a.ext_type = 5
+        </if>
+        <if test="extType==6">
+            and a.ext_type = 6
+        </if>
+        <if test="extType==4">
+            and a.ext_type = 4 and <![CDATA[a.extention <> 'swf']]>
+        </if>
+        <if test="extType==7">
+            and a.ext_type = 4 and a.extention = 'swf'
+        </if>
+        and a.status = 2
+    </select>
+    <!--课件查询大家的分享-->
+    <select id="queryTcExtFL" resultType="net.xuele.cloudteach.view.TcExtFLCloudDiskShareView" >
+        SELECT a.share_id shareId, a.disk_id diskId, a.user_id userId, a.user_name userName,
+               a.file_uri fileUri,a.file_type fileType, a.extention, a.name , a.ext_type extType,a.size
+        FROM ct_cloud_disk_share a
+        inner join ct_cloud_disk_share_statistics as b on a.share_id=b.share_id
+        WHERE (a.share_type = 0
+                OR (a.share_type = 1 and a.school_id = #{schoolId,jdbcType=VARCHAR})
+                OR (a.share_type = 2 and a.area_id like concat(SUBSTRING(#{areaId,jdbcType=VARCHAR},1,4),'%'))
+                OR (a.share_type = 3 and a.area_id = #{areaId,jdbcType=VARCHAR})
+        )
+        and a.unit_id = #{unitId,jdbcType=VARCHAR}
+        <if test="extType==null">
+            and a.ext_type in (2,4,5,6)
+        </if>
+        <if test="extType==2">
+            and a.ext_type = 2
+        </if>
+        <if test="extType==5">
+            and a.ext_type = 5
+        </if>
+        <if test="extType==6">
+            and a.ext_type = 6
+        </if>
+        <if test="extType==4">
+            and a.ext_type = 4 and <![CDATA[a.extention <> 'swf']]>
+        </if>
+        <if test="extType==7">
+            and a.ext_type = 4 and a.extention = 'swf'
+        </if>
+        and a.status = 2
+        order by b.save_times desc
+        limit #{page.start},#{pageSize}
+    </select>
+</mapper>

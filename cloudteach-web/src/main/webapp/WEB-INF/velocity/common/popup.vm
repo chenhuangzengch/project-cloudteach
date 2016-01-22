@@ -1,0 +1,15 @@
+<div class="popup">
+    <div class="popup-info">
+        <h4 class="popup-head">
+            <span class="popup-name"></span>
+            <i class="close-icon"></i>
+        </h4>
+
+        <div class="popup-content">
+        </div>
+        <div class="popup-act">
+            <a href="javascript:void(0)" class="popup-cancel">取消</a>
+            <a href="javascript:void(0)" class="popup-confirm">确定</a>
+        </div>
+    </div>
+</div>

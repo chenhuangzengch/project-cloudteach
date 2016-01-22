@@ -1,0 +1,4 @@
+#set($layout="layout/errorLayout.vm")
+#set($page_title="错误页面")
+500 error
+<p>$request.getAttribute("ex")</p>

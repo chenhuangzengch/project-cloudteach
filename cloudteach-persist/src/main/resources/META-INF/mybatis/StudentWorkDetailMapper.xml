@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.StudentWorkDetailMapper">
+
+<!--    <resultMap id="StudentDoGuidanceWorkView" type="net.xuele.cloudteach.view.StudentDoGuidanceWorkView">
+        <id column="answer_id" property="answerId" jdbcType="VARCHAR"/>
+        <result column="user_id" property="studentId" jdbcType="VARCHAR"/>
+        <result column="work_id" property="workId" jdbcType="VARCHAR"/>
+        <result column="work_item_id" property="workItemId" jdbcType="VARCHAR"/>
+        <result column="guidance_context" property="guidanceContext" jdbcType="VARCHAR"/>
+        <result column="icon" property="studentHeadIcon" jdbcType="VARCHAR"/>
+        <result column="sub_image" property="subImage" jdbcType="INTEGER"/>
+        <result column="sub_tape" property="subTape" jdbcType="INTEGER"/>
+        <result column="sub_video" property="subVideo" jdbcType="INTEGER"/>
+        <result column="sub_other" property="subOther" jdbcType="INTEGER"/>
+        <result column="answer_context" property="answerContext" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <select id="studentDoGuidanceWorkView" resultMap="StudentDoGuidanceWorkView">
+        SELECT b.answer_id,b.user_id,b.work_id,b.work_item_id,a.context guidance_context,
+                e.icon,a.sub_image,a.sub_video,a.sub_tape,a.sub_other,b.context answer_context
+          FROM ct_guidance_work_item a,ct_guidance_work_item_answer b,m_users e
+         WHERE a.work_item_id = b.work_item_id
+           AND b.user_id = e.user_id
+           AND a.work_item_id = #{workItemId,jdbcType=VARCHAR}
+           AND a.user_id = #{studentId,jdbcType=VARCHAR}
+           and a.school_id = #{schoolId,jdbcType=VARCHAR}
+           and b.school_id = #{schoolId,jdbcType=VARCHAR}
+           and e.school_id = #{schoolId,jdbcType=VARCHAR}
+           and a.status = 1
+           order by a.item_id
+    </select>
+
+    <select id="guidanceItemCount" resultType="int">
+        SELECT COUNT(1)
+          FROM ct_guidance_work_item_answer b
+         WHERE  b.user_id = #{studentId,jdbcType=VARCHAR}
+           AND b.work_id = #{workId,jdbcType=VARCHAR}
+           and b.school_id = #{schoolId,jdbcType=VARCHAR}
+           and b.status = 1
+    </select>
+
+    <select id="myGuidanceItemWorkList" resultMap="StudentDoGuidanceWorkView">
+        SELECT b.answer_id,b.user_id,b.work_id,b.work_item_id,a.context guidance_context,
+                e.icon,a.sub_image,a.sub_video,a.sub_tape,a.sub_other,b.context answer_context
+          FROM ct_guidance_work_item a,ct_guidance_work_item_answer b,m_users e
+         WHERE a.work_item_id = b.work_item_id
+           AND b.user_id = e.user_id
+           AND b.user_id = #{studentId,jdbcType=VARCHAR}
+           AND b.work_id = #{workId,jdbcType=VARCHAR}
+           and a.school_id = #{schoolId,jdbcType=VARCHAR}
+           and b.school_id = #{schoolId,jdbcType=VARCHAR}
+           and e.school_id = #{schoolId,jdbcType=VARCHAR}
+           and a.status = 1
+           order by a.item_id
+    </select>-->
+
+</mapper>

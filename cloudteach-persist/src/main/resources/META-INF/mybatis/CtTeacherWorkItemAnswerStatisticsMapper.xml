@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtTeacherWorkItemAnswerStatisticsMapper">
+    <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtTeacherWorkItemAnswerStatistics">
+        <id column="answer_id" property="answerId" jdbcType="VARCHAR"/>
+        <result column="comment_times" property="commentTimes" jdbcType="INTEGER"/>
+        <result column="praise_times" property="praiseTimes" jdbcType="INTEGER"/>
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+    </resultMap>
+    <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtTeacherWorkItemAnswerStatistics">
+    insert into ct_teacher_work_item_answer_statistics (answer_id, comment_times, praise_times,
+      school_id, status)
+    values (#{answerId,jdbcType=VARCHAR}, #{commentTimes,jdbcType=INTEGER}, #{praiseTimes,jdbcType=INTEGER},
+      #{schoolId,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER})
+  </insert>
+    <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtTeacherWorkItemAnswerStatistics">
+    update ct_teacher_work_item_answer_statistics
+    set comment_times = #{commentTimes,jdbcType=INTEGER},
+      praise_times = #{praiseTimes,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER}
+    where school_id = #{schoolId,jdbcType=VARCHAR} and answer_id = #{answerId,jdbcType=VARCHAR}
+  </update>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    select answer_id, comment_times, praise_times, school_id, status
+    from ct_teacher_work_item_answer_statistics
+    where school_id = #{schoolId,jdbcType=VARCHAR} and answer_id = #{answerId,jdbcType=VARCHAR}
+  </select>
+
+    <!--获取初始化信息-->
+    <select id="getInitInfo" resultMap="BaseResultMap">
+        select a.answer_id,0 comment_times,0 praise_times,a.school_id,1 status
+        from ct_teacher_work_item_answer a
+        where a.school_id = #{schoolId,jdbcType=VARCHAR}
+        and a.work_id = #{workId,jdbcType=VARCHAR}
+  </select>
+
+    <!--布置作业初始化-->
+    <insert id="initCtTeacherWorkItemAnswerStat"
+            parameterType="net.xuele.cloudteach.domain.CtTeacherWorkItemAnswerStatistics">
+        insert into ct_teacher_work_item_answer_statistics (answer_id, comment_times, praise_times,school_id,
+        status) values
+        <foreach collection="initInfoList" item="items" index="index" separator=",">
+            (#{items.answerId},0,0,#{items.schoolId},1)
+        </foreach>
+    </insert>
+
+    <!--教师删除作业-->
+    <update id="deleteTeacherWorkItemAnswerStatistics" parameterType="java.lang.String">
+        update ct_teacher_work_item_answer_statistics
+        set status = 0
+        where school_id = #{schoolId,jdbcType=VARCHAR}
+        and answer_id in
+        <foreach collection="answerList" item="answerIds" index="index" open="(" close=")" separator=",">
+            #{answerIds}
+        </foreach>
+    </update>
+
+    <!--教师删除单个学生作业-->
+    <update id="deleteStuWorkItemAnswerStatistics" parameterType="java.lang.String">
+        update ct_teacher_work_item_answer_statistics
+        set status = 0
+        where school_id = #{schoolId,jdbcType=VARCHAR}
+        and answer_id = #{answerId,jdbcType=VARCHAR} and status=1
+    </update>
+
+    <!--通过作业ID获得作业回答计数信息-->
+    <select id="getTeacherWorkItemAnswerStatisticsByWorkId" resultMap="BaseResultMap">
+    select a.answer_id, a.comment_times, a.praise_times, a.school_id, a.status
+    from ct_teacher_work_item_answer_statistics a,ct_teacher_work_item_answer b
+    where a.school_id = #{schoolId,jdbcType=VARCHAR}
+    and b.school_id = #{schoolId,jdbcType=VARCHAR}
+    and b.work_id = #{workId,jdbcType=VARCHAR}
+    and a.answer_id = b.answer_id
+    and a.status = 1
+  </select>
+
+    <select id="selectOthersPraiseTimes" resultType="java.lang.Integer">
+        select praise_times
+        from ct_teacher_work_item_answer_statistics
+        where school_id = #{schoolId,jdbcType=VARCHAR}
+        and answer_id = #{answerId,jdbcType=VARCHAR}
+        and status = 1
+    </select>
+
+</mapper>

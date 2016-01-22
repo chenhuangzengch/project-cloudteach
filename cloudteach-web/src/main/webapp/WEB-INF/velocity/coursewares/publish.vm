@@ -1,0 +1,38 @@
+#set($layout="layout/bodyLayout.vm")
+#set($page_title="添加课件")
+#set($currPage="coursewares")
+#define($script)
+<link rel="stylesheet"  href="$!{asset_host}/css/cloudteach/giveLessons/courseware.css?version=${version}">
+#end
+
+<form action="$!{ctx}/courseReappear/addCourseReappear" method="POST">
+<div class="publish-wrap">
+	<div class="publish-head">
+		<h2>
+			<em class="head-name">发布网络课件</em>
+			<input type="submit" class="publish" value="发布">
+			<a class="cancel" href="$!{ctx}/teachCoursewares/teaching">取消</a>
+		</h2>
+	</div>
+	<div class="publish-content">
+		<div class="publish-set">
+			<div class="addclass-rect">
+				<div class="addClass"><em>+ 添加班级</em></div>
+				<img src="$!{asset_host}/imgs/cloudteach/add_class.png" class="classchoose" />
+			</div>
+			<div class="textarea-wrap">
+				<textarea class="setwork_textarea J-setwork_textarea" placeholder="填写本次课件的描述内容...（必填）" maxlength="3000" name="context"></textarea>
+				<p class="nums">0/3000</p>
+			</div>
+			<div class="courseList">
+
+			</div>
+		</div>
+	</div>
+</div>
+<input type="hidden" name="unitId">
+<input type="hidden" name="classList" >
+<input type="hidden" name="classJson" >
+<input type="hidden" name="coursewaresIdList">
+</form>
+<script>seajs.use('$!{asset_host}/cjs/page/cloudteach/courseware');</script>

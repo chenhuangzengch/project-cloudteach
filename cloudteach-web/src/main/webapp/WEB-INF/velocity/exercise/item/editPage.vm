@@ -1,0 +1,95 @@
+#set($layout="layout/bodyLayout.vm")
+#set($page_title="编辑电子作业题目")
+#set($currPage="guidance")
+#define($script)
+<link rel="stylesheet" href="$!{asset_host}/css/cloudteach/homework.css?version=${version}"/>
+<script src="$!{asset_host}/js/cloudteach/new-task.js?version=${version}"></script>
+#end
+
+<div class="publish-wrap">
+    <form action="$!{ctx}/exercise/item/edit" method="post">
+        <div class="publish-head">
+            <h2>
+                <em class="head-name">编辑题目</em>
+            ##                <input type="submit" class="save-publish" value="保存并发布"/>
+                <input type="submit" class="save" value="保存"/>
+                <a href="$!{ctx}/exercise/item/index" class="cancel">取消</a>
+            </h2>
+        </div>
+        <div class="publish-content">
+            <div class="publish-set">
+                <div class="textarea-wrap">
+                    <textarea class="setwork_textarea" name="context"
+                              placeholder="填写本次作业的描述内容...（选填）">$!{item.context}</textarea>
+
+                    <p class="nums">0/3000</p>
+                </div>
+                <div class="hand-method set-time">
+                    <font>作业上交方式</font>
+                    <ul class="ul-times">
+                        <li>
+                            <i class="sel #if($!{item.subOther}==1) sel-yes #else sel-no #end "></i>
+                            <span>不限制</span>
+                            <input type="checkbox" name="subOther" value="1"
+                                   #if($!{item.subOther}==1)checked #end >
+                        </li>
+                        <li>
+                            <i class="sel #if($!{item.subImage}==1) sel-yes #else sel-no #end "></i>
+                            <span>照片</span>
+                            <input type="checkbox" name="subImage" value="1"
+                                   #if($!{item.subImage}==1)checked #end >
+                        </li>
+                        <li>
+                            <i class="sel  #if($!{item.subVideo}==1) sel-yes #else sel-no #end "></i>
+                            <span>视频</span>
+                            <input type="checkbox" name="subVideo" value="1"
+                                   #if($!{item.subVideo}==1)checked #end>
+                        </li>
+                        <li>
+                            <i class="sel  #if($!{item.subTape}==1) sel-yes #else sel-no #end "></i>
+                            <span>音频</span>
+                            <input type="checkbox" name="subTape" value="1"
+                                   #if($!{item.subTape}==1)checked #end>
+                        </li>
+                    </ul>
+                </div>
+                <div class="empty">
+                    <p class="empty-who">从云盘选择附件</p>
+
+                    <p class="empty-ctls"><a href="javascript:;" class="new-attachment"><i class="icon-add"></i>添加附件</a>
+                    </p>
+                </div>
+            </div>
+            <div class="task-attachment" style="display: none">
+                <h3>习题附件</h3>
+                <input type="hidden" name="attachment" value="hidden">
+                <ul class="ul-attachment">
+                    #foreach(${disk} in $!{item.diskReferList})
+                        <li data-id="$!{disk.diskId}">
+                            <div class="attachment-type">
+                                <img class="xlpreview" data-filekey="$!{disk.fileUri}" data-ext="$!{disk.extension}"
+                                     src="$!{asset_host}/g/imgs/icons/$!{disk.extIconType}.png" class="file-type">
+                                <img src="$!{asset_host}/imgs/cloudteach/exercise_delete.png" class="file-delete">
+                            </div>
+                            <p class="file-name">$!{disk.name}</p>
+                        </li>
+
+                    #end
+                    <li class="li-add">
+                        <div class="attachment-type">
+                            <div class="new-attachment">
+                                <p class="p-notes">添加附件</p>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <input type="hidden" name="itemId" value="$!{item.itemId}"/>
+        <input type="hidden" name="diskIds" value="$!{item.diskIds}"/>
+        <input type="hidden" name="unitId" value="$!{item.unitId}"/>
+    </form>
+
+    <script type="text/javascript">
+        seajs.use('http://asset.xueleyun.com/cjs/page/cloudteach/new-task');
+    </script>

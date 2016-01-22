@@ -1,0 +1,513 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>net.xuele.cloudteach</groupId>
+    <artifactId>cloundteach-all</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>cloudteach-persist</module>
+        <module>cloudteach-service</module>
+        <module>cloudteach-api</module>
+        <module>cloudteach-web</module>
+        <module>cloudteach-crossdomain</module>
+    </modules>
+    <packaging>pom</packaging>
+
+    <properties>
+        <cloudsr-aip.version>1.0-SNAPSHOT</cloudsr-aip.version>
+        <notify-aip.version>1.0-SNAPSHOT</notify-aip.version>
+        <member-aip.version>1.0-SNAPSHOT</member-aip.version>
+        <appCenter-api.version>1.0-SNAPSHOT</appCenter-api.version>
+        <teacheval-api.version>1.0-SNAPSHOT</teacheval-api.version>
+        <springframework.version>4.1.6.RELEASE</springframework.version>
+        <springframework.security.version>3.2.0.RELEASE</springframework.security.version>
+        <spring.jackson.version>2.4.2</spring.jackson.version>
+        <h2.version>1.3.166</h2.version>
+        <slf4j.version>1.7.12</slf4j.version>
+        <logback.version>1.1.3</logback.version>
+        <mybatis.version>3.2.8</mybatis.version>
+        <mybatis.spring.version>1.1.1</mybatis.spring.version>
+        <mybatis.generator.verison>1.3.2</mybatis.generator.verison>
+        <velocity.version>1.7</velocity.version>
+        <velocity.toolview.version>1.4</velocity.toolview.version>
+        <commons.logging.version>1.2</commons.logging.version>
+        <commons.collections.version>3.2.1</commons.collections.version>
+        <commons.lang.version>2.6</commons.lang.version>
+        <commons.lang3.version>3.4</commons.lang3.version>
+        <commons.beanutils.version>1.8.3</commons.beanutils.version>
+        <commons.digester.version>1.7</commons.digester.version>
+        <junit.version>4.10</junit.version>
+        <compiler.version>1.7</compiler.version>
+        <plugin.compiler.version>2.1</plugin.compiler.version>
+        <jetty.plugin.version>6.1.10</jetty.plugin.version>
+        <mysql.jdbc.version>5.1.25</mysql.jdbc.version>
+        <zookeeper_version>3.4.6</zookeeper_version>
+        <zkclient_version>0.1</zkclient_version>
+        <dubbox.version>2.8.4</dubbox.version>
+        <tomcat.embed.version>8.0.11</tomcat.embed.version>
+        <tomcat.jdbc.pool>7.0.62</tomcat.jdbc.pool>
+        <kryo.version>2.24.0</kryo.version>
+        <kryo.serializers.version>0.26</kryo.serializers.version>
+        <maven.dependency.plugin.version>2.8</maven.dependency.plugin.version>
+        <cas.client.core.version>3.1.12</cas.client.core.version>
+        <hadoop.hdfs.version>2.7.0</hadoop.hdfs.version>
+        <spring-data-redis.version>1.4.2.RELEASE</spring-data-redis.version>
+        <aspectjweaver.version>1.6.12</aspectjweaver.version>
+        <jedis.version>2.6.2</jedis.version>
+        <plugin.findbugs.version>3.0.0</plugin.findbugs.version>
+        <spring.session.version>1.0.1.RELEASE</spring.session.version>
+        <httpclient.version>4.5</httpclient.version>
+        <httpclient.core.version>4.4.1</httpclient.core.version>
+        <commons.codec.version>1.9</commons.codec.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+
+            <!--subsys-->
+            <dependency>
+                <groupId>net.xuele.teacheval</groupId>
+                <artifactId>teacheval-api</artifactId>
+                <version>${teacheval-api.version}</version>
+            </dependency>
+
+            <!--member added by duzg at 1507160157-->
+            <dependency>
+                <groupId>net.xuele.member</groupId>
+                <artifactId>member-api</artifactId>
+                <version>${member-aip.version}</version>
+            </dependency>
+            <!--notify added by duzg at 1507171314-->
+            <dependency>
+                <groupId>net.xuele.notify</groupId>
+                <artifactId>notify-api</artifactId>
+                <version>${notify-aip.version}</version>
+            </dependency>
+            <!--jedis added by sunxh at 1507061721-->
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-redis</artifactId>
+                <version>${spring-data-redis.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>redis.clients</groupId>
+                <artifactId>jedis</artifactId>
+                <version>${jedis.version}</version>
+            </dependency>
+
+            <!--aspectjweaver added by sunxh at 1507271254-->
+            <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjweaver</artifactId>
+                <version>${aspectjweaver.version}</version>
+            </dependency>
+
+
+            <!-- junit -->
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+
+            <!--spring framework-->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-framework-bom</artifactId>
+                <version>${springframework.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!--spring security-->
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-bom</artifactId>
+                <version>${springframework.security.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!--spring json-->
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${spring.jackson.version}</version>
+            </dependency>
+
+            <!--spring session-->
+            <dependency>
+                <groupId>org.springframework.session</groupId>
+                <artifactId>spring-session</artifactId>
+                <version>${spring.session.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.session</groupId>
+                <artifactId>spring-session-data-redis</artifactId>
+                <version>${spring.session.version}</version>
+            </dependency>
+
+            <!--view template -->
+            <dependency>
+                <groupId>org.apache.velocity</groupId>
+                <artifactId>velocity</artifactId>
+                <version>${velocity.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>velocity-tools</groupId>
+                <artifactId>velocity-tools-view</artifactId>
+                <version>${velocity.toolview.version}</version>
+            </dependency>
+
+            <!-- apache common -->
+            <dependency>
+                <groupId>commons-collections</groupId>
+                <artifactId>commons-collections</artifactId>
+                <version>${commons.collections.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>${commons.lang.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons.lang3.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-beanutils</groupId>
+                <artifactId>commons-beanutils</artifactId>
+                <version>${commons.beanutils.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+                <version>${commons.logging.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-digester</groupId>
+                <artifactId>commons-digester</artifactId>
+                <version>${commons.digester.version}</version>
+            </dependency>
+
+
+            <!--logging-->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-core</artifactId>
+                <version>${logback.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${logback.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jcl-over-slf4j</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jul-to-slf4j</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>log4j-over-slf4j</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+
+
+
+            <!--orm framework -->
+            <dependency>
+                <groupId>org.mybatis</groupId>
+                <artifactId>mybatis</artifactId>
+                <version>${mybatis.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mybatis</groupId>
+                <artifactId>mybatis-spring</artifactId>
+                <version>${mybatis.spring.version}</version>
+            </dependency>
+
+            <!-- cas client -->
+            <dependency>
+                <groupId>org.jasig.cas.client</groupId>
+                <artifactId>cas-client-core</artifactId>
+                <version>${cas.client.core.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-hdfs</artifactId>
+                <version>${hadoop.hdfs.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+
+            <!--mysql jdbc -->
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql.jdbc.version}</version>
+            </dependency>
+
+            <!--zookeeper -->
+            <dependency>
+                <groupId>org.apache.zookeeper</groupId>
+                <artifactId>zookeeper</artifactId>
+                <version>${zookeeper_version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-log4j12</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.101tec</groupId>
+                <artifactId>zkclient</artifactId>
+                <version>0.5</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-log4j12</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+
+            <!--dubbox ex commons-logging-->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>dubbo</artifactId>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
+                    </exclusion>
+                </exclusions>
+                <version>${dubbox.version}</version>
+            </dependency>
+
+
+            <!-- dubbox tomcat embed -->
+            <dependency>
+                <groupId>org.apache.tomcat.embed</groupId>
+                <artifactId>tomcat-embed-core</artifactId>
+                <version>${tomcat.embed.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tomcat.embed</groupId>
+                <artifactId>tomcat-embed-logging-juli</artifactId>
+                <version>${tomcat.embed.version}</version>
+            </dependency>
+
+            <!-- tomcat jdbc connection pool -->
+            <dependency>
+                <groupId>org.apache.tomcat</groupId>
+                <artifactId>tomcat-jdbc</artifactId>
+                <version>${tomcat.jdbc.pool}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.mybatis.generator</groupId>
+                <artifactId>mybatis-generator-core</artifactId>
+                <version>${mybatis.generator.verison}</version>
+                <scope>provided</scope>
+            </dependency>
+
+
+            <!--dubbo 序列化支持-->
+            <dependency>
+                <groupId>com.esotericsoftware.kryo</groupId>
+                <artifactId>kryo</artifactId>
+                <version>${kryo.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.javakaffee</groupId>
+                <artifactId>kryo-serializers</artifactId>
+                <version>${kryo.serializers.version}</version>
+            </dependency>
+            <!--测试用例依赖内存数据库-->
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>${h2.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!--apache http client-->
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>${httpclient.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpmime</artifactId>
+                <version>${httpclient.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpcore</artifactId>
+                <version>${httpclient.core.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>${commons.codec.version}</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+    <distributionManagement>
+        <repository>
+            <id>releases</id>
+            <name>Nexus Release Repository</name>
+            <url>http://192.168.1.251:8086/nexus/content/repositories/local_nexus_releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>local_nexus_snapshots</id>
+            <url>http://192.168.1.251:8086/nexus/content/repositories/local_nexus_snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+    <!--build -->
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${plugin.compiler.version}</version>
+                    <configuration>
+                        <source>${compiler.version}</source>
+                        <target>${compiler.version}</target>
+                        <encoding>UTF-8</encoding>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <configuration>
+                        <skip>true</skip>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.mortbay.jetty</groupId>
+                    <artifactId>maven-jetty-plugin</artifactId>
+                    <version>${jetty.plugin.version}</version>
+                    <configuration>
+                        <scanIntervalSeconds>2</scanIntervalSeconds>
+                    </configuration>
+                </plugin>
+                <!--mybatis generator-->
+                <plugin>
+                    <groupId>org.mybatis.generator</groupId>
+                    <artifactId>mybatis-generator-maven-plugin</artifactId>
+
+                    <version>1.3.2</version>
+                    <configuration>
+                        <configurationFile>${basedir}/src/test/resources/generatorConfig.xml</configurationFile>
+                        <verbose>true</verbose>
+                        <overwrite>false</overwrite>
+                    </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.mybatis.generator</groupId>
+                            <artifactId>mybatis-generator-core</artifactId>
+                            <version>1.3.2</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>net.xuele.cloudteach</groupId>
+                            <artifactId>cloudteach-persist</artifactId>
+                            <version>1.0-SNAPSHOT</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>2.8</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>findbugs-maven-plugin</artifactId>
+                    <version>${plugin.findbugs.version}</version>
+                    <configuration>
+                        <encoding>UTF-8</encoding>
+                        <threshold>High</threshold>
+                        <effort>Default</effort>
+                        <findbugsXmlOutput>true</findbugsXmlOutput>
+                        <findbugsXmlOutputDirectory>target/site</findbugsXmlOutputDirectory>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+</project>

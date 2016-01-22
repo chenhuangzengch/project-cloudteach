@@ -1,0 +1,71 @@
+#set($layout="layout/bodyLayout.vm")
+#set($page_title="提分宝挑战纪录")
+#define($script)
+<link rel="stylesheet" href="$!{asset_host}/css/cloudteach/stu.css?version=${version}"/>
+#end
+
+<div class="detail-head">
+    <div class="upgrade-head">
+        <em class="em-upgrade-head">提分宝</em>
+        <a class="li-whos" href="$!{ctx}/studentcloudwork/parent/viewWorkDetail?workId=$!{workId}&studentId=$!{studentId}&workType=2">写作业</a>
+        <a class="li-whos"
+           href="$!{ctx}/studentcloudwork/parent/magicWorkCommunication?workId=$!{workId}&studentId=$!{studentId}&workType=2">作业交流</a>
+        <a class="li-whos on" href="javascript:void(0)">挑战记录</a>
+    </div>
+</div>
+
+<div class="container">
+
+    #if($list.isEmpty($!{magicWorkChallengeRecords}))
+        <div class="empty" style="display: block;">
+            <p class="empty-msg">还没有挑战过，您可以督促下！</p>
+
+            #*<p class="empty-ctls"><a
+                    href="$!{ctx}/studentcloudwork/parent/viewWorkDetail?workId=$!{workId}&studentId=$!{studentId}&workType=2"
+                    class="upload-file"><i class="icon-add"></i>去写作业</a></p>*#
+        </div>
+    #else
+        <ul class="upgrade-records">
+            #foreach($magicWorkChallengeDTO in $magicWorkChallengeRecords)
+                <li>
+                <span class='battle-times'>
+                    #if($DateExtend.compareToToday($!{magicWorkChallengeDTO.endTime})==0)
+                        $!date.format('HH:mm',$!{magicWorkChallengeDTO.endTime})
+                    #elseif($DateExtend.compareToToday($!{magicWorkChallengeDTO.endTime})==-1)
+                        昨天 $!date.format('HH:mm',$!{magicWorkChallengeDTO.endTime})
+                    #elseif($DateExtend.compareToToday($!{magicWorkChallengeDTO.endTime})==-2)
+                        前天 $!date.format('HH:mm',$!{magicWorkChallengeDTO.endTime})
+                    #else
+                        $!date.format('yyyy年MM月dd日 HH:mm',$!{magicWorkChallengeDTO.endTime})
+                    #end
+                </span>
+                    #if ($!{magicWorkChallengeDTO.score}==5)
+                        <div class="battle-result zero-star">
+                            <span class="result-content">挑战完成</span>
+                        </div>
+                    #elseif($!{magicWorkChallengeDTO.score}==6)
+                        <div class="battle-result one-star">
+                            <span class="result-content">三本大学</span>
+                        </div>
+                    #elseif($!{magicWorkChallengeDTO.score}==7)
+                        <div class="battle-result two-star">
+                            <span class="result-content">二本大学</span>
+                        </div>
+                    #elseif($!{magicWorkChallengeDTO.score}==8)
+                        <div class="battle-result three-star">
+                            <span class="result-content">一本大学</span>
+                        </div>
+                    #elseif($!{magicWorkChallengeDTO.score}==9)
+                        <div class="battle-result four-star">
+                            <span class="result-content">重点大学</span>
+                        </div>
+                    #elseif($!{magicWorkChallengeDTO.score}==10)
+                        <div class="battle-result five-star">
+                            <span class="result-content">名牌大学</span>
+                        </div>
+                    #end
+                </li>
+            #end
+        </ul>
+    #end
+</div>

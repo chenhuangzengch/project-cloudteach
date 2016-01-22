@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtTeacherWorkMapper">
+    <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtTeacherWork">
+        <id column="work_id" property="workId" jdbcType="VARCHAR"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+        <result column="unit_id" property="unitId" jdbcType="VARCHAR"/>
+        <result column="work_type" property="workType" jdbcType="INTEGER"/>
+        <result column="publish_type" property="publishType" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="publish_time" property="publishTime" jdbcType="TIMESTAMP"/>
+        <result column="end_time" property="endTime" jdbcType="TIMESTAMP"/>
+        <result column="finish_status" property="finishStatus" jdbcType="INTEGER"/>
+        <result column="correct_status" property="correctStatus" jdbcType="INTEGER"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+    </resultMap>
+    <resultMap id="TeacherWorkDetailViewResultMap" type="net.xuele.cloudteach.view.TeacherWorkDetailView">
+        <id column="work_id" property="workId" jdbcType="VARCHAR"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+        <result column="unit_id" property="unitId" jdbcType="VARCHAR"/>
+        <result column="work_type" property="workType" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="publish_time" property="publishTime" jdbcType="TIMESTAMP"/>
+        <result column="end_time" property="endTime" jdbcType="TIMESTAMP"/>
+        <result column="finish_status" property="finishStatus" jdbcType="INTEGER"/>
+        <result column="correct_status" property="correctStatus" jdbcType="INTEGER"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
+        <result column="subject_id" property="subjectId" jdbcType="VARCHAR"/>
+        <result column="subject_name" property="subjectName" jdbcType="VARCHAR"/>
+        <result column="real_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="icon" property="userIcon" jdbcType="VARCHAR"/>
+        <result column="position_name" property="positionName" jdbcType="VARCHAR"/>
+    </resultMap>
+    <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtTeacherWork">
+    insert into ct_teacher_work (work_id, user_id, school_id,
+      unit_id, work_type, publish_type,
+      create_time, update_time, publish_time,
+      end_time, finish_status, correct_status,
+      status)
+    values (#{workId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{schoolId,jdbcType=VARCHAR},
+      #{unitId,jdbcType=VARCHAR}, #{workType,jdbcType=INTEGER}, #{publishType,jdbcType=INTEGER},
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{publishTime,jdbcType=TIMESTAMP},
+      #{endTime,jdbcType=TIMESTAMP}, #{finishStatus,jdbcType=INTEGER}, #{correctStatus,jdbcType=INTEGER},
+      #{status,jdbcType=INTEGER})
+  </insert>
+    <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtTeacherWork">
+    update ct_teacher_work
+    set user_id = #{userId,jdbcType=VARCHAR},
+      unit_id = #{unitId,jdbcType=VARCHAR},
+      work_type = #{workType,jdbcType=INTEGER},
+      publish_type = #{publishType,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      publish_time = #{publishTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      finish_status = #{finishStatus,jdbcType=INTEGER},
+      correct_status = #{correctStatus,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER}
+    where work_id = #{workId,jdbcType=VARCHAR}
+      and school_id = #{schoolId,jdbcType=VARCHAR}
+  </update>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    select work_id, user_id, school_id, unit_id, work_type, publish_type, create_time,
+    update_time, publish_time, end_time, finish_status, correct_status, status
+    from ct_teacher_work
+    where work_id = #{workId,jdbcType=VARCHAR}
+      and school_id = #{schoolId,jdbcType=VARCHAR}
+  </select>
+    <!--教师删除作业-->
+    <update id="deleteTeacherWork" parameterType="java.lang.String">
+    update ct_teacher_work
+    set status = 0
+    where school_id = #{schoolId,jdbcType=VARCHAR}
+    and work_id = #{workId,jdbcType=VARCHAR}
+  </update>
+
+    <select id="queryTeacherWorkDetail" resultMap="TeacherWorkDetailViewResultMap">
+    select ct_teacher_work.work_id,ct_teacher_work.user_id,ct_teacher_work.unit_id,ct_teacher_work.publish_time,
+    ct_teacher_work.end_time,ct_teacher_work.finish_status,ct_teacher_work.correct_status,ct_teacher_work.status,
+    ct_units.unit_name,ct_book.subject_id,ct_book.subject_name,m_users.icon,
+    case m_users.identity_id when 'SCHOOL_MANAGER' then '学校管理员' else m_users.real_name end as real_name,
+    case m_users.identity_id when 'SCHOOL_MANAGER' then '学校管理员' else m_teacher.position_name end as position_name
+    from ct_teacher_work
+    LEFT JOIN ct_units ON ct_units.unit_id = ct_teacher_work.unit_id
+    LEFT JOIN ct_book ON ct_book.book_id = ct_units.book_id
+    INNER JOIN m_users ON m_users.user_id = ct_teacher_work.user_id
+    left JOIN m_teacher on m_teacher.user_id = ct_teacher_work.user_id
+    where ct_teacher_work.school_id = #{schoolId,jdbcType=VARCHAR}
+    and ct_teacher_work.work_id=#{workId,jdbcType=VARCHAR}
+  </select>
+
+    <!--更新作业完成状态-->
+    <update id="updateWorkFinishStatus">
+    update ct_teacher_work
+    set finish_status = #{finishStatus,jdbcType=INTEGER}
+    where school_id = #{schoolId,jdbcType=VARCHAR}
+    and work_id = #{workId,jdbcType=VARCHAR}
+    and status = 1
+  </update>
+
+</mapper>

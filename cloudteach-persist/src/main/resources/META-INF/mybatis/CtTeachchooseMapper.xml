@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtTeachchooseMapper">
+    <resultMap id="BaseResultMap" type="net.xuele.cloudteach.view.TeachchooseView">
+        <id column="coursewaresId" property="coursewaresId" jdbcType="VARCHAR"/>
+        <result column="coursewaresTitle" property="coursewaresTitle" jdbcType="VARCHAR"/>
+        <result column="schoolId" property="schoolId" jdbcType="VARCHAR"/>
+        <result column="userId" property="userId" jdbcType="VARCHAR"/>
+        <result column="userName" property="userName" jdbcType="VARCHAR"/>
+        <result column="unitId" property="unitId" jdbcType="VARCHAR"/>
+        <result column="unitName" property="unitName" jdbcType="VARCHAR"/>
+        <result column="createTime" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="bookId" property="bookId" jdbcType="VARCHAR"/>
+        <result column="bookName" property="bookName" jdbcType="VARCHAR"/>
+        <result column="subjectId" property="subjectId" jdbcType="VARCHAR"/>
+        <result column="subjectName" property="subjectName" jdbcType="VARCHAR"/>
+        <result column="grade" property="grade" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <select id="queryTeachchooseListByPage" resultMap="BaseResultMap">
+        SELECT ctc.school_id schoolId,ctc.coursewares_id coursewaresId,ctc.title coursewaresTitle,ctc.user_id userId,mu.real_name userName,ctc.unit_id unitId,cu.unit_name unitName,ctc.update_time createTime,cb.book_id bookId,cb.book_name bookName,cb.grade grade,cb.subject_id subjectId,cb.subject_name subjectName FROM ct_teach_coursewares ctc
+        JOIN ct_units cu ON ctc.unit_id=cu.unit_id
+        JOIN ct_book cb ON cu.book_id=cb.book_id
+        JOIN m_users mu ON ctc.user_id=mu.user_id
+        WHERE ctc.status!=0 AND ctc.school_id=#{schoolId,jdbcType=VARCHAR} AND ctc.is_collect=0 AND <![CDATA[ctc.update_time>=#{startTime,jdbcType=VARCHAR}]]> AND <![CDATA[ctc.update_time<=#{endTime,jdbcType=VARCHAR}]]>
+        <if test="subjectId!=null">
+            AND cb.subject_id=#{subjectId,jdbcType=VARCHAR}
+        </if>
+        <if test="grade!=null">
+            AND cb.grade=#{grade,jdbcType=INTEGER}
+        </if>
+        ORDER BY ctc.update_time DESC
+        LIMIT #{page.start},#{pageSize}
+    </select>
+
+    <select id="queryTeachchooseCount" resultType="java.lang.Long">
+        SELECT count(1) FROM ct_teach_coursewares ctc
+        JOIN ct_units cu ON ctc.unit_id=cu.unit_id
+        JOIN ct_book cb ON cu.book_id=cb.book_id
+        JOIN m_users mu ON ctc.user_id=mu.user_id
+        WHERE ctc.status!=0 AND ctc.school_id=#{schoolId,jdbcType=VARCHAR} AND ctc.is_collect=0 AND <![CDATA[ctc.update_time>=#{startTime,jdbcType=VARCHAR}]]> AND <![CDATA[ctc.update_time<=#{endTime,jdbcType=VARCHAR}]]>
+        <if test="subjectId!=null">
+            AND cb.subject_id=#{subjectId,jdbcType=VARCHAR}
+        </if>
+        <if test="grade!=null">
+            AND cb.grade=#{grade,jdbcType=INTEGER}
+        </if>
+    </select>
+
+</mapper>

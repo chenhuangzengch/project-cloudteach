@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.QQuestFeedbackMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.QQuestFeedback" >
+    <id column="fb_id" property="fbId" jdbcType="VARCHAR" />
+    <result column="que_id" property="queId" jdbcType="VARCHAR" />
+    <result column="q_type" property="qType" jdbcType="INTEGER" />
+    <result column="book_id" property="bookId" jdbcType="VARCHAR" />
+    <result column="unit_id" property="unitId" jdbcType="VARCHAR" />
+    <result column="fb_type" property="fbType" jdbcType="INTEGER" />
+    <result column="a_id" property="aId" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="fb_time" property="fbTime" jdbcType="TIMESTAMP" />
+    <result column="handle_user_id" property="handleUserId" jdbcType="VARCHAR" />
+    <result column="handle_user_name" property="handleUserName" jdbcType="VARCHAR" />
+    <result column="handle_time" property="handleTime" jdbcType="TIMESTAMP" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="fb_content" property="fbContent" jdbcType="LONGVARCHAR" />
+    <result column="user_answer" property="userAnswer" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from q_quest_feedback
+    where fb_id = #{fbId,jdbcType=VARCHAR}
+    and book_id = #{bookId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="net.xuele.cloudteach.domain.QQuestFeedback" >
+    insert into q_quest_feedback (fb_id, que_id, q_type, book_id,
+      unit_id, fb_type, a_id, 
+      user_id, user_name, fb_time, 
+      handle_user_id, handle_user_name, handle_time, 
+      status, fb_content, user_answer
+      )
+    values (#{fbId,jdbcType=VARCHAR}, #{queId,jdbcType=VARCHAR}, #{qType,jdbcType=INTEGER}, #{bookId,jdbcType=VARCHAR},
+      #{unitId,jdbcType=VARCHAR}, #{fbType,jdbcType=INTEGER}, #{aId,jdbcType=VARCHAR}, 
+      #{userId,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{fbTime,jdbcType=TIMESTAMP}, 
+      #{handleUserId,jdbcType=VARCHAR}, #{handleUserName,jdbcType=VARCHAR}, #{handleTime,jdbcType=TIMESTAMP}, 
+      #{status,jdbcType=INTEGER}, #{fbContent,jdbcType=LONGVARCHAR}, #{userAnswer,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+<!--批量插入-->
+  <insert id="batchInsert"  >
+    insert into q_quest_feedback (fb_id, que_id, q_type, book_id,
+    unit_id, fb_type, a_id,
+    user_id, user_name, fb_time,
+    handle_user_id, handle_user_name, handle_time,
+    status, fb_content, user_answer
+    )
+    values <foreach collection="records" item="item" index="index" separator=",">
+    (REPLACE(UUID(), '-', ''), #{item.queId,jdbcType=VARCHAR}, #{item.qType,jdbcType=INTEGER}, #{item.bookId,jdbcType=VARCHAR},
+    #{item.unitId,jdbcType=VARCHAR}, #{item.fbType,jdbcType=INTEGER}, #{item.aId,jdbcType=VARCHAR},
+    #{item.userId,jdbcType=VARCHAR}, #{item.userName,jdbcType=VARCHAR}, #{item.fbTime,jdbcType=TIMESTAMP},
+    #{item.handleUserId,jdbcType=VARCHAR}, #{item.handleUserName,jdbcType=VARCHAR}, #{item.handleTime,jdbcType=TIMESTAMP},
+    #{item.status,jdbcType=INTEGER}, #{item.fbContent,jdbcType=LONGVARCHAR}, #{item.userAnswer,jdbcType=LONGVARCHAR}
+    )
+  </foreach>
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.QQuestFeedback" >
+    update q_quest_feedback
+    set que_id = #{queId,jdbcType=VARCHAR},
+      q_type = #{qType,jdbcType=INTEGER},
+      unit_id = #{unitId,jdbcType=VARCHAR},
+      fb_type = #{fbType,jdbcType=INTEGER},
+      a_id = #{aId,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=VARCHAR},
+      user_name = #{userName,jdbcType=VARCHAR},
+      fb_time = #{fbTime,jdbcType=TIMESTAMP},
+      handle_user_id = #{handleUserId,jdbcType=VARCHAR},
+      handle_user_name = #{handleUserName,jdbcType=VARCHAR},
+      handle_time = #{handleTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER},
+      fb_content = #{fbContent,jdbcType=LONGVARCHAR},
+      user_answer = #{userAnswer,jdbcType=LONGVARCHAR}
+    where fb_id = #{fbId,jdbcType=VARCHAR}
+    and book_id = #{bookId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select fb_id, que_id, q_type, book_id, unit_id, fb_type, a_id, user_id, user_name, fb_time,
+    handle_user_id, handle_user_name, handle_time, status, fb_content, user_answer
+    from q_quest_feedback
+    where fb_id = #{fbId,jdbcType=VARCHAR}
+    and book_id = #{bookId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select fb_id, que_id, q_type, book_id, unit_id, fb_type, a_id, user_id, user_name, fb_time,
+    handle_user_id, handle_user_name, handle_time, status, fb_content, user_answer
+    from q_quest_feedback
+  </select>
+</mapper>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtMagicBankFinishMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtMagicBankFinish" >
+    <id column="finish_id" property="finishId" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="bank_id" property="bankId" jdbcType="VARCHAR" />
+    <result column="unit_id" property="unitId" jdbcType="VARCHAR" />
+    <result column="book_id" property="bookId" jdbcType="VARCHAR" />
+    <result column="max_score" property="maxScore" jdbcType="INTEGER" />
+    <result column="max_scorecontext" property="maxScorecontext" jdbcType="VARCHAR" />
+    <result column="school_id" property="schoolId" jdbcType="VARCHAR" />
+    <result column="finish_status" property="finishStatus" jdbcType="INTEGER" />
+  </resultMap>
+  <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtMagicBankFinish" >
+    insert into ct_magic_bank_finish (finish_id, user_id, bank_id, unit_id, book_id, max_score, max_scorecontext, school_id, finish_status)
+    values (#{finishId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{bankId,jdbcType=VARCHAR}, #{unitId,jdbcType=VARCHAR}, #{bookId,jdbcType=VARCHAR},
+      #{maxScore,jdbcType=INTEGER}, #{maxScorecontext,jdbcType=VARCHAR}, #{schoolId,jdbcType=VARCHAR},  #{finishStatus,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtMagicBankFinish" >
+    update ct_magic_bank_finish
+    set user_id = #{userId,jdbcType=VARCHAR},
+      bank_id = #{bankId,jdbcType=VARCHAR},
+      unit_id = #{unitId,jdbcType=VARCHAR},
+      book_id = #{bookId,jdbcType=VARCHAR},
+      max_score = #{maxScore,jdbcType=VARCHAR},
+      max_scorecontext = #{maxScorecontext,jdbcType=VARCHAR},
+      finish_status = #{finishStatus,jdbcType=INTEGER}
+    where school_id = #{schoolId,jdbcType=INTEGER} and finish_id = #{finishId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    select finish_id, user_id, bank_id, unit_id, book_id, max_score, max_scorecontext, school_id, finish_status
+    from ct_magic_bank_finish
+    where school_id = #{schoolId,jdbcType=VARCHAR} and finish_id = #{finishId,jdbcType=VARCHAR}
+  </select>
+<!--根据学生id、题库id查询学生完成状态记录-->
+  <select id="selectBankFinishStaByUserId" resultMap="BaseResultMap">
+    select finish_id, user_id, bank_id, unit_id, book_id, max_score, max_scorecontext, school_id, finish_status
+    from ct_magic_bank_finish
+    where school_id = #{schoolId,jdbcType=VARCHAR} and user_id = #{userId,jdbcType=VARCHAR} and bank_id = #{bankId,jdbcType=VARCHAR}
+  </select>
+
+</mapper>

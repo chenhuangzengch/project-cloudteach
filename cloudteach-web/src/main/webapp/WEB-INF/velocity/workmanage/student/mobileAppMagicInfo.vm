@@ -1,0 +1,52 @@
+#set($layout="layout/mobileAppLayout.vm")
+#set($page_title="提分宝")
+#define($script)
+#end
+<input type="hidden" name="userId" value="$!{userId}"/>
+<input type="hidden" name="schoolId" value="$!{schoolId}"/>
+<input type="hidden" name="bankId" value="$!{bankId}"/>
+
+<header class="clearfix hide">
+    <div class="header_wraper clearfix">
+        <div class="speed_progress fl">
+            <div class="done_progress fl J-done_progress" style="width:0;"></div>
+        </div>
+        <span class="fr J-persent">0/$!{total}</span>
+    </div>
+</header>
+<div class="subjects">
+    #foreach($ques in $!{magicQuestionViewDTO})
+        <section class="subject" data-queid=$!{ques.queId}>
+            <div class="sub_top clearfix">
+                <p class="fl">
+                    <span class="sub_num fl">$!{velocityCount}/$!{total}</span>
+                    <span class="sub_type fl">$!{ques.queType}
+                    </span>
+                </p>
+            #if( ${ques.videoId})
+                <p class="check J-check fr" data-url="$!{ques.videoFileKey}" data-content="$!{ques.videoDesc}"><i class="icon icon-play fl"></i>查看讲解</p>
+            #end
+            </div>
+            <div class="exercise">
+                <p class="exe_content">$!{ques.content}</p>
+                <div class="answer">
+                    <h3>【参考答案】</h3>
+                    <div class="answer_content">$!{ques.answer}</div>
+                </div>
+                <div class="correct">
+                    <h3>【批改】</h3>
+                    <div class="correct_status J-correct_status clearfix">
+                        #if( ${ques.rwStatus} == 1 ) <span class="done_well">我做对了</span>
+                        #elseif(${ques.rwStatus} == 0 ) <span class="done_unwell">我做错了</span>
+                        #else    #end
+                    </div>
+                </div>
+            </div>
+        </section>
+    #end
+    <section class="tips_info"></section>
+    <footer>通过提分宝的练习可以做到知识的巩固和考试成绩的提升</footer>
+    <script  src="$!{asset_host}/app/js/zepto.min.js?version=${version}"></script>
+   <script  src="$!{asset_host}/app/js/improve.js?version=${version}"></script>
+    <script>console.log(queIds)</script>
+</div>

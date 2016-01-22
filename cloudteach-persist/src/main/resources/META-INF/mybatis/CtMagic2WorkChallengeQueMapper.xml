@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtMagic2WorkChallengeQueMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtMagic2WorkChallengeQue" >
+    <id column="cq_id" property="cqId" jdbcType="VARCHAR" />
+    <result column="challenge_id" property="challengeId" jdbcType="VARCHAR" />
+    <result column="practice_id" property="practiceId" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="sort" property="sort" jdbcType="INTEGER" />
+    <result column="que_id" property="queId" jdbcType="VARCHAR" />
+    <result column="parent_id" property="parentId" jdbcType="VARCHAR" />
+    <result column="que_time" property="queTime" jdbcType="DECIMAL" />
+    <result column="school_id" property="schoolId" jdbcType="VARCHAR" />
+    <result column="rw" property="rw" jdbcType="INTEGER" />
+    <result column="STATUS" property="status" jdbcType="INTEGER" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from ct_magic2_work_challenge_que
+    where cq_id = #{cqId,jdbcType=VARCHAR}
+    and school_id = #{schoolId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtMagic2WorkChallengeQue" >
+    insert into ct_magic2_work_challenge_que (cq_id, challenge_id, practice_id, user_id,
+      sort, que_id, parent_id, 
+      que_time, school_id, rw,STATUS
+      )
+    values (#{cqId,jdbcType=VARCHAR}, #{challengeId,jdbcType=VARCHAR}, #{practiceId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR},
+      #{sort,jdbcType=INTEGER}, #{queId,jdbcType=VARCHAR}, #{parentId,jdbcType=VARCHAR}, 
+      #{queTime,jdbcType=DECIMAL}, #{schoolId,jdbcType=VARCHAR}, #{rw,jdbcType=INTEGER},#{status,jdbcType=INTEGER}
+      )
+  </insert>
+  <!--获取某一课程下某个用户练习过的题目-->
+  <select id="selectChallengedQuestId" resultType="java.lang.String" >
+    SELECT CASE WHEN cq.parent_id='' THEN cq.que_id ELSE cq.parent_id END queId
+    FROM ct_magic2_work_challenge cg
+    LEFT JOIN
+    (select que_id,challenge_id,parent_id from ct_magic2_work_challenge_que
+    where user_id=#{userId,jdbcType=VARCHAR}
+    and school_id=#{schoolId,jdbcType=VARCHAR}
+    and status != 0
+    ) cq
+    ON  cg.challenge_id=cq.challenge_id
+    WHERE cg.school_id=#{schoolId,jdbcType=VARCHAR}
+    AND cg.user_id=#{userId,jdbcType=VARCHAR}
+    AND cg.status=1
+    AND cg.unit_id =#{unitId,jdbcType=VARCHAR}
+    GROUP BY queId
+    order by rand();
+  </select>
+  <!--获取某一课程下某个用户练习过的超时题目-->
+  <select id="selectOverTimeQuestId" resultType="net.xuele.cloudteach.view.QueAndSortView" >
+    SELECT queId,sort,STATUS
+    FROM (
+      SELECT CASE WHEN cq.parent_id='' THEN cq.que_id ELSE cq.parent_id END queId,cq.status,cq.sort
+      FROM
+      (
+          SELECT que_id,challenge_id,parent_id,sort,STATUS FROM ct_magic2_work_challenge_que
+          WHERE user_id=#{userId,jdbcType=VARCHAR}
+          AND school_id=#{schoolId,jdbcType=VARCHAR}
+      ) cq
+      INNER JOIN ct_magic2_work_challenge cg
+      ON cg.challenge_id=cq.challenge_id
+      AND cg.school_id=#{schoolId,jdbcType=VARCHAR}
+      WHERE cg.user_id=#{userId,jdbcType=VARCHAR}
+      AND cg.status=1
+      AND cg.unit_id =#{unitId,jdbcType=VARCHAR}
+      ORDER BY cg.begin_time DESC
+    ) temp
+    GROUP BY queId
+    HAVING STATUS=2
+    ORDER BY RAND()
+  </select>
+  <!--查询上一次挑战的题目id及sort-->
+  <select id="selectFirstQuestId" resultType="net.xuele.cloudteach.view.Magic2FirstQuestView" >
+    select CASE WHEN parent_id='' THEN que_id ELSE parent_id END queId,sort
+    from ct_magic2_work_challenge_que
+    where  school_id = #{schoolId,jdbcType=VARCHAR}
+    and challenge_id = #{challengeId,jdbcType=VARCHAR}
+    and STATUS != 0
+  </select>
+<!--获取某一课程下某个用户练习错误率大于 rate 的题目-->
+  <select id="selectWrongOriQuestId" resultType="java.lang.String" >
+    SELECT cq.queId,sum(CASE WHEN cq.rw=0 THEN 1 ELSE 0 END) /COUNT(1) rrate
+    FROM ct_magic2_work_challenge c
+    inner JOIN
+      (SELECT
+      cq1.challenge_id,
+      cq1.rw,
+      cq1.sort,
+      CASE WHEN cq1.sort = 0 THEN  cq1.que_id ELSE  cq1.parent_id END queId
+    FROM
+      ct_magic2_work_challenge_que cq1
+    WHERE  cq1.status != 0
+      AND cq1.school_id = #{schoolId,jdbcType=VARCHAR}
+      AND cq1.user_id = #{userId,jdbcType=VARCHAR}
+      ) cq
+    ON  c.challenge_id=cq.challenge_id
+    WHERE c.school_id=#{schoolId,jdbcType=VARCHAR}
+    AND c.user_id=#{userId,jdbcType=VARCHAR}
+    AND c.status=1
+    AND c.unit_id = #{unitId,jdbcType=VARCHAR}
+    GROUP BY cq.queId
+    HAVING rrate >= #{rate,jdbcType=DECIMAL}
+    AND cq.queId != ''
+    ORDER BY RAND()
+  </select>
+  <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtMagic2WorkChallengeQue" >
+    update ct_magic2_work_challenge_que
+    set challenge_id = #{challengeId,jdbcType=VARCHAR},
+      practice_id = #{practiceId,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=VARCHAR},
+      sort = #{sort,jdbcType=INTEGER},
+      que_id = #{queId,jdbcType=VARCHAR},
+      parent_id = #{parentId,jdbcType=VARCHAR},
+      que_time = #{queTime,jdbcType=DECIMAL},
+      school_id = #{schoolId,jdbcType=VARCHAR},
+      rw = #{rw,jdbcType=INTEGER},
+      STATUS = #{status,jdbcType=INTEGER}
+    where cq_id = #{cqId,jdbcType=VARCHAR}
+    and school_id = #{schoolId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select cq_id, challenge_id, practice_id, user_id, sort, que_id, parent_id, que_time, school_id,rw,
+    STATUS
+    from ct_magic2_work_challenge_que
+    where cq_id = #{cqId,jdbcType=VARCHAR}
+    and school_id = #{schoolId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select cq_id, challenge_id, practice_id, user_id, sort, que_id, parent_id, que_time, school_id,rw,
+    STATUS
+    from ct_magic2_work_challenge_que
+    where school_id = #{schoolId,jdbcType=VARCHAR}
+  </select>
+  <!--查询原题id-->
+  <select id="selectOriQuestId" resultType="java.lang.String" >
+    select que_id
+    from ct_magic2_work_challenge_que
+    where practice_id = #{practiceId,jdbcType=VARCHAR}
+    and school_id = #{schoolId,jdbcType=VARCHAR}
+    and sort = 0
+    and STATUS != 0
+  </select>
+</mapper>

@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtWorkStudentGatherMapper">
+    <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtWorkStudentGather">
+        <id column="work_student_id" property="workStudentId" jdbcType="VARCHAR"/>
+        <result column="work_id" property="workId" jdbcType="VARCHAR"/>
+        <result column="class_id" property="classId" jdbcType="VARCHAR"/>
+        <result column="student_id" property="studentId" jdbcType="VARCHAR"/>
+        <result column="sub_status" property="subStatus" jdbcType="INTEGER"/>
+        <result column="correct_status" property="correctStatus" jdbcType="INTEGER"/>
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="view_status" property="viewStatus" jdbcType="INTEGER"/>
+        <result column="view_time" property="viewTime" jdbcType="TIMESTAMP"/>
+        <result column="sub_time" property="subTime" jdbcType="TIMESTAMP"/>
+        <result column="correct_time" property="correctTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <resultMap id="LearningInfo" type="net.xuele.cloudteach.view.LearningInfoStudentView">
+        <id column="answer_id" property="answerId" jdbcType="VARCHAR"/>
+        <result column="work_id" property="workId" jdbcType="VARCHAR"/>
+        <result column="work_type" property="workType" jdbcType="INTEGER"/>
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+        <result column="student_id" property="studentId" jdbcType="VARCHAR"/>
+        <result column="real_name" property="studentName" jdbcType="VARCHAR"/>
+        <result column="icon" property="studentIcon" jdbcType="VARCHAR"/>
+        <result column="sub_status" property="subStatus" jdbcType="INTEGER"/>
+        <result column="view_time" property="beginTime" jdbcType="TIMESTAMP"/>
+        <result column="sub_time" property="subTime" jdbcType="TIMESTAMP"/>
+        <result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
+        <result column="correct_status" property="correctStatus" jdbcType="INTEGER"/>
+        <result column="score" property="score" jdbcType="INTEGER"/>
+        <result column="sys_score" property="sysScore" jdbcType="INTEGER"/>
+        <association column="{workId=work_id,studentId=student_id,schoolId=school_id,answerId=answer_id}"
+                     property="commentOthersTimes" javaType="Integer"
+                     select="net.xuele.cloudteach.persist.CtTeacherWorkItemAnswerCommentMapper.selectCommentOthersTimes"/>
+        <association column="{answerId=answer_id,schoolId=school_id}"
+                     property="othersPraiseTimes" javaType="Integer"
+                     select="net.xuele.cloudteach.persist.CtTeacherWorkItemAnswerStatisticsMapper.selectOthersPraiseTimes"/>
+    </resultMap>
+
+    <select id="selectStudentAnwerInfo" resultMap="LearningInfo">
+        select b.answer_id,d.work_id,d.work_type,d.school_id,a.student_id,c.real_name,c.icon,
+        a.sub_status,a.view_time,a.sub_time,d.unit_name,b.correct_status,b.score,b.sys_score,
+        a.sub_time-a.view_time as timediff
+        from ct_work_gather d,ct_work_student_gather a,ct_teacher_work_item_answer b,m_users c
+        where a.student_id = c.user_id
+        and a.student_id = b.user_id
+        and a.work_id = b.work_id
+        and a.work_id = d.work_id
+        and a.status = 1
+        and b.status = 1
+        and d.status = 1
+        and c.status != 0
+        and a.class_id = #{classId,jdbcType=VARCHAR}
+        <if test="subStatus != null">
+            and a.sub_status = #{subStatus,jdbcType=INTEGER}
+        </if>
+        and d.work_id = #{workId,jdbcType=VARCHAR}
+        and d.school_id = #{schoolId,jdbcType=VARCHAR}
+        and a.school_id = #{schoolId,jdbcType=VARCHAR}
+        and b.school_id = #{schoolId,jdbcType=VARCHAR}
+        and c.school_id = #{schoolId,jdbcType=VARCHAR}
+        order by timediff desc
+        limit 10000
+    </select>
+
+    <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtWorkStudentGather">
+    insert into ct_work_student_gather (work_student_id,work_id, class_id,
+      student_id, sub_status, correct_status,school_id, status,
+      view_status,view_time,sub_time,correct_time)
+    values (#{workStudentId,jdbcType=VARCHAR},#{workId,jdbcType=VARCHAR}, #{classId,jdbcType=VARCHAR},
+      #{studentId,jdbcType=VARCHAR}, #{subStatus,jdbcType=INTEGER}, #{correctStatus,jdbcType=INTEGER},
+      #{schoolId,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER},
+      #{viewStatus,jdbcType=INTEGER},#{viewTime,jdbcType=TIMESTAMP},
+      #{subTime,jdbcType=TIMESTAMP},#{correctTime,jdbcType=TIMESTAMP})
+  </insert>
+    <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtWorkStudentGather">
+    update ct_work_student_gather
+    set work_id = #{workId,jdbcType=VARCHAR},
+      class_id = #{classId,jdbcType=VARCHAR},
+      student_id = #{studentId,jdbcType=VARCHAR},
+      sub_status = #{subStatus,jdbcType=INTEGER},
+      correct_status = #{correctStatus,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER},
+      view_status = #{viewStatus,jdbcType=INTEGER},
+      view_time = #{viewTime,jdbcType=TIMESTAMP},
+      sub_time = #{subTime,jdbcType=TIMESTAMP},
+      correct_time = #{correctTime,jdbcType=TIMESTAMP}
+    where school_id = #{schoolId,jdbcType=VARCHAR}
+    and work_student_id = #{workStudentId,jdbcType=VARCHAR}
+
+  </update>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    select work_student_id, work_id, class_id, student_id, sub_status, correct_status, school_id,
+    status,view_status,view_time,sub_time,correct_time
+    from ct_work_student_gather
+    where school_id = #{schoolId,jdbcType=VARCHAR} and work_student_id = #{workStudentId,jdbcType=VARCHAR}
+  </select>
+
+    <!--用户发布提分宝作业时 学生作业汇总表信息初始化-->
+    <insert id="initMagicWorkStudentGather" parameterType="java.util.List">
+        insert into ct_work_student_gather (work_student_id, work_id, class_id, student_id, sub_status, correct_status,
+        school_id,status,view_status,view_time,sub_time,correct_time)
+        VALUES
+        <foreach collection="answerList" item="answer" index="index" separator=",">
+            (REPLACE(UUID(),'-',''),#{answer.workId},#{answer.classId},#{answer.userId},0,0,#{answer.schoolId},#{answer.status},0,now(),now(),now())
+        </foreach>
+    </insert>
+
+    <!--布置作业初始化-->
+    <insert id="initCtWorkStudentGather" parameterType="net.xuele.cloudteach.domain.CtWorkStudentGather">
+        insert into ct_work_student_gather(
+        work_student_id,work_id,class_id,student_id,sub_status,correct_status,school_id,status,view_status,view_time,sub_time,correct_time
+        ) values
+        <foreach collection="initInfoList" item="items" index="index" separator=",">
+            (#{items.workUserId},#{items.workId},#{items.classId},#{items.userId},
+            #{items.subStatus},#{items.correctStatus},#{items.schoolId},#{items.status},
+            0,now(),now(),now())
+        </foreach>
+    </insert>
+
+    <!--获取初始化信息-->
+    <select id="getInitInfo" resultMap="BaseResultMap">
+        select REPLACE(UUID(),'-','') work_student_id,#{workId,jdbcType=VARCHAR} work_id,
+        class_id,user_id student_id,0 sub_status,0 correct_status,school_id,1 status,0 view_status,now() view_time,now()
+        sub_time,now() correct_time,0
+        from m_student where
+        school_id =#{schoolId,jdbcType=VARCHAR} and class_id in
+        <foreach collection="classList" item="classId" index="index" open="(" close=")" separator=",">
+            #{classId}
+        </foreach>
+    </select>
+
+    <insert id="batchInsert" parameterType="java.util.List">
+        insert into ct_work_student_gather (work_student_id,work_id,class_id,
+        student_id, sub_status, correct_status,
+        school_id, status,view_status,view_time,sub_time,correct_time)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.workStudentId,jdbcType=VARCHAR},#{item.workId,jdbcType=VARCHAR}, #{item.classId,jdbcType=VARCHAR},
+            #{item.studentId,jdbcType=VARCHAR}, #{item.subStatus,jdbcType=INTEGER},
+            #{item.correctStatus,jdbcType=INTEGER},
+            #{item.schoolId,jdbcType=VARCHAR}, #{item.status,jdbcType=INTEGER},0,now(),now(),now())
+        </foreach>
+    </insert>
+
+
+    <!--删除提分宝作业时逻辑删除作业学生汇总表信息-->
+    <update id="delWorkStudentGather">
+    update ct_work_student_gather
+    set
+    status = 0
+    where school_id = #{schoolId,jdbcType=VARCHAR}
+    and work_id = #{workId,jdbcType=VARCHAR}
+  </update>
+    <!--删除某个学生回答时更改作业学生汇总表信息：提交状态，批改状态改为0-->
+    <update id="updateStuWorkStudentGather">
+        update ct_work_student_gather
+        set
+        sub_status=0,
+        correct_status=0,
+        view_status=0,
+        view_time=now()
+        sub_time=now(),
+        correct_time=now()
+        where school_id = #{schoolId,jdbcType=VARCHAR}
+        and work_id = #{workId,jdbcType=VARCHAR}
+        and student_id = #{studentId,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateStatusByClassList">
+        update ct_work_student_gather
+        set
+        status = #{status,jdbcType=INTEGER}
+        where school_id = #{schoolId,jdbcType=VARCHAR}
+        and class_id in
+        <foreach collection="classList" item="classId" index="index" open="(" close=")" separator=",">
+            #{classId}
+        </foreach>
+    </update>
+
+    <update id="updateStatusByWorkId">
+    update ct_work_student_gather
+    set
+    status = #{status,jdbcType=INTEGER}
+    where school_id = #{schoolId,jdbcType=VARCHAR}
+    and work_id = #{workId,jdbcType=VARCHAR}
+  </update>
+
+    <update id="updateSubStatusByWorkIdAndUserId">
+    update ct_work_student_gather
+    set
+    sub_status = 1
+    where school_id = #{schoolId,jdbcType=VARCHAR}
+    and work_id = #{workId,jdbcType=VARCHAR}
+    and student_id = #{studentId,jdbcType=VARCHAR}
+  </update>
+
+    <!--批改已提交未批改的学生作业-->
+    <update id="updateByTeacherCorrect">
+    update ct_work_student_gather
+    set correct_status = 1,
+        correct_time = now()
+    where school_id = #{schoolId,jdbcType=VARCHAR}
+    and status=1 and sub_status=1 and correct_status=0
+    and student_id=#{userId,jdbcType=VARCHAR}
+    and work_id=#{workId,jdbcType=VARCHAR}
+  </update>
+
+    <!--通过作业ID得到作业学生统计信息-->
+    <select id="getWorkStudentGatherByWorkId" resultMap="BaseResultMap">
+    select work_student_id, work_id, class_id, student_id, sub_status, correct_status, school_id,
+    status,view_status,view_time,sub_time,correct_time
+    from ct_work_student_gather
+    where school_id = #{schoolId,jdbcType=VARCHAR}
+    and work_id = #{workId,jdbcType=VARCHAR}
+    and status = 1
+  </select>
+    <!--学生提交作业后更改提交状态为1-已提交-->
+    <update id="updateByStuSubmit">
+        update ct_work_student_gather
+        set sub_status = 1,sub_time = now()
+        where school_id = #{schoolId,jdbcType=VARCHAR}
+        and status=1
+        and student_id=#{userId,jdbcType=VARCHAR}
+        and work_id=#{workId,jdbcType=VARCHAR}
+    </update>
+
+    <select id="getWorkStudentGatherByWorkIdAndUserId" resultMap="BaseResultMap">
+        select work_student_id, work_id, class_id, student_id, sub_status, correct_status, school_id,status,
+        view_status,view_time,sub_time,correct_time
+        from ct_work_student_gather
+        where school_id = #{schoolId,jdbcType=VARCHAR} and student_id = #{userId,jdbcType=VARCHAR}
+        and work_id=#{workId,jdbcType=VARCHAR}
+        and status = 1
+    </select>
+
+    <update id="updateInitByWorkIdAndUserId">
+        update ct_work_student_gather
+        set correct_status = 0 ,sub_status = 0
+        where school_id = #{schoolId,jdbcType=VARCHAR}
+        and status=1
+        and student_id=#{userId,jdbcType=VARCHAR}
+        and work_id=#{workId,jdbcType=VARCHAR}
+    </update>
+
+    <select id="getWorkClassStudentNum" resultType="int">
+        select count(work_student_id) as workClassStuNum
+        from ct_work_student_gather
+        where school_id = #{schoolId,jdbcType=VARCHAR} and class_id = #{classId,jdbcType=VARCHAR}
+        and work_id=#{workId,jdbcType=VARCHAR} and status=1
+    </select>
+
+    <select id="getSubmitStuCount" resultType="java.lang.Long">
+        select count(1)
+        from ct_work_student_gather a
+        where a.work_id = #{workId,jdbcType=VARCHAR}
+        and a.school_id = #{schoolId,jdbcType=VARCHAR}
+        and a.sub_status = 1
+        and a.status = 1;
+    </select>
+
+    <select id="getStuGatherByWorkClass" resultMap="BaseResultMap">
+        select work_student_id, work_id, class_id, student_id, sub_status, correct_status, school_id,status,
+        view_status,view_time,sub_time,correct_time
+        from ct_work_student_gather
+        where school_id = #{schoolId,jdbcType=VARCHAR}
+        and class_id = #{classId,jdbcType=VARCHAR}
+        and work_id=#{workId,jdbcType=VARCHAR}
+        and status = 1
+    </select>
+</mapper>

@@ -1,0 +1,44 @@
+#set($layout="layout/bodyLayout.vm")
+#set($page_title="添加板书")
+#set($currPage="blackboard")
+#define($script)
+<link rel="stylesheet"  href="$!{asset_host}/css/common/common.css?version=${version}">
+<link rel="stylesheet"  href="$!{asset_host}/css/cloudteach/index/addBlackboard.css?version=${version}">
+#end
+<form method="POST" action="$!{ctx}/blackboardPublish/addBlackboardPublish">
+<div class="publish-wrap">
+	<div class="publish-head">
+		<h2>
+			<em class="head-name">添加板书</em>
+			<span class="publish"><input type="submit" value="确定发布"></span>
+			<a class="cancel" href="$!{ctx}/teacher/initList">取消</a>
+		</h2>
+	</div>
+	<div class="publish-content">
+		<div class="publish-set">
+			<div class="addclass-rect">
+				<div class="addClass"><em>+ 请选择要发送黑板板书的班级</em></div>
+				<img src="$!{asset_host}/imgs/cloudteach/add_class.png" class="classchoose" />
+			</div>
+			<div class="addPic">
+				<div class="picList clearfix">
+				    <div class="J-picList"></div>
+					<div class="addPicBtn fl J-addPicBtn"><i class="icon icon-pic"></i><span>添加黑板板书的照片（必填）</span></div>
+				</div>
+			</div>
+			<div class="textarea-wrap">
+				<textarea class="setwork_textarea J-setwork_textarea" placeholder="关于板书的描述内容（选填）..." name="context" maxlength="3000"></textarea>
+				<p class="nums">0/3000</p>
+			</div>
+			<div class="addToCase"><i class="icon icon-checked J-icon-checked"></i>同时添加到本课程的所有课时教案</div>
+		</div>
+	</div>
+
+</div>
+<input type="hidden" name="unitId">
+<input type="hidden" name="classList" >
+<input type="hidden" name="classJson" >
+<input type="hidden" name="fileJson">
+<input type="hidden" name="addLessonPlan" value="1">
+</form>
+<script>seajs.use('$!{asset_host}/cjs/page/cloudteach/addBlackboard');</script>

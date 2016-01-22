@@ -1,0 +1,17 @@
+#set($layout="layout/msgLayout.vm")
+#set($page_title="新建预习题成功")
+#define($script)
+<link rel="stylesheet" href="$!{asset_host}/g/css/global.min.css?version=${version}" />
+<link rel="stylesheet" href="$!{asset_host}/css/cloudteach/homework.css?version=${version}" />
+#end
+
+<div class="success-fail">
+    <img src="$!{asset_host}/imgs/cloudteach/success.png" alt="" class="status-icon"/>
+    <h2 class="status-result">$!{msgTitle}</h2>
+    <p class="status-notes">$!{msgContent}</p>
+##    <p class="status-notes">作业已成功发送给指定班级，您可以在作业管理中检查学生作业</p>
+    <div class="actions">
+        <a href="$!{ctx}/guidance/item/index" class="goto">返回我的预习题</a>
+##        <a href="$!{ctx}/workmanage/teacher/initMyEffectiveWorkList" class="goto">前往作业管理</a>
+    </div>
+</div>

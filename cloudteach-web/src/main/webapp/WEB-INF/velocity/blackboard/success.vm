@@ -1,0 +1,17 @@
+#set($layout="layout/msgLayout.vm")
+#set($page_title="布置板书成功")
+#define($script)
+<link rel="stylesheet" href="$!{asset_host}/css/cloudteach/homework.css?version=${version}"/>
+#end
+
+<div class="success-fail">
+    <img src="$!{asset_host}/imgs/cloudteach/success.png" alt="" class="status-icon"/>
+
+    <h2 class="status-result">发送成功</h2>
+
+    <p class="status-notes">作业已成功发送给指定班级，您可以在作业管理中检查学生作业</p>
+
+    <div class="actions">
+        <a href="$!{ctx}/teacher/initList" class="goto">前往云教学首页</a>
+    </div>
+</div>

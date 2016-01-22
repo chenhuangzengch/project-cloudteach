@@ -1,0 +1,41 @@
+#set($layout="layout/bodyLayout.vm")
+#set($page_title="口语作业题目")
+#define($script)
+<link rel="stylesheet" href="$!{asset_host}/css/cloudteach/homework-manage.css?version=${version}" />
+#end
+<input type="hidden" name="viewType" value="2">
+<div class="detail-head">
+    <a class="li-whos" href="initDetail?workId=$!{teacherWorkDetailViewDTO.workId}&classId=$!{classId}&schoolId=$!{teacherWorkItemViewDTO.schoolId}&studentId=$!{studentId}">完成详情</a>
+    <a class="li-whos on" href="javascript:void(0)">作业题目</a>
+</div>
+<div class="title-wrap">
+    <div class="detail-title">
+        <div class="task-title">
+            <img src="$!{avatar_host}/images/48x48_$!{teacherWorkDetailViewDTO.userIcon}.jpg" class="portrait"/>
+            <h3 class="detail-info">
+                <span class="tch-name">$!{teacherWorkDetailViewDTO.userName}($!{teacherWorkDetailViewDTO.positionName})</span><br/>
+                <span class="publish-time">$!{date.format('yyyy年MM月dd日 HH:mm:ss ',$!{teacherWorkDetailViewDTO.publishTime})}</span>
+            </h3>
+            <div class="detail-audio">
+                <em class="audio-notice">请在手机上朗读：</em>
+                <p class="audio-content"> "$!{teacherWorkItemViewDTO.voiceContext.replaceAll("\r\n", "<br>").replaceAll("\r", "<br>").replaceAll("\n", "<br>").replaceAll(" ","&nbsp;")}"</p>
+            </div>
+            <p class="p-detail">$!{teacherWorkItemViewDTO.context.replaceAll("\r\n", "<br>").replaceAll("\r", "<br>").replaceAll("\n", "<br>").replaceAll(" ","&nbsp;")}
+            </p>
+        </div>
+        <ul class="homework-explain">
+            <li class="subject-name"> $!{teacherWorkDetailViewDTO.subjectName}</li>
+            <li class="course-name"> $!{teacherWorkDetailViewDTO.unitName}</li>
+            <li class="homework-num">1题 </li>
+            <li class="hand-method">作业上交方式: 学乐APP
+            </li>
+            <li class="last-time">最晚交作业时间： $!{date.format('yyyy年MM月dd日 HH:mm:ss ',$!{teacherWorkDetailViewDTO.endTime})}</li>
+        </ul>
+        #if($workTapeFilesDTO.url)
+            <div class="video-wrap">
+                <div role="player" class="xlplayer" data-filekey="$!{workTapeFilesDTO.url}" data-ext="$!{workTapeFilesDTO.extension}"></div>
+            </div>
+        #end
+    </div>
+</div>
+

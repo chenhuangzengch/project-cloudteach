@@ -1,0 +1,63 @@
+#set($layout="layout/bodyLayout.vm")
+#set($page_title="新建口语题")
+#define($script)
+<link rel="stylesheet" href="$!{asset_host}/css/cloudteach/homework.css?version=${version}"/>
+<script src="$!{asset_host}/js/cloudteach/publish-cloud.js?version=${version}"></script>
+#end
+
+<div class="publish-wrap">
+    <form action="$!{ctx}/voice/item/create" method="post">
+        <div class="publish-head">
+            <h2>
+                <em class="head-name">新建题目</em>
+            ##                <input type="submit" class="save-publish" value="保存并发布"/>
+                <input type="submit" class="save" value="保存"/>
+                <a href="$!{ctx}/voice/item/index" class="cancel">取消</a>
+            </h2>
+        </div>
+        <div class="publish-content">
+            <div class="publish-set">
+                <div class="description-wrap">
+                    <textarea name="voiceContext" placeholder="请输入最多15个单词..." class="en-description"></textarea>
+                    <span class="nums">0/15</span>
+                </div>
+                <div class="description-wrap">
+                    <textarea name="context" placeholder="请输入作业的描述内容或以上单词的中文翻译（选填）..." class="en-description"
+                              class="ch-description"></textarea>
+                    <span class="nums">0/3000</span>
+                </div>
+                <div class="hand-method set-time">
+                    <font>作业上交方式</font>
+                    <ul class="ul-times">
+                        <li class="spoken-sel">
+                            <i class="radio-icon radio-yes"></i>
+                            <span>学生使用手机上传口语作业，系统自动打分</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" name="unitId" value="$!{unitId}"/>
+
+        <div class="spoken-notes">
+            <div class="video-img"></div>
+            <h3 class="spoken-notes-head">英文输入须知:</h3>
+
+            <p class="spoken-notes-content">1. 单词只允许：英语大小写字母、单引号（'）、缩略点(.)。注意：缩略词后须有空格，不可与后面单词粘连。举例如下：<br/>
+                单引号(') 例子: I'm a student.<br/>缩略点(.) 例子: Mr.Smith
+            </p>
+
+            <p class="spoken-notes-content">
+                2. 数字、符号、单位、时间连字符：需转换成相应英文发音实词，举例如下：<br/>7.4% -> seven point four percent<br/>$30 -> thirty dollars<br/>1999
+                -> nineteen ninety<br/>8:30 -> eight thirty
+            </p>
+
+            <p class="spoken-notes-content">
+                3. 中文人名和地名等，直接转化成拼音传入，每个拼音之间用空格隔开。举例如下：<br/>王小明 -> wang xiaoming<br/>上海 -> shang hai
+            </p>
+        </div>
+    </form>
+
+##    <script type="text/javascript">
+##        seajs.use('http://asset.xueleyun.com/cjs/page/cloudteach/new-task');
+##    </script>

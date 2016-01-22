@@ -1,0 +1,76 @@
+#set($layout="layout/bodyLayout.vm")
+#set($page_title="教师作业管理-课外作业完成详情")
+#define($script)
+<script src="$!{asset_host}/g/lib/gallery/swfobject.js?version=${version}"></script>
+<link rel="stylesheet" href="$!{asset_host}/css/cloudteach/homework-manage.css?version=${version}" />
+<script src="$!{asset_host}/js/cloudteach/tch-detail-types.js?version=${version}"></script>
+<script src="$!{asset_host}/js/cloudteach/detail.js?version=${version}"></script>
+#end
+<input type="hidden" name="workItem" value="${extraWorkItemDTO.workItemId}">
+<input type="hidden" name="workType" value="8">
+<div class="detail-head">
+    <a class="li-whos on" href="javascript:void(0)">完成详情</a>
+    <a class="li-whos" href="teacherWorkSR?workId=$!{workId}&classId=$!{classId}">作业统计</a>
+    <a class="li-whos" href="workItemDetail?workId=$!{workId}&classId=$!{classId}">作业题目</a>
+</div>
+<div class="container">
+    <div class="detail-wrap">
+        <div class="classes-wrap">
+            <ul class="ul-classes">
+                #foreach($workClassViewDTO in $extraWorkClassList)
+                    <li #if ($!{classId} == $!{workClassViewDTO.classId})class="sel"#end data-id="$!{workClassViewDTO.classId}">$!{workClassViewDTO.className}</li>
+                #end
+            </ul>
+        </div>
+        <div class="right-content">
+            <div class="complete-progress">
+                <div class="complete-progress-detail">
+                    <p class="participate">
+                        <img src="$!{asset_host}/imgs/cloudteach/homework_manage_08.png" />
+                        <span>已参与:</span>
+                    </p>
+                    <div class="progress-bar">
+                        <div class="progress-bar-main" style="width: 80%;"></div>
+                        <span class="rate-nums"></span>
+                    </div>
+                    <font class="detail-nums"></font>
+                </div>
+                <div class="complete-progress-detail">
+                    <p class="participate">
+                        <img src="$!{asset_host}/imgs/cloudteach/homework_manage_08.png" />
+                        <span>未参与:</span>
+                    </p>
+                    <div class="complete-not">
+                        <p class="complete-not-list">
+                            <span class="stu-no-part"></span>
+                            #if ($!{workEndStatus} == 0)
+                                <a href="#" class="remind">
+                                    <img class="img-remind" src="$!{asset_host}/imgs/cloudteach/01.png" />
+                                    <span class="span-remind">提醒交作业</span>
+                                </a>
+                            #end
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="empty">
+                <p class="empty-msg">还没有学生提交作业</p>
+                <p class="empty-who">
+                    #if ($!{workEndStatus} == 0)您可以发送一个交作业的提醒，让他们别太贪玩儿了#end
+                    #if ($!{workEndStatus} == 1)作业已过期#end
+                </p>
+                <p class="empty-ctls">
+                    #if ($!{workEndStatus} == 0)
+                        <a href="javascript:void(0)" class="empty-remind">
+                            <img src="$!{asset_host}/imgs/cloudteach/02.png" />
+                            <font>提醒交作业</font>
+                        </a>
+                    #end
+                </p>
+            </div>
+            <div class="stu-list">
+            </div>
+        </div>
+    </div>
+</div>
+

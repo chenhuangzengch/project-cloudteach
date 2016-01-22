@@ -1,0 +1,114 @@
+#set($layout="layout/bodyLayout.vm")
+#set($page_title="教师作业管理-提分宝作业统计")
+#define($script)
+<link rel="stylesheet" href="http://asset.xueleyun.com/g/css/global.min.css?version=${version}" />
+<script src="http://asset.xueleyun.com/g/lib/gallery/swfobject.js?version=${version}"></script>
+<link rel="stylesheet" href="http://asset.xueleyun.com/css/cloudteach/homework-manage.css?version=${version}" />
+<script src="http://asset.xueleyun.com/js/cloudteach/highchart.js?version=${version}"></script>
+<script src="http://asset.xueleyun.com/js/cloudteach/task-static.js?version=${version}"></script>
+#end
+<div class="detail-head">
+    <a class="li-whos" href="initDetail?workType=2&workId=$!{workId}&classId=$!{classId}">完成详情</a>
+    <a class="li-whos on" href="javascript:void(0)">作业统计</a>
+    <a class="li-whos" href="workItemDetail?workId=$!{workId}&classId=$!{classId}">作业题目</a>
+</div>
+<div class="container">
+    <div class="detail-wrap">
+        <div class="classes-wrap">
+            <ul class="ul-classes">
+                #foreach($WorkClassViewDTO in $magicWorkClassList)
+                    <li #if ($!{WorkClassViewDTO.classId} == $!{classId})class="sel"#end><a href="teacherWorkSR?workId=$!{workId}&classId=$!{WorkClassViewDTO.classId}">$!{WorkClassViewDTO.className}</a></li>
+                #end
+            </ul>
+        </div>
+        <div class="static-right">
+            <div class="complete-rate">
+                <div class="pie">
+                    <h3>完成率</h3>
+                    <div class="picdata" data-rate="$!{sRTeacherWorkDTO.finshPect}"></div>
+                    <p class="pie-note">$!{sRTeacherWorkDTO.finshPect}%($!{sRTeacherWorkDTO.subStuNum}/$!{sRTeacherWorkDTO.classStuNum})</p>
+                </div>
+                <div class="correct-result">
+                    <h3>批改结果</h3>
+                    <ul class="ul-result">
+                        <li>
+                            <div class="total">
+                                <div class="complete" style="width: $!{sRTeacherWorkDTO.scoreAPect}%"></div>
+                                <em class="rate">$!{sRTeacherWorkDTO.scoreAPect}%（$!{sRTeacherWorkDTO.scoreAStuList.size()}人)</em>
+                            </div>
+                            <span class="level-name">名牌大学</span>
+                        </li>
+                        <li>
+                            <div class="total">
+                                <div class="complete" style="width: $!{sRTeacherWorkDTO.scoreBPect}%"></div>
+                                <em class="rate">$!{sRTeacherWorkDTO.scoreBPect}%（$!{sRTeacherWorkDTO.scoreBStuList.size()}人)</em>
+                            </div>
+                            <span class="level-name">重点大学</span>
+                        </li>
+                        <li>
+                            <div class="total">
+                                <div class="complete" style="width: $!{sRTeacherWorkDTO.scoreCPect}%"></div>
+                                <em class="rate">$!{sRTeacherWorkDTO.scoreCPect}%（$!{sRTeacherWorkDTO.scoreCStuList.size()}人)</em>
+                            </div>
+                            <span class="level-name">一本大学</span>
+                        </li>
+                        <li>
+                            <div class="total">
+                                <div class="complete" style="width: $!{sRTeacherWorkDTO.scoreDPect}%"></div>
+                                <em class="rate">$!{sRTeacherWorkDTO.scoreDPect}%（$!{sRTeacherWorkDTO.scoreDStuList.size()}人)</em>
+                            </div>
+                            <span class="level-name">二本大学</span>
+                        </li>
+                        <li>
+                            <div class="total">
+                                <div class="complete" style="width: $!{sRTeacherWorkDTO.scoreDPect}%"></div>
+                                <em class="rate">$!{sRTeacherWorkDTO.scoreEPect}%（$!{sRTeacherWorkDTO.scoreEStuList.size()}人)</em>
+                            </div>
+                            <span class="level-name">三本大学</span>
+                        </li>
+                        <li>
+                            <div class="total">
+                                <div class="complete" style="width: $!{sRTeacherWorkDTO.scoreFPect}%"></div>
+                                <em class="rate">$!{sRTeacherWorkDTO.scoreFPect}%（$!{sRTeacherWorkDTO.scoreFStuList.size()}人)</em>
+                            </div>
+                            <span class="level-name">完成作业</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="upgrade-rank-list rank-list">
+                <ul class="list-head">
+                    <li class="rank">排名</li>
+                    <li class="stu-name">学生名称</li>
+                    <li class="rank-time">挑战次数</li>
+                    <li class="best-score">最好成绩</li>
+                </ul>
+                #foreach($SRTeacherWorkStuDTO in $sRTeacherWorkDTO.orderStuList)
+                    <ul class="list-content">
+                        <li class="rank">
+                            <i class="#if(${velocityCount} == 1 )first-rank
+                                        #elseif(${velocityCount} == 2 )second-rank
+                                        #elseif(${velocityCount} == 3 )third-rank
+                                        #else normal-rank #end">$!{velocityCount}</i>
+                        </li>
+                        <li class="stu-name">
+                            <img class="stu-portrait" src="http://avatar.xueleyun.com/images/48x48_$!{SRTeacherWorkStuDTO.headUrl}.jpg" alt="">
+                            <span>$!{SRTeacherWorkStuDTO.studentName}</span>
+                        </li>
+                        <li class="rank-time">$!{SRTeacherWorkStuDTO.challengeTimes}</li>
+                        <li class="best-score">
+                            #if(${SRTeacherWorkStuDTO.score} == 10 ) <img src="http://asset.xueleyun.com/imgs/cloudteach/first-medal.png" alt="">
+                            #elseif(${SRTeacherWorkStuDTO.score} == 9 ) <img src="http://asset.xueleyun.com/imgs/cloudteach/second-medal.png" alt="">
+                            #elseif(${SRTeacherWorkStuDTO.score} == 8 ) <img src="http://asset.xueleyun.com/imgs/cloudteach/third-medal.png" alt="">
+                            #elseif(${SRTeacherWorkStuDTO.score} == 7 ) <img src="http://asset.xueleyun.com/imgs/cloudteach/fourth-medal.png" alt="">
+                            #elseif(${SRTeacherWorkStuDTO.score} == 6 ) <img src="http://asset.xueleyun.com/imgs/cloudteach/fifth-medal.png" alt="">
+                            #else <img src="http://asset.xueleyun.com/imgs/cloudteach/sixth-medal.png" alt=""> #end
+                        </li>
+                    </ul>
+                #end
+
+            </div>
+        </div>
+    </div>
+</div>
+

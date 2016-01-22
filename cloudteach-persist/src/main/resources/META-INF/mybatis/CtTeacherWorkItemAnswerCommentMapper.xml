@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtTeacherWorkItemAnswerCommentMapper">
+    <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtTeacherWorkItemAnswerComment">
+        <id column="comment_id" property="commentId" jdbcType="VARCHAR"/>
+        <result column="answer_id" property="answerId" jdbcType="VARCHAR"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="user_type" property="userType" jdbcType="INTEGER"/>
+        <result column="context" property="context" jdbcType="VARCHAR"/>
+        <result column="comment_time" property="commentTime" jdbcType="TIMESTAMP"/>
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtTeacherWorkItemAnswerComment">
+    insert into ct_teacher_work_item_answer_comment (comment_id, answer_id, user_id,
+      user_type, context, comment_time,
+      school_id, status)
+    values (#{commentId,jdbcType=VARCHAR}, #{answerId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR},
+      #{userType,jdbcType=INTEGER}, #{context,jdbcType=VARCHAR}, #{commentTime,jdbcType=TIMESTAMP},
+      #{schoolId,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER})
+  </insert>
+    <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtTeacherWorkItemAnswerComment">
+    update ct_teacher_work_item_answer_comment
+    set answer_id = #{answerId,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=VARCHAR},
+      user_type = #{userType,jdbcType=INTEGER},
+      context = #{context,jdbcType=VARCHAR},
+      comment_time = #{commentTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER}
+    where school_id = #{schoolId,jdbcType=VARCHAR} and comment_id = #{commentId,jdbcType=VARCHAR}
+  </update>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    select comment_id, answer_id, user_id, user_type, context, comment_time, school_id,
+    status
+    from ct_teacher_work_item_answer_comment
+    where school_id = #{schoolId,jdbcType=VARCHAR} and comment_id = #{commentId,jdbcType=VARCHAR}
+  </select>
+
+    <update id="deleteTeacherWorkItemAnswerComment" parameterType="java.lang.String">
+        update ct_teacher_work_item_answer_comment
+        set status = 0
+        where school_id = #{schoolId,jdbcType=VARCHAR}
+        and answer_id in
+        <foreach collection="answerList" item="answerIds" index="index" open="(" close=")" separator=",">
+            #{answerIds}
+        </foreach>
+    </update>
+
+    <!--删除单个学生作业对应的评论记录-->
+    <update id="deleteStuWorkItemAnswerComment" parameterType="java.lang.String">
+        update ct_teacher_work_item_answer_comment
+        set status = 0
+        where school_id = #{schoolId,jdbcType=VARCHAR}
+        and answer_id = #{answerId,jdbcType=VARCHAR} and status=1
+    </update>
+
+    <!--通过answerId，查找出该ID下所有的评论信息-->
+    <select id="getAnswerCommentsInfo" resultType="net.xuele.cloudteach.view.WorkAnswerCommentView">
+        SELECT
+        t.comment_id commentId,
+        t.answer_id answerId,
+        t.user_id userId,
+        t.context context,
+        t.comment_time commentTime,
+        t.real_name userName,
+        t.status status,
+        t.icon icon,
+        t.position_name positionName
+        FROM (
+        SELECT a.comment_id,b.icon,
+        case b.identity_id when 'SCHOOL_MANAGER' then '学校管理员' else b.real_name end as real_name,
+        case b.identity_id when 'SCHOOL_MANAGER' then '学校管理员' else c.position_name end as position_name,
+        a.comment_time,a.context,a.answer_id,a.status,a.user_id
+        FROM
+        ct_teacher_work_item_answer_comment a
+        left join m_teacher c on a.user_id = c.user_id and c.school_id = #{schoolId,jdbcType=VARCHAR},
+        m_users b
+        WHERE a.user_type = 1
+        AND a.user_id = b.user_id
+        and a.school_id = #{schoolId,jdbcType=VARCHAR}
+        and b.school_id = #{schoolId,jdbcType=VARCHAR}
+        UNION ALL
+        SELECT a.comment_id,b.icon, b.real_name,NULL AS position_name,a.comment_time,a.context,a.answer_id,a.status,a.user_id
+        FROM ct_teacher_work_item_answer_comment a,m_users b
+        WHERE a.user_type = 2
+        AND a.user_id = b.user_id
+        and a.school_id = #{schoolId,jdbcType=VARCHAR}
+        and b.school_id = #{schoolId,jdbcType=VARCHAR}
+        ) t
+        WHERE t.status = 1
+        AND t.answer_id = #{answerId,jdbcType=VARCHAR}
+        ORDER BY t.comment_time DESC
+        limit #{limitRange,jdbcType=INTEGER}
+    </select>
+
+
+    <select id="selectCommentOthersTimes" resultType="java.lang.Integer">
+        select count(1)
+        from ct_teacher_work_item_answer_comment a,ct_teacher_work_item_answer b
+        where a.answer_id = b.answer_id
+        and b.sub_status = 1
+        and a.status = 1
+        and b.status = 1
+        and a.user_id = #{studentId,jdbcType=VARCHAR}
+        and b.work_id = #{workId,jdbcType=VARCHAR}
+        and a.answer_id != #{answerId,jdbcType=VARCHAR}
+        and a.school_id = #{schoolId,jdbcType=VARCHAR}
+        and b.school_id = #{schoolId,jdbcType=VARCHAR}
+    </select>
+</mapper>

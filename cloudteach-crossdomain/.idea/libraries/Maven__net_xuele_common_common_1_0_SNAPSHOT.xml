@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: net.xuele.common:common:1.0-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/net/xuele/common/common/1.0-SNAPSHOT/common-1.0-20151109.054159-112.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/net/xuele/common/common/1.0-SNAPSHOT/common-1.0-20151109.054159-112-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/net/xuele/common/common/1.0-SNAPSHOT/common-1.0-20151109.054159-112-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

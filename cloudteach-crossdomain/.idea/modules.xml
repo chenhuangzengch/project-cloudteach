@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/cloudteach-api/cloudteach-api.iml" filepath="$PROJECT_DIR$/cloudteach-api/cloudteach-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cloudteach-persist/cloudteach-persist.iml" filepath="$PROJECT_DIR$/cloudteach-persist/cloudteach-persist.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cloudteach-service/cloudteach-service.iml" filepath="$PROJECT_DIR$/cloudteach-service/cloudteach-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cloudteach-web/cloudteach-web.iml" filepath="$PROJECT_DIR$/cloudteach-web/cloudteach-web.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cloundteach-all.iml" filepath="$PROJECT_DIR$/cloundteach-all.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cloudteach-crossdomain/crossdomain.iml" filepath="$PROJECT_DIR$/cloudteach-crossdomain/crossdomain.iml" />
+    </modules>
+  </component>
+</project>

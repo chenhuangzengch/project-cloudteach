@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtTeacherWorkItemAnswerPraiseMapper">
+    <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtTeacherWorkItemAnswerPraise">
+        <id column="praise_id" property="praiseId" jdbcType="VARCHAR"/>
+        <result column="answer_id" property="answerId" jdbcType="VARCHAR"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="user_type" property="userType" jdbcType="INTEGER"/>
+        <result column="praise_time" property="praiseTime" jdbcType="TIMESTAMP"/>
+        <result column="praise_status" property="praiseStatus" jdbcType="INTEGER"/>
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtTeacherWorkItemAnswerPraise">
+    insert into ct_teacher_work_item_answer_praise (praise_id,answer_id, user_id, user_type,
+      praise_time, praise_status, school_id, 
+      status)
+    values (#{praiseId,jdbcType=VARCHAR},#{answerId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{userType,jdbcType=INTEGER},
+      #{praiseTime,jdbcType=TIMESTAMP}, #{praiseStatus,jdbcType=INTEGER}, #{schoolId,jdbcType=VARCHAR}, 
+      #{status,jdbcType=INTEGER})
+  </insert>
+    <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtTeacherWorkItemAnswerPraise">
+    update ct_teacher_work_item_answer_praise
+    set answer_id = #{answerId,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=VARCHAR},
+      user_type = #{userType,jdbcType=INTEGER},
+      praise_time = #{praiseTime,jdbcType=TIMESTAMP},
+      praise_status = #{praiseStatus,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER}
+    where school_id = #{schoolId,jdbcType=VARCHAR}
+      and praise_id = #{praiseId,jdbcType=VARCHAR}
+  </update>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="map">
+    select praise_id,answer_id, user_id, user_type, praise_time, praise_status, school_id, status
+    from ct_teacher_work_item_answer_praise
+    where school_id = #{schoolId,jdbcType=VARCHAR}
+     and answer_id = #{answerId,jdbcType=VARCHAR}
+     and user_id = #{userId,jdbcType=VARCHAR}
+  </select>
+
+    <!--教师删除作业-->
+    <update id="deleteTeacherWorkItemAnswerPraise" parameterType="java.lang.String">
+        update ct_teacher_work_item_answer_praise
+        set status = 0
+        where school_id = #{schoolId,jdbcType=VARCHAR}
+        and answer_id in
+        <foreach collection="answerList" item="answerIds" index="index" open="(" close=")" separator=",">
+            #{answerIds}
+        </foreach>
+    </update>
+
+    <!--教师删除单个学生作业对应的点赞记录-->
+    <update id="deleteStuWorkItemAnswerPraise" parameterType="java.lang.String">
+        update ct_teacher_work_item_answer_praise
+        set status = 0
+        where school_id = #{schoolId,jdbcType=VARCHAR}
+        and answer_id = #{answerId,jdbcType=VARCHAR} and status=1
+    </update>
+
+    <!--通过answerId获得-->
+    <select id="getPraiseCountByAnswer" resultType="int">
+      select count(1)
+      from ct_teacher_work_item_answer_praise a
+      where a.school_id = #{schoolId,jdbcType=VARCHAR}
+      and a.answer_id = #{answerId,jdbcType=VARCHAR}
+      and a.praise_status = 1
+      and a.status = 1
+  </select>
+
+    <!--通过回答ID，学生ID，获得点赞数-->
+    <select id="getPraiseCountByUNIKEY" resultType="int">
+      SELECT
+      count(1)
+      FROM
+	  ct_teacher_work_item_answer_praise a
+      WHERE a.school_id = #{schoolId,jdbcType=VARCHAR}
+      AND a.answer_id = #{answerId,jdbcType=VARCHAR}
+      AND a.user_id = #{userId,jdbcType=VARCHAR}
+      and a.status = 1
+      and a.praise_status = 1
+    </select>
+
+</mapper>

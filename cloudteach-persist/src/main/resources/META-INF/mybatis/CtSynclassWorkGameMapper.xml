@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtSynclassWorkGameMapper">
+    <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtSynclassWorkGame">
+        <id column="work_game_id" property="workGameId" jdbcType="VARCHAR"/>
+        <result column="work_id" property="workId" jdbcType="VARCHAR"/>
+        <result column="game_id" property="gameId" jdbcType="INTEGER"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="SynclassWorkGameViewResultMap" type="net.xuele.cloudteach.view.SynclassWorkGameView">
+        <id column="work_game_id" property="workGameId" jdbcType="VARCHAR"/>
+        <result column="work_id" property="workId" jdbcType="VARCHAR"/>
+        <result column="game_id" property="gameId" jdbcType="INTEGER"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="game_id" property="gameFileId" jdbcType="INTEGER"/>
+        <result column="c_Title" property="gameName" jdbcType="VARCHAR"/>
+        <result column="c_Real" property="cReal" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtSynclassWorkGame">
+    insert into ct_synclass_work_game (work_game_id, work_id, game_id, 
+      status,school_id)
+    values (#{workGameId,jdbcType=VARCHAR}, #{workId,jdbcType=VARCHAR}, #{gameId,jdbcType=INTEGER}, 
+      #{status,jdbcType=INTEGER},#{schoolId,jdbcType=VARCHAR})
+  </insert>
+    <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtSynclassWorkGame">
+    update ct_synclass_work_game
+    set work_id = #{workId,jdbcType=VARCHAR},
+      game_id = #{gameId,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER}
+    where work_game_id = #{workGameId,jdbcType=VARCHAR} and school_id = #{schoolId,jdbcType=VARCHAR}
+  </update>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    select work_game_id, work_id, game_id, status , school_id
+    from ct_synclass_work_game
+    where work_game_id = #{workGameId,jdbcType=VARCHAR} and school_id = #{schoolId,jdbcType=VARCHAR}
+  </select>
+
+    <select id="querySynclassWorkGameList" resultMap="SynclassWorkGameViewResultMap">
+    select a.work_game_id, a.work_id, a.game_id, a.status
+    from ct_synclass_work_game as a
+    where a.status=1 and a.work_id = #{workId,jdbcType=VARCHAR} and a.school_id = #{schoolId,jdbcType=VARCHAR}
+  </select>
+
+    <select id="selectByWorkId" resultMap="BaseResultMap">
+    select work_game_id, work_id, game_id
+    from ct_synclass_work_game
+    where work_id = #{workId,jdbcType=VARCHAR} and status = 1 and school_id = #{schoolId,jdbcType=VARCHAR}
+  </select>
+
+    <update id="updateByWorkId">
+    update ct_synclass_work_game
+    set
+    status = 0
+    where work_id = #{workId,jdbcType=VARCHAR} and school_id = #{schoolId,jdbcType=VARCHAR}
+  </update>
+
+    <insert id="batchInsert" parameterType="java.util.List">
+        insert into ct_synclass_work_game (work_game_id, work_id, game_id,
+        status,school_id)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.workGameId,jdbcType=VARCHAR}, #{item.workId,jdbcType=VARCHAR}, #{item.gameId,jdbcType=INTEGER},
+            #{item.status,jdbcType=INTEGER},#{item.schoolId,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
+
+    <update id="batchUpdate">
+        update ct_synclass_work_game
+        set
+        status = 0
+        where work_id = #{workId,jdbcType=VARCHAR} and school_id = #{schoolId,jdbcType=VARCHAR} and game_id in
+        <foreach collection="gameList" item="item" index="index" open="(" separator="," close=")">
+            #{item.gameId,jdbcType=INTEGER}
+        </foreach>
+
+    </update>
+
+    <!--获取同步课堂游戏名称-->
+    <select id="getSynclassGameName" resultType="java.lang.String">
+    select a.C_Title from ac_coursewares a,ac_unitscoursewares b
+    where a.C_ID = b.CoursewareID
+    and b.UC_ID = #{gameId,jdbcType=INTEGER}
+  </select>
+
+    <!--获取同步课堂游戏名称-->
+    <select id="getSynclassGameType" resultType="java.lang.String">
+    select c.CK_Name
+    from ac_coursewares a,ac_unitscoursewares b,d_coursewareskinds c
+    where a.C_ID = b.CoursewareID
+    and a.CoursewaresKindCode = c.CK_Code
+    and b.UC_ID = #{gameId,jdbcType=INTEGER}
+  </select>
+
+
+</mapper>

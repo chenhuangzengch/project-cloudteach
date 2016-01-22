@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CTBlueActStatisticMapper">
+
+    <!-- 时间段内，统计学校教师批改的预习/电子作业的数量 -->
+    <select id="teacherPublishWorkTimes" resultType="java.lang.Long">
+        <![CDATA[
+        SELECT
+            count(1) times
+        FROM
+            ct_work_gather cwg
+        WHERE
+            cwg.school_id = #{schoolId}
+        AND cwg.work_type IN (1, 4)
+        AND cwg.publish_time >= #{start}
+        AND cwg.publish_time <= #{end}
+        AND cwg.status = 1
+        ]]>
+    </select>
+
+
+
+    <!-- 时间段内，统计学校教师布置并且批改的预习/电子作业的数量 -->
+    <select id="teacherCorrectWorkTimes" resultType="java.lang.Long">
+        <![CDATA[
+        SELECT
+            count(1) times
+        FROM
+            ct_work_gather cwg
+        JOIN ct_work_student_gather cwsg ON cwg.school_id = #{schoolId}
+        AND cwsg.school_id = #{schoolId}
+        AND cwg.work_type IN (1, 4)
+        AND cwg.work_id = cwsg.work_id
+        AND cwsg.correct_status = 1
+        AND cwsg.correct_time >=  #{start}
+        AND cwsg.correct_time <=  #{end}
+        AND cwsg.status = 1
+        AND cwg.status = 1
+        ]]>
+    </select>
+
+
+
+    <!-- 时间段内，统计学校学生提交的所有预习/电子作业的数量 -->
+    <select id="stuFinishWorkTimes" resultType="java.lang.Long">
+        <![CDATA[
+        SELECT
+            count(1) times
+        FROM
+            ct_work_gather cwg
+        JOIN ct_work_student_gather cwsg ON cwg.school_id = #{schoolId}
+        AND cwsg.school_id = #{schoolId}
+        AND cwg.work_type IN (1, 4)
+        AND cwg.work_id = cwsg.work_id
+        AND cwsg.sub_status = 1
+        AND cwsg.sub_time >=  #{start}
+        AND cwsg.sub_time <=  #{end}
+        AND cwsg.status = 1
+        AND cwg.status = 1
+        ]]>
+    </select>
+
+
+
+</mapper>

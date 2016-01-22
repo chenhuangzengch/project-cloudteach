@@ -1,0 +1,140 @@
+#set($layout="layout/bodyLayout.vm")
+#set($page_title="编辑并发布课外作业")
+#set($currPage="extra")
+#define($script)
+<link rel="stylesheet" href="http://asset.xueleyun.com/css/cloudteach/homework.css"/>
+<script src="http://asset.xueleyun.com/js/cloudteach/publish-cloud.js"></script>
+<script src="http://asset.xueleyun.com/js/cloudteach/new-task.js"></script>
+<script src="http://asset.xueleyun.com/js/cloudteach/scrollbar.js"></script>
+<script src="http://asset.xueleyun.com/g/lib/gallery/datepicker/WdatePicker.js?version=20151013181141"></script>
+#end
+
+<div class="publish-wrap">
+    <form action="$!{ctx}/extra/work/editaddextrawork" method="post">
+        <div class="publish-head">
+            <h2>
+                <em class="head-name">编辑题目</em>
+                <input type="submit" class="save-publish" value="保存并发布"/>
+                <a class="cancel" href="$!{ctx}/extra/item/index">取消</a>
+            </h2>
+        </div>
+        <div class="publish-content">
+            <div class="publish-set">
+                <div class="textarea-wrap">
+                    <textarea class="setwork_textarea" name="context"
+                              placeholder="填写本次作业的描述内容...（必填）">$!{item.context}</textarea>
+
+                    <p class="nums">0/3000</p>
+                </div>
+                <div class="hand-method set-time">
+                    <font>作业上交方式</font>
+                    <ul class="ul-times">
+                        <li>
+                            <i class="sel #if($!{item.subOther}==1) sel-yes #else sel-no #end "></i>
+                            <span>不限制</span>
+                            <input type="checkbox" name="subOther" value="1"
+                                   #if($!{item.subOther}==1)checked #end >
+                        </li>
+                        <li>
+                            <i class="sel #if($!{item.subImage}==1) sel-yes #else sel-no #end "></i>
+                            <span>照片</span>
+                            <input type="checkbox" name="subImage" value="1"
+                                   #if($!{item.subImage}==1)checked #end >
+                        </li>
+                        <li>
+                            <i class="sel  #if($!{item.subVideo}==1) sel-yes #else sel-no #end "></i>
+                            <span>视频</span>
+                            <input type="checkbox" name="subVideo" value="1"
+                                   #if($!{item.subVideo}==1)checked #end>
+                        </li>
+                        <li>
+                            <i class="sel  #if($!{item.subTape}==1) sel-yes #else sel-no #end "></i>
+                            <span>音频</span>
+                            <input type="checkbox" name="subTape" value="1"
+                                   #if($!{item.subTape}==1)checked #end>
+                        </li>
+                    </ul>
+                </div>
+                <div class="files-wrap">
+                    <div class="empty" style="display: none">
+                        <p class="empty-who">从本地选择附件</p>
+
+                        <p class="empty-ctls"><a href="javascript:;" class="new-attachment"><i class="icon-add"></i>添加附件</a>
+                        </p>
+                    </div>
+                    <ul class="ul-attachment" style="display: block">
+                        #foreach(${disk} in $!{item.attachmentList})
+                            <li data-infos="$!{fileJson}">
+                                <div class="attachment-type">
+                                ##                                    <img class="xlpreview" data-filekey="$!{disk.fileUri}" data-ext="$!{disk.extension}"
+                                ##                                         src="$!{asset_host}/g/imgs/icons/$!{disk.extIconType}.png" class="file-type">
+                                    <img class="xlpreview img-file-type" data-ext="$!{disk.extension}"
+                                         data-filekey="$!{disk.fileUri}"
+                                        #if ($!{disk.extType} == 6)
+                                         src="http://dl.xueleyun.com/images/1/100x100_$!{disk.fileUri}.$!{disk.extension} "
+                                        #else src="$!{asset_host}/g/imgs/icons/$!{disk.extIconType}-x.png "
+                                        #end/>
+                                    <img src="$!{asset_host}/imgs/cloudteach/exercise_delete.png" class="file-delete">
+                                </div>
+                                <p class="file-name">$!{disk.name}</p>
+                            </li>
+                        #end
+                        <li class="li-add">
+                            <div class="attachment-type">
+                                <div class="new-attachment">
+                                    <p class="p-notes">添加附件</p>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+
+                <div class="publish-set">
+                    <div class="addclass-rect">
+                        <div class="addClass"><em>+ 添加班级</em></div>
+                        <img class="classchoose" src="http://asset.xueleyun.com/imgs/cloudteach/add_class.png">
+                        <input type="hidden" value="" name="country">
+                    </div>
+                    <div class="set-time">
+                        <div class="set-publish-time">
+                            <font>最晚交作业时间：</font>
+                            <ul class="ul-times">
+                                <li>
+                                    <i class="radio-icon radio-yes"></i>
+                                    <span>1天以内</span>
+                                    <input type="radio" checked="" value="1" name="lastCommitRange">
+                                </li>
+                                <li>
+                                    <i class="radio-icon radio-no"></i>
+                                    <span>3天以内</span>
+                                    <input type="radio" value="3" name="lastCommitRange">
+                                </li>
+                                <li>
+                                    <i class="radio-icon radio-no"></i>
+                                    <span>5天以内</span>
+                                    <input type="radio" value="5" name="lastCommitRange">
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="set-submit-time">
+                            <font>定时发布：</font>
+
+                            <div class="choose-date">
+                                <i class="radio-icon radio-yes"></i>
+                                <img class="set-date" src="http://asset.xueleyun.com/imgs/cloudteach/setwork_time.png">
+                                <input type="radio" checked="" value="" name="publishTime"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" name="itemId" value="$!{item.itemId}"/>
+            <input type="hidden" name="unitld" value=""/>
+            <input type="hidden" name="diskIds" value=""/>
+            <input type="hidden" name="fileJson" value="$!{fileJson}"/>
+            <input type="hidden" name="classList" value="">
+            <input type="hidden" name="classJson" value="">
+##            <input type="hidden" name="publishTime" value="" checked="">
+    </form>
+</div>

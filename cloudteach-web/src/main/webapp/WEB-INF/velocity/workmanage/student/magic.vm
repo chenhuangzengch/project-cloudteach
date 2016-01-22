@@ -1,0 +1,129 @@
+#set($layout="layout/bodyLayout.vm")
+#set($page_title="写提分宝作业")
+#define($script)
+<link rel="stylesheet" href="$!{asset_host}/css/cloudteach/stu.css?version=${version}"/>
+<script src="$!{asset_host}/js/cloudteach/stu-upgrade.js?version=${version}"></script>
+#end
+<div class="detail-head">
+    <div class="upgrade-head">
+        <em class="em-upgrade-head">提分宝</em>
+        <a class="li-whos on" href="javascript:void(0)">写作业</a>
+        <a class="li-whos"
+           href="$!{ctx}/magic/work/student/magicWorkCommunication?workId=$!{magicWorkDetailViewDTO.workId}&workType=2">作业交流</a>
+        <a class="li-whos"
+           href="$!{ctx}/magic/work/student/challengeRecords?workId=$!{magicWorkDetailViewDTO.workId}">挑战记录</a>
+    </div>
+</div>
+<input type="hidden" name="userId" value="$!{userId}"/>
+<input type="hidden" name="schoolId" value="$!{schoolId}"/>
+<input type="hidden" name="unitId" value="$!{magicWorkDetailViewDTO.unitId}"/>
+<input type="hidden" name="workId" value="$!{magicWorkDetailViewDTO.workId}"/>
+<input type="hidden" name="bankId" value="$!{magicWorkDetailViewDTO.bankId}"/>
+<input type="hidden" name="orderNum" value="$!{orderNum}"/>
+<input type="hidden" name="subOther" value="$!{magicWorkDetailViewDTO.subOther}">
+<input type="hidden" name="subImage" value="$!{magicWorkDetailViewDTO.subImage}">
+<input type="hidden" name="subVideo" value="$!{magicWorkDetailViewDTO.subVideo}">
+<input type="hidden" name="subTape" value="$!{magicWorkDetailViewDTO.subTape}">
+<div class="white-shade">
+    <img src="$!{asset_host}/g/imgs/loading.gif" alt="" class="img-loading"/>
+
+    <p class="p-loading">正在加载提分宝作业，请稍后...</p>
+</div>
+<div class="container upgrade-content">
+    <div class="write-wrap">
+        <div class="task-info">
+            <div class="detail-title">
+                <div class="task-title">
+                    <img src="$!{avatar_host}/images/48x48_$!{magicWorkDetailViewDTO.userIcon}.jpg" class="portrait"/>
+
+                    <h3 class="detail-info">
+                        <span class="tch-name">$!{magicWorkDetailViewDTO.userName}</span><br/>
+                    </h3>
+                    <ul class="homework-explain">
+                        <li class="subject-name"> $!{magicWorkDetailViewDTO.subjectName} </li>
+                        <li class="course-name"> $!{magicWorkDetailViewDTO.unitName} </li>
+                        <li class="homework-num">$!{magicWorkQueDetailDTO.total}题</li>
+                    </ul>
+                    <p class="p-detail">$!{magicWorkDetailViewDTO.context.replaceAll("\r\n", "<br>").replaceAll("\r", "<br>").replaceAll("\n", "<br>").replaceAll(" ","&nbsp;")}
+                    </p>
+                    #if( ${workTapeFilesDTO} )
+                        <div class="video-wrap" >
+                            <div role="player"  data-filekey="$!{workTapeFilesDTO.url}" data-ext="$!{workTapeFilesDTO.extension}" class="xlplayer"></div>
+                        </div>
+                    #end
+                </div>
+            </div>
+            <div class="upgrade-list">
+                <ul class="ul-list">
+                    #foreach($ques in $!{magicWorkQueDetailDTO.magicQueViewDTOs})
+                        <li data-id=$!{ques.queId}>
+                            <h4 class="task-head">
+                                <span class="task-num">
+                                     <strong>$!{velocityCount}.[$!{ques.queType}]</strong>
+                                </span>
+                                #if( ${ques.videoId})
+                                    <a class="task-detail" href="$!{ques.videoFileKey}">查看习题讲解</a>
+                                #end
+                            </h4>
+                            <p class="task-content">
+                                $!{ques.content}
+                            </p>
+                            <div class="task-answer">
+                                <span class="notes-detail">此处为答案，完成作业后可查看答案</span>
+
+                                <div class="answer-detail">
+                                    <div class="answer-rect">
+                                        参考答案： $!{ques.answer}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="results-detail">
+                                <em class="right-answer">我做对啦！</em>
+                                <em class="wrong-answer">我做错啦！</em>
+                            </div>
+                        </li>
+                    #end
+                </ul>
+
+                <div class="portrait-shade">
+                </div>
+            </div>
+        </div>
+        <div class="hand-info">
+            <button class="hand-button">交作业</button>
+            <div class="hand-method method-time"> 作业上交方式：
+                #if( ${magicWorkDetailViewDTO.subOther} == 1 )  不限制 #end
+                #if( ${magicWorkDetailViewDTO.subImage} == 1 )  图片 #end
+                #if( ${magicWorkDetailViewDTO.subVideo} == 1 )  视频 #end
+                #if( ${magicWorkDetailViewDTO.subTape} == 1 )  录音 #end
+            </div>
+            <div class="hand-time method-time">最晚交作业时间：$!{day}天之内</div>
+            <div class="before-start" style="display: block">
+                <p class="start-notes">
+                    请查看题目，然后在作业本上完成。系统会根据你的完成情况，评估你的知识掌握水平
+                </p>
+
+                <div class="count-down"> 00:00</div>
+                <em class="start-button">开始作业</em>
+                <span class="start-encourage">认真学习，必成学霸</span>
+            </div>
+            <div class="homework-attachment" style="display: none;">
+                <a href="$!{ctx}/magic/work/student/workDetail?workId=$!{magicWorkDetailViewDTO.workId} " class="once-again">再次挑战</a>
+                <h4 class="attachment-head">作业附件</h4>
+                <ul class="upload-icons">
+                    #if(${magicWorkDetailViewDTO.subOther} == 1)
+                        <li><i class="img-method"></i></li>
+                        <li><i class="video-method"></i></li>
+                        <li><i class="audio-method"></i></li>
+                    #end
+                    #if( ${magicWorkDetailViewDTO.subImage} == 1 )
+                        <li><i class="img-method"></i></li> #end
+                    #if( ${magicWorkDetailViewDTO.subVideo} == 1 )
+                        <li><i class="video-method"></i></li> #end
+                    #if( ${magicWorkDetailViewDTO.subTape} == 1 )
+                        <li><i class="audio-method"></i></li> #end
+                </ul>
+            </div>
+        </div>
+    </div>
+

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtMagicWorkMapper">
+    <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtMagicWork">
+        <id column="work_id" property="workId" jdbcType="VARCHAR"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+        <result column="unit_id" property="unitId" jdbcType="VARCHAR"/>
+        <result column="bank_id" property="bankId" jdbcType="VARCHAR"/>
+        <result column="context" property="context" jdbcType="VARCHAR"/>
+        <result column="work_type" property="workType" jdbcType="INTEGER"/>
+        <result column="publish_time" property="publishTime" jdbcType="TIMESTAMP"/>
+        <result column="end_time" property="endTime" jdbcType="TIMESTAMP"/>
+        <result column="sub_image" property="subImage" jdbcType="INTEGER"/>
+        <result column="sub_tape" property="subTape" jdbcType="INTEGER"/>
+        <result column="sub_video" property="subVideo" jdbcType="INTEGER"/>
+        <result column="sub_other" property="subOther" jdbcType="INTEGER"/>
+        <result column="finish_status" property="finishStatus" jdbcType="INTEGER"/>
+        <result column="correct_status" property="correctStatus" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+    </resultMap>
+    <resultMap id="MagicWorkDetailViewResultMap" type="net.xuele.cloudteach.view.MagicWorkDetailView">
+        <id column="work_id" property="workId" jdbcType="VARCHAR"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+        <result column="unit_id" property="unitId" jdbcType="VARCHAR"/>
+        <result column="bank_id" property="bankId" jdbcType="VARCHAR"/>
+        <result column="context" property="context" jdbcType="VARCHAR"/>
+        <result column="work_type" property="workType" jdbcType="INTEGER"/>
+        <result column="publish_time" property="publishTime" jdbcType="TIMESTAMP"/>
+        <result column="end_time" property="endTime" jdbcType="TIMESTAMP"/>
+        <result column="sub_image" property="subImage" jdbcType="INTEGER"/>
+        <result column="sub_tape" property="subTape" jdbcType="INTEGER"/>
+        <result column="sub_video" property="subVideo" jdbcType="INTEGER"/>
+        <result column="sub_other" property="subOther" jdbcType="INTEGER"/>
+        <result column="finish_status" property="finishStatus" jdbcType="INTEGER"/>
+        <result column="correct_status" property="correctStatus" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
+        <result column="subject_id" property="subjectId" jdbcType="VARCHAR"/>
+        <result column="subject_name" property="subjectName" jdbcType="VARCHAR"/>
+        <result column="real_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="icon" property="userIcon" jdbcType="VARCHAR"/>
+        <result column="position_name" property="positionName" jdbcType="VARCHAR"/>
+    </resultMap>
+    <!--逻辑删除，状态改为0-->
+    <update id="delete">
+    update ct_magic_work
+    set status = 0
+    where work_id = #{workId,jdbcType=VARCHAR}
+    and school_id = #{schoolId,jdbcType=VARCHAR}
+  </update>
+    <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtMagicWork">
+    insert into ct_magic_work (work_id, user_id, school_id, 
+      unit_id, bank_id, context,
+      work_type, publish_time, end_time, 
+      sub_image, sub_tape, sub_video, 
+      sub_other, finish_status, correct_status, 
+      create_time, update_time, status
+      )
+    values (#{workId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{schoolId,jdbcType=VARCHAR}, 
+      #{unitId,jdbcType=VARCHAR}, #{bankId,jdbcType=VARCHAR}, #{context,jdbcType=VARCHAR},
+      #{workType,jdbcType=INTEGER}, #{publishTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
+      #{subImage,jdbcType=INTEGER}, #{subTape,jdbcType=INTEGER}, #{subVideo,jdbcType=INTEGER}, 
+      #{subOther,jdbcType=INTEGER}, #{finishStatus,jdbcType=INTEGER}, #{correctStatus,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}
+      )
+  </insert>
+    <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtMagicWork">
+    update ct_magic_work
+    set user_id = #{userId,jdbcType=VARCHAR},
+      unit_id = #{unitId,jdbcType=VARCHAR},
+      bank_id = #{bankId,jdbcType=VARCHAR},
+      context = #{context,jdbcType=VARCHAR},
+      work_type = #{workType,jdbcType=INTEGER},
+      publish_time = #{publishTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      sub_image = #{subImage,jdbcType=INTEGER},
+      sub_tape = #{subTape,jdbcType=INTEGER},
+      sub_video = #{subVideo,jdbcType=INTEGER},
+      sub_other = #{subOther,jdbcType=INTEGER},
+      finish_status = #{finishStatus,jdbcType=INTEGER},
+      correct_status = #{correctStatus,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER}
+    where school_id = #{schoolId,jdbcType=VARCHAR} AND work_id = #{workId,jdbcType=VARCHAR}
+  </update>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    select work_id, user_id, school_id, unit_id,bank_id, context, work_type, publish_time,
+    end_time, sub_image, sub_tape, sub_video, sub_other, finish_status, correct_status, 
+    create_time, update_time, status
+    from ct_magic_work
+    where school_id = #{schoolId,jdbcType=VARCHAR} AND work_id = #{workId,jdbcType=VARCHAR}
+  </select>
+    <select id="queryMagicWorkDetail" resultMap="MagicWorkDetailViewResultMap">
+    select a.work_id, a.user_id, a.school_id, a.unit_id, a.bank_id, a.context, a.work_type, a.publish_time,
+    a.end_time,a.sub_image, a.sub_tape, a.sub_video, a.sub_other, a.finish_status, a.correct_status,
+    ct_units.unit_name,ct_book.subject_id,ct_book.subject_name,m_users.real_name,m_users.icon,m_teacher.position_name
+    from ct_magic_work as a
+    INNER JOIN ct_units ON ct_units.unit_id = a.unit_id
+    INNER JOIN ct_book ON ct_book.book_id = ct_units.book_id
+    INNER JOIN m_users ON m_users.user_id = a.user_id
+    INNER JOIN m_teacher on m_teacher.user_id = a.user_id
+    where a.school_id = #{schoolId,jdbcType=VARCHAR} AND a.work_id=#{workId,jdbcType=VARCHAR}
+  </select>
+
+    <!--通过学生ID，获取提分宝作业信息-->
+    <select id="getMagicWorkByStudent" resultMap="BaseResultMap">
+    select a.work_id, a.user_id, a.school_id, a.unit_id,a.bank_id, a.context, a.work_type,a.publish_time,
+    a.end_time, a.sub_image, a.sub_tape, a.sub_video, a.sub_other, a.finish_status, a.correct_status,
+    a.create_time, a.update_time, a.status
+    from ct_magic_work a,ct_magic_work_answer b
+    where a.school_id = #{schoolId,jdbcType=VARCHAR}
+    and b.school_id = #{schoolId,jdbcType=VARCHAR}
+    and a.work_id = b.work_id
+    and a.work_id = #{workId,jdbcType=VARCHAR}
+    and b.user_id = #{studentId,jdbcType=VARCHAR}
+    and a.status = 1
+  </select>
+<!--finishStatus：修改作业完成状态-->
+    <update id="updateFinishStatus" >
+        update ct_magic_work
+        set finish_status = #{finishStatus,jdbcType=INTEGER}
+        where school_id = #{schoolId,jdbcType=VARCHAR}
+        AND work_id = #{workId,jdbcType=VARCHAR}
+    </update>
+<!--correct_status：修改作业批改状态-->
+    <update id="updateCorrectStatus" >
+        update ct_magic_work
+        set correct_status = #{correctStatus,jdbcType=INTEGER}
+        where school_id = #{schoolId,jdbcType=VARCHAR}
+        AND work_id = #{workId,jdbcType=VARCHAR}
+    </update>
+</mapper>

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtUnitsMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtUnits" >
+    <id column="unit_id" property="unitId" jdbcType="VARCHAR" />
+    <result column="unit_name" property="unitName" jdbcType="VARCHAR" />
+    <result column="book_id" property="bookId" jdbcType="VARCHAR" />
+    <result column="unit_type" property="unitType" jdbcType="INTEGER" />
+    <result column="sort" property="sort" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="SchoolSynBookViewResultMap" type="net.xuele.cloudteach.view.SchoolSynBookView" >
+    <id column="book_id" property="bookId" jdbcType="VARCHAR" />
+    <result column="book_name" property="bookName" jdbcType="VARCHAR" />
+    <result column="subject_id" property="subjectId" jdbcType="INTEGER" />
+    <result column="grade_num" property="gradeNum" jdbcType="INTEGER" />
+    <result column="semester" property="semester" jdbcType="INTEGER" />
+    <result column="edition_id" property="editionId" jdbcType="INTEGER" />
+    <result column="E_Name" property="editionName" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="SynUnitViewResultMap" type="net.xuele.cloudteach.view.SynUnitView" >
+    <id column="u_code" property="uCode" jdbcType="VARCHAR" />
+    <result column="editionid" property="editionId" jdbcType="INTEGER" />
+    <result column="semestercode" property="semestercode" jdbcType="VARCHAR" />
+    <result column="u_name" property="uName" jdbcType="VARCHAR" />
+    <result column="u_order" property="uOrder" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="UnitBookNameViewResultMap" type="net.xuele.cloudteach.view.UnitBookNameView" >
+    <result column="unit_id" property="unitId" jdbcType="VARCHAR" />
+    <result column="unit_name" property="unitName" jdbcType="VARCHAR" />
+    <result column="subject_id" property="bookSubjectId" jdbcType="VARCHAR" />
+    <result column="subject_name" property="bookSubjectName" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="StudentNumViewResultMap" type="net.xuele.cloudteach.view.StudentNumView" >
+    <result column="class_id" property="classId" jdbcType="VARCHAR" />
+    <result column="num" property="studentNum" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from ct_units
+    where unit_id = #{unitId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtUnits" >
+    insert into ct_units (unit_id, unit_name, book_id, 
+      unit_type, sort)
+    values (#{unitId,jdbcType=VARCHAR}, #{unitName,jdbcType=VARCHAR}, #{bookId,jdbcType=VARCHAR}, 
+      #{unitType,jdbcType=INTEGER}, #{sort,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtUnits" >
+    update ct_units
+    set unit_name = #{unitName,jdbcType=VARCHAR},
+      book_id = #{bookId,jdbcType=VARCHAR},
+      unit_type = #{unitType,jdbcType=INTEGER},
+      sort = #{sort,jdbcType=VARCHAR}
+    where unit_id = #{unitId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select unit_id, unit_name, book_id, unit_type, sort
+    from ct_units
+    where unit_id = #{unitId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select unit_id, unit_name, book_id, unit_type, sort
+    from ct_units
+  </select>
+  <select id="selectByBookid" resultMap="BaseResultMap"  parameterType="java.lang.String">
+    select unit_id, unit_name, book_id, unit_type, sort
+    from ct_units
+    where book_id = #{bookId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectCount" resultType="int"  parameterType="java.lang.String">
+    select COUNT(1)
+    from ct_units
+    where book_id = #{bookId,jdbcType=VARCHAR}
+  </select>
+  <!--查询某个教师所在学校对应同步课堂课本信息-->
+  <select id="querySchoolSynBookListBySchoolId"  resultMap="SchoolSynBookViewResultMap">
+    select ssc.book_id,b.book_name,b.subject_id,b.grade_num,b.semester,b.edition_id,e.E_Name
+    from m_school_sync_class as ssc
+    inner join d_books as b on b.book_id=ssc.book_id
+    inner join d_editions as e on e.E_ID=b.edition_id
+    where ssc.school_id=#{schoolId,jdbcType=VARCHAR}
+  </select>
+  <!--根据同步课堂中的课本ID获取课程信息-->
+  <select id="querySynUnitListByBookId"  resultMap="SynUnitViewResultMap">
+    select u_code,editionid,semestercode,u_name,u_order
+    from d_units as units
+    where SUBSTRING(units.U_Code FROM 1 FOR 12) = #{bookId,jdbcType=VARCHAR}
+  </select>
+
+  <!-- 根据课程Id获得科目和课程名称-->
+  <select id="queryUnitBookNameByUnitId"  resultMap="UnitBookNameViewResultMap" parameterType="java.lang.String">
+    select unit_name,unit_id, subject_name,subject_id
+    from ct_units units
+    INNER   JOIN  ct_book book  on book.book_id = units.book_id
+    where units.unit_id = #{unitId,jdbcType=VARCHAR}
+  </select>
+
+  <!-- 根据课程Id获得同步课堂科目和课程名称-->
+  <select id="querySynclassUnitBookNameByUnitId"  resultMap="UnitBookNameViewResultMap" parameterType="java.lang.String">
+    select a.U_Code unit_id ,a.U_Name unit_name,c.summary_code subject_id ,
+    c.summary_name subject_name from d_units a
+    inner join d_books b ON b.book_id = SUBSTRING(a.U_Code FROM 1 FOR 12)
+    inner join d_summary c on CAST(c.summary_code as SIGNED) = b.subject_id
+    where a.u_code =#{unitId,jdbcType=VARCHAR}
+  </select>
+
+  <!--获取学校下学生的个数-->
+  <select id="getStudentNumBySchoolId"  resultMap="StudentNumViewResultMap">
+    select class_id , count(1) num
+    from m_student
+    where school_id = #{schoolId,jdbcType=VARCHAR} and
+    class_id in
+    <foreach collection="classIdList" item="classId" index="index" open="(" close=")" separator=",">
+      #{classId,jdbcType=VARCHAR}
+    </foreach>
+    group by class_id
+  </select>
+
+
+</mapper>

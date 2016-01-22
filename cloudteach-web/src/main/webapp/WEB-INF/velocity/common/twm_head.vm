@@ -1,0 +1,38 @@
+<div class="header">
+    <div class="top">
+        <div class="logo"><img src="$!{asset_host}/g/imgs/deflogo.gif" alt="" /><h1>杭州学军小学</h1></div>
+        <div class="ctls">
+            <ul>
+                <li><a href="javascript:;" id="J_Msg"><i class="icon-msg"></i>消息</a></li>
+                <li class="av"><img src="$!{asset_host}/g/imgs/av48.png" alt="" /></li>
+            </ul>
+        </div>
+    </div>
+    <div class="nav">
+        <div class="cates-panel">
+            <div class="cates" id="J_Cates">
+                <p class="def"><a href="javascript:;"><i class="icon-down"></i><i class="icon-people"></i>学校管理</a></p>
+                <div class="cates-list">
+                    <ul>
+                        <li><i class="icon-people"></i><a href="#">云教学</a></li>
+                        <li><i class="icon-people"></i><a href="#">作业管理</a></li>
+                        <li><i class="icon-people"></i><a href="#">学校圈</a></li>
+                        <li><i class="icon-people"></i><a href="#">云空间</a></li>
+                        <li><i class="icon-people"></i><a href="#">兴趣社团</a></li>
+                        <li><i class="icon-people"></i><a href="#">教学管理</a></li>
+                        <li><i class="icon-people"></i><a href="#">应用中心</a></li>
+                        <li><i class="icon-people"></i><a href="#">我的信息</a></li>
+                    </ul>
+                    <div class="copyright"></div>
+                </div>
+            </div>
+        </div>
+        <p class="notice"><a class="J_Notify" href="javascript:;"><i class="icon-notice"></i>通知</a></p>
+        <div class="menu">
+            <a #if(${currPage}=="myEffective") class="on" #end href="$!{ctx}/workmanage/teacher/initMyEffectiveWorkList" >进行中</a>
+            <a #if(${currPage}=="afterclass") class="on" #end href="$!{ctx}/workmanage/teacher/initAfterclassWorkList">作业</a>
+            <a #if(${currPage}=="guidance") class="on" #end href="$!{ctx}/workmanage/teacher/initGuidanceWorkList">预习</a>
+        </div>
+    </div>
+
+</div>

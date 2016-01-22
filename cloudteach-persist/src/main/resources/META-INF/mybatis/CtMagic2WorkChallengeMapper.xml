@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtMagic2WorkChallengeMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtMagic2WorkChallenge" >
+    <id column="challenge_id" property="challengeId" jdbcType="VARCHAR" />
+    <result column="unit_id" property="unitId" jdbcType="VARCHAR" />
+    <result column="practice_id" property="practiceId" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="sort" property="sort" jdbcType="INTEGER" />
+    <result column="begin_time" property="beginTime" jdbcType="TIMESTAMP" />
+    <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+    <result column="total_quenum" property="totalQuenum" jdbcType="INTEGER" />
+    <result column="right_quenum" property="rightQuenum" jdbcType="INTEGER" />
+    <result column="score" property="score" jdbcType="INTEGER" />
+    <result column="score_context" property="scoreContext" jdbcType="VARCHAR" />
+    <result column="share_status" property="shareStatus" jdbcType="INTEGER" />
+    <result column="share_time" property="shareTime" jdbcType="TIMESTAMP" />
+    <result column="school_id" property="schoolId" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="INTEGER" />
+    <result column="port" property="port" jdbcType="INTEGER" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from ct_magic2_work_challenge
+    where challenge_id = #{challengeId,jdbcType=VARCHAR}
+    and school_id = #{schoolId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtMagic2WorkChallenge" >
+    insert into ct_magic2_work_challenge (challenge_id, unit_id,practice_id,user_id, sort,
+      begin_time, end_time, total_quenum, 
+      right_quenum, score, score_context, 
+      share_status, share_time, school_id, 
+      STATUS,port)
+    values (#{challengeId,jdbcType=VARCHAR}, #{unitId,jdbcType=VARCHAR},#{practiceId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER},
+      #{beginTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, #{totalQuenum,jdbcType=INTEGER}, 
+      #{rightQuenum,jdbcType=INTEGER}, #{score,jdbcType=INTEGER}, #{scoreContext,jdbcType=VARCHAR}, 
+      #{shareStatus,jdbcType=INTEGER}, #{shareTime,jdbcType=TIMESTAMP}, #{schoolId,jdbcType=VARCHAR}, 
+      #{status,jdbcType=INTEGER},#{port,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtMagic2WorkChallenge" >
+    update ct_magic2_work_challenge
+    set unit_id = #{unitId,jdbcType=VARCHAR},
+      practice_id = #{practiceId,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=VARCHAR},
+      sort = #{sort,jdbcType=INTEGER},
+      begin_time = #{beginTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      total_quenum = #{totalQuenum,jdbcType=INTEGER},
+      right_quenum = #{rightQuenum,jdbcType=INTEGER},
+      score = #{score,jdbcType=INTEGER},
+      score_context = #{scoreContext,jdbcType=VARCHAR},
+      share_status = #{shareStatus,jdbcType=INTEGER},
+      share_time = #{shareTime,jdbcType=TIMESTAMP},
+      STATUS = #{status,jdbcType=INTEGER},
+      port = #{port,jdbcType=INTEGER}
+    where challenge_id = #{challengeId,jdbcType=VARCHAR}
+    and school_id = #{schoolId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select challenge_id, unit_id, practice_id, user_id, sort, begin_time, end_time, total_quenum, right_quenum,
+    score, score_context, share_status, share_time, school_id, STATUS,port
+    from ct_magic2_work_challenge
+    where challenge_id = #{challengeId,jdbcType=VARCHAR}
+    and school_id = #{schoolId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select challenge_id, unit_id, practice_id, user_id, sort, begin_time, end_time, total_quenum, right_quenum,
+    score, score_context, share_status, share_time, school_id, STATUS,port
+    from ct_magic2_work_challenge
+    WHERE school_id = #{schoolId,jdbcType=VARCHAR}
+  </select>
+
+  <!--查询该课程下该用户的挑战次数-->
+  <select id="selectCount" resultType="int" >
+    select count(1)
+    from ct_magic2_work_challenge
+    WHERE school_id = #{schoolId,jdbcType=VARCHAR}
+    and unit_id = #{unitId,jdbcType=VARCHAR}
+    and user_id = #{userId,jdbcType=VARCHAR}
+    STATUS = 1
+  </select>
+  <!--查询某一课程下的练习记录（同一练习返回最高成绩挑战记录）-->
+  <select id="selectMaxPracticeList" resultMap="BaseResultMap" >
+    select cl.challenge_id, cl.unit_id, cl.practice_id, cl.user_id, p.sort, cl.begin_time, cl.end_time, cl.total_quenum, cl.right_quenum,
+    cl.score, cl.score_context, cl.share_status, cl.share_time, cl.school_id, cl.STATUS
+    from ct_magic2_work_max_practice p
+    INNER ct_magic2_work_challenge cl
+    ON p.practice_id=cl.practice_id and p.challenge_id=cl.challenge_id
+    WHERE p.school_id = #{schoolId,jdbcType=VARCHAR}
+    and p.unit_id = #{unitId,jdbcType=VARCHAR}
+    and p.user_id = #{userId,jdbcType=VARCHAR}
+    and cl.STATUS=1
+  </select>
+  <!--查询某一课程下的挑战记录-->
+  <select id="selectChallengeList" resultMap="BaseResultMap" >
+    select challenge_id, unit_id, practice_id, user_id, sort, begin_time, end_time, total_quenum, right_quenum,
+    score, score_context, share_status, share_time, school_id, STATUS,port
+    from ct_magic2_work_challenge
+    WHERE school_id = #{schoolId,jdbcType=VARCHAR}
+    and unit_id = #{unitId,jdbcType=VARCHAR}
+    and user_id = #{userId,jdbcType=VARCHAR}
+    and STATUS=1
+    order by end_time DESC
+  </select>
+
+  <!--/////////////////////////////////////////////////////提分宝数据统计///////////////////////////////////////////////////////////////-->
+  <!--提分宝个人统计-->
+  <select id="selectMyStatistics" resultType="net.xuele.cloudteach.view.Magic2WorkMyStatisticsView" >
+    SELECT practice_id practiceId,score,score_context,COUNT(1) times,cTime,rNum,tNum,SUM(cTime) pTime,MIN(begin_time) bTime,MAX(begin_time) eTime
+    FROM
+    (
+      SELECT TIMESTAMPDIFF(SECOND, begin_time,end_time) cTime,begin_time,end_time,right_quenum rNum,total_quenum tNum,practice_id,score,score_context
+      FROM ct_magic2_work_challenge
+      WHERE unit_id=#{unitId,jdbcType=VARCHAR}
+      AND school_id=#{schoolId,jdbcType=VARCHAR}
+      AND user_id=#{userId,jdbcType=VARCHAR}
+      ORDER BY score DESC,ctime, rNum DESC,begin_time
+    )temp
+    GROUP BY practice_id
+    ORDER BY btime DESC
+  </select>
+  <!--提分宝个人总计-->
+  <select id="selectStuTotal" resultType="net.xuele.cloudteach.view.Magic2WorkClassTotalView" >
+     SELECT user_id,COUNT(1) totalTimes,SUM(TIMESTAMPDIFF(SECOND, begin_time,end_time)) totalTime,
+            round(AVG(TIMESTAMPDIFF(SECOND, begin_time,end_time))) avgTime,
+            SUM(right_quenum) rNum,SUM(total_quenum) tNum
+     FROM ct_magic2_work_challenge
+     WHERE school_id=#{schoolId,jdbcType=VARCHAR}
+            AND unit_id=#{unitId,jdbcType=VARCHAR}
+            AND user_id=#{userId,jdbcType=VARCHAR}
+  </select>
+<!--提分宝班级统计-->
+  <select id="selectClassStatistics" resultType="net.xuele.cloudteach.view.Magic2WorkClassStatisticsView" >
+    SELECT s.user_id userId,m.real_name userName,IFNULL(c.score,0) score,IFNULL(c.times,0) times,IFNULL(c.ptime,0) pTime,IFNULL(round(c.avgtime),0) avgTime,IFNULL(rNum,0) rNum,IFNULL(tNum,0) tNum
+    FROM (
+      SELECT user_id FROM m_student WHERE school_id=#{schoolId,jdbcType=VARCHAR} AND class_id=#{classId,jdbcType=VARCHAR}
+    ) s
+    INNER JOIN
+      m_users m
+    ON s.user_id = m.user_id AND m.school_id=#{schoolId,jdbcType=VARCHAR}
+    LEFT JOIN
+    (
+      SELECT user_id,MAX(score) score,COUNT(1) times,SUM(TIMESTAMPDIFF(SECOND, begin_time,end_time)) ptime,
+      AVG(TIMESTAMPDIFF(SECOND, begin_time,end_time)) avgtime,SUM(right_quenum) rnum,SUM(total_quenum) tnum
+      FROM ct_magic2_work_challenge
+      WHERE unit_id=#{unitId,jdbcType=VARCHAR} AND school_id=#{schoolId,jdbcType=VARCHAR}
+      GROUP BY user_id
+    )c
+    ON c.user_id = s.user_id
+    ORDER BY score DESC,s.user_id
+  </select>
+<!--提分宝班级总计-->
+  <select id="selectClassTotal" resultType="net.xuele.cloudteach.view.Magic2WorkClassTotalView" >
+    SELECT COUNT(1) totalTimes,SUM(TIMESTAMPDIFF(SECOND, begin_time,end_time)) totalTime,
+   round(AVG(TIMESTAMPDIFF(SECOND, begin_time,end_time))) avgTime,SUM(right_quenum) rNum,SUM(total_quenum) tNum
+    FROM
+    ct_magic2_work_challenge c
+    INNER JOIN
+    (
+      SELECT user_id FROM m_student WHERE school_id=#{schoolId,jdbcType=VARCHAR} AND class_id=#{classId,jdbcType=VARCHAR}
+    ) s
+    ON c.user_id = s.user_id
+    WHERE c.unit_id=#{unitId,jdbcType=VARCHAR}
+    AND c.school_id=#{schoolId,jdbcType=VARCHAR}
+  </select>
+
+</mapper>

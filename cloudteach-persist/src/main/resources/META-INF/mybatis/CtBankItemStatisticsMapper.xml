@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtBankItemStatisticsMapper">
+    <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtBankItemStatistics">
+        <id column="item_id" property="itemId" jdbcType="VARCHAR"/>
+        <result column="releases" property="releases" jdbcType="INTEGER"/>
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+    </resultMap>
+    <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtBankItemStatistics">
+    insert into ct_bank_item_statistics (item_id, releases, school_id
+      )
+    values (#{itemId,jdbcType=VARCHAR}, #{releases,jdbcType=INTEGER}, #{schoolId,jdbcType=VARCHAR}
+      )
+  </insert>
+    <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtBankItemStatistics">
+    update ct_bank_item_statistics
+    set releases = #{releases,jdbcType=INTEGER}
+    where school_id = #{schoolId,jdbcType=VARCHAR} and item_id = #{itemId,jdbcType=VARCHAR}
+  </update>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" >
+    select item_id, releases, school_id
+    from ct_bank_item_statistics
+    where school_id = #{schoolId,jdbcType=VARCHAR}
+    and item_id = #{itemId,jdbcType=VARCHAR}
+  </select>
+
+    <!--发布次数维护-->
+    <update id="updateReleasesByItem" parameterType="net.xuele.cloudteach.domain.CtBankItemStatistics">
+        update ct_bank_item_statistics
+        set releases = releases + #{range,jdbcType=INTEGER}
+        where school_id = #{schoolId,jdbcType=VARCHAR}
+        and item_id = #{itemId,jdbcType=VARCHAR}
+    </update>
+
+</mapper>

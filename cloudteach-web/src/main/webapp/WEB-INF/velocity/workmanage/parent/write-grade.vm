@@ -1,0 +1,154 @@
+#set($layout="layout/bodyLayout.vm")
+#set($page_title="提分宝作业")
+#define($script)
+<link rel="stylesheet" href="$!{asset_host}/css/cloudteach/stu.css?version=${version}"/>
+<script src="$!{asset_host}/cjs/common/xlutil.js?version=${version}"></script>
+<script src="$!{asset_host}/g/lib/gallery/swfobject.js?version=${version}"></script>
+#end
+<div class="detail-head">
+    <div class="upgrade-head">
+        <em class="em-upgrade-head">提分宝</em>
+        <a class="li-whos on" href="javascript:void(0)">写作业</a>
+        <a class="li-whos"
+           href="$!{ctx}/studentcloudwork/parent/magicWorkCommunication?workId=$!{workDetail.basicMagicWorkInfo.workId}&studentId=$!{studentId}&workType=2">作业交流</a>
+        <a class="li-whos"
+           href="$!{ctx}/studentcloudwork/parent/challengeRecords?workId=$!{workDetail.basicMagicWorkInfo.workId}&studentId=$!{studentId}">挑战记录</a>
+    </div>
+</div>
+
+<div class="container">
+    <div class="write-wrap">
+        <div class="task-info">
+            <div class="detail-title">
+                <div class="task-title">
+                    <img src="$!{avatar_host}/images/48x48_$!{workDetail.basicMagicWorkInfo.teacherHeadIcon}.jpg"
+                         class="portrait"/>
+
+                    <h3 class="detail-info">
+                        <span class="tch-name">$!{workDetail.basicMagicWorkInfo.teacherName}</span><br/>
+                    </h3>
+                    <ul class="homework-explain">
+                        <li class="subject-name"> $!{workDetail.basicMagicWorkInfo.subjectName} </li>
+                        <li class="course-name"> $!{workDetail.basicMagicWorkInfo.unitName} </li>
+                        <li class="homework-num">$!{workDetail.basicMagicWorkInfo.workItemCount}题</li>
+                    </ul>
+                    <p class="p-detail">$!{workDetail.basicMagicWorkInfo.context.replaceAll("\r\n", "<br>").replaceAll("\r", "<br>").replaceAll("\n", "<br>").replaceAll(" ","&nbsp;")}
+                    </p>
+
+                    <div class="video-wrap" data-url="$!{workDetail.workTapeFilesDTO.url}">
+                        <div id="spoken-detail"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="upgrade-list">
+                <ul class="ul-list">
+                    #foreach($!{magicQuestion} in $!{workDetail.magicQuestionDTOList})
+                        <li data-id="$!{magicQuestion.queId}">
+                            <h4 class="task-head">
+                                <span class="task-num">$!{velocityCount}.
+                                    #if( ${magicQuestion.queTypeCode} == 1 )
+                                        [选择题]
+                                    #end
+                                    #if( ${magicQuestion.queTypeCode} == 2 )
+                                        [填空题]
+                                    #end
+                                    #if( ${magicQuestion.queTypeCode} == 3 )
+                                        [判断题]
+                                    #end
+                                </span>
+                            ## <span class="task-detail">查看习题讲解</span>
+                            </h4>
+
+                            <p class="task-content">
+                                $!{magicQuestion.content}
+                            </p>
+
+                            <div class="task-answer">
+                            ## $!{magicQuestion.answer}
+                            ## <span class="notes-detail">此处为答案，完成作业后可查看答案</span>
+                                <div class="answer-detail" style="display: block">
+                                    <div class="answer-rect">
+                                        参考答案： $!{magicQuestion.answer}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="results-detail">
+                            #* #if(${magicQuestion.rwStatus} == 1)
+                                <em class="right-answer">我做对啦！</em>
+                            #end
+                            #if(${magicQuestion.rwStatus} == 0)
+                                <em class="wrong-answer">我做错啦！</em>
+                            #end*#
+                            </div>
+                        </li>
+                    #end
+                </ul>
+            </div>
+        </div>
+        <div class="hand-info">
+            <div class="hand-method method-time">作业上交方式：
+                #if( $!{workDetail.basicMagicWorkInfo.subOther} == 1 )  不限制#end
+                #if( $!{workDetail.basicMagicWorkInfo.subImage} == 1 )  图片#end
+                #if( $!{workDetail.basicMagicWorkInfo.subVideo} == 1 )  视频#end
+                #if( $!{workDetail.basicMagicWorkInfo.subTape} == 1 )   录音#end
+                #*#if( $!{workDetail.basicMagicWorkInfo.subImage} == 0
+                &&$!{workDetail.basicMagicWorkInfo.subVideo} == 0
+                &&$!{workDetail.basicMagicWorkInfo.subTape} == 0
+                &&$!{workDetail.basicMagicWorkInfo.subOther} == 0)
+                文字
+                #end*#
+            </div>
+            <div class="hand-time method-time">最晚交作业时间：$!{day}天之内</div>
+            #if($!{workDetail.stuAnswerInfo.subStatus}==1)
+            <div class="hand-homework" style="display: block;">
+                <p class="hand-content">$!{workDetail.stuAnswerInfo.context}</p>
+                <div class="score-level">
+                    <i class="first-level">$!{workDetail.stuAnswerInfo.score}</i>
+                </div>
+                <div class="start-notes"
+                     style="padding-top: 24px; text-align: center;">$!{workDetail.stuSubmitChallengeInfo.scorecontext}</div>
+                <div class="homework-attachment">
+                    <h4 class="attachment-head">作业附件</h4>
+                    <ul class="upload-icons">
+                        #foreach($files in $!{workDetail.stuSubmitFilesList})
+                            #if($files.fileType==1)
+                                <li><img class="xlpreview img-file-type"
+                                         data-ext="$!{files.extension}"
+                                         data-filekey="$!{files.url}"
+                                         src="$!{dl_host}/images/1/100x100_$!{files.url}.$!{files.extension}"
+                                         alt=""/>
+                                </li>
+                            #end
+                            #if($files.fileType==2)
+                                <li><img class="xlpreview img-file-type"
+                                         data-ext="$!{files.extension}"
+                                         data-filekey="$!{files.url}"
+                                         src="$!{asset_host}/g/imgs/audio.png"
+                                         alt=""/>
+                                </li>
+                            #end
+                            #if($files.fileType==3)
+                                <li><img class="xlpreview img-file-type"
+                                         data-ext="$!{files.extension}"
+                                         data-filekey="$!{files.url}"
+                                         src="$!{asset_host}/g/imgs/video.png"
+                                         alt=""/>
+                                </li>
+                            #end
+                        #end
+
+                    </ul>
+                </div>
+                <div class="finish-time">作业完成时间:$!{compliteTime}## $!{workDetail.stuAnswerInfo.subTime}</div>
+                </div>
+            #end
+            #if($!{workDetail.stuAnswerInfo.subStatus}==0)
+                <div class="before-finish" style="display: block;">
+                    <div class="child-finish-no">
+                        学生尚未完成此项作业
+                    </div>
+                </div>
+            #end
+        </div>
+        </div>
+    </div>

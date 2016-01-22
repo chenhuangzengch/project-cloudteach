@@ -1,0 +1,67 @@
+#set($layout="layout/bodyLayout.vm")
+#set($page_title="课外作业题目详情")
+#set($currPage="extra")
+#define($script)
+<link rel="stylesheet" href="$!{asset_host}/css/cloudteach/homework.css?version=${version}"/>
+#end
+
+<div class="publish-wrap">
+    <div class="publish-head">
+        <h2>
+            <em class="head-name">题目详情</em>
+            <a href="$!{ctx}/extra/item/index" class="close">关闭</a>
+        </h2>
+    </div>
+    <div class="detail-content-wrap">
+        <div class="detail-content">
+            <img src="${normalSrc}${user.icon}.jpg" class="portrait"/>
+
+            <h3 class="detail-info">
+                <span class="tch-name">$!{user.realName} （$!{user.positionName}）</span><br/>
+                <span class="publish-time"> $!{date.format('yyyy年MM月dd日 HH:mm:ss ',$!{item.updateTime})}</span>
+            </h3>
+
+            <p class="p-detail">$!{item.context.replaceAll("\r\n", "<br>").replaceAll("\r", "<br>").replaceAll(
+                "\n", "<br>").replaceAll(" ","&nbsp;")}
+            </p>
+            <ul class="ul-attachment">
+
+                #foreach(${disk} in $!{item.attachmentList})
+                    <li>
+                        <img class="xlpreview img-file-type" data-ext="$!{disk.extension}"
+                             data-filekey="$!{disk.fileUri}"
+                            #if ($!{disk.extType} == 6)
+                             src="http://dl.xueleyun.com/images/1/100x100_$!{disk.fileUri}.$!{disk.extension} "
+                            #else src="$!{asset_host}/g/imgs/icons/$!{disk.extIconType}-x.png "
+                            #end/>
+                        <span>$!{disk.name}</span>
+                        <a class="a-download"
+                               href="$!{dl_host}/files/dl/$!{disk.fileUri}.$!{disk.extension}?fname=$!{disk.name}">
+                                <img src="$!{asset_host}/imgs/cloudteach/download.png" alt=""/></a>
+                    </li>
+                #end
+
+            </ul>
+            <div class="submit-type">
+                <span class="span-submit">作业提交方式:</span>
+
+                #if($!{item.subOther}==1)
+                    <em class="type-name">不限制</em>
+                #end
+
+                #if($!{item.subImage}==1)
+                    <em class="type-name">照片</em>
+                #end
+
+                #if($!{item.subVideo}==1)
+                    <em class="type-name">视频</em>
+                #end
+
+                #if($!{item.subTape}==1)
+                    <em class="type-name">音频</em>
+                #end
+
+            </div>
+        </div>
+    </div>
+</div>

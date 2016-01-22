@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: net.xuele.notify:notify-api:1.0-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/net/xuele/notify/notify-api/1.0-SNAPSHOT/notify-api-1.0-20151023.031217-190.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/net/xuele/notify/notify-api/1.0-SNAPSHOT/notify-api-1.0-20151023.031217-190-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/net/xuele/notify/notify-api/1.0-SNAPSHOT/notify-api-1.0-20151023.031217-190-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

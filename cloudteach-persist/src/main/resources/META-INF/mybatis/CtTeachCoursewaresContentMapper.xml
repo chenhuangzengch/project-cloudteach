@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtTeachCoursewaresContentMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtTeachCoursewaresContent" >
+    <id column="coursewares_id" property="coursewaresId" jdbcType="VARCHAR" />
+    <result column="belong_type" property="belongType" jdbcType="INTEGER" />
+    <result column="content" property="content" jdbcType="LONGVARCHAR" />
+    <result column="school_id" property="schoolId" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from ct_teach_coursewares_content
+    where coursewares_id = #{coursewaresId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtTeachCoursewaresContent" >
+    insert into ct_teach_coursewares_content (coursewares_id, belong_type, content, school_id
+      )
+    values (#{coursewaresId,jdbcType=VARCHAR}, #{belongType,jdbcType=INTEGER}, #{content,jdbcType=LONGVARCHAR}, #{schoolId,jdbcType=VARCHAR}
+      )
+  </insert>
+
+  <insert id="batchInsert" parameterType="java.util.List">
+    insert into ct_teach_coursewares_content (coursewares_id, belong_type, content,school_id
+    )
+    values
+    <foreach collection="list" item="item" index="index" separator="," >
+      (#{item.coursewaresId,jdbcType=VARCHAR},
+      #{item.belongType,jdbcType=INTEGER},
+      #{item.content,jdbcType=LONGVARCHAR}, #{item.schoolId,jdbcType=VARCHAR}
+      )
+    </foreach>
+  </insert>
+
+  <!--获取初始化信息-->
+  <select id="getInitInfo" resultMap="BaseResultMap">
+    select b.rc_id coursewares_id,#{belongType,jdbcType=INTEGER} belong_type,a.content content,#{schoolId,jdbcType=VARCHAR} school_id
+    from ct_teach_coursewares_content a , ct_course_reappear_coursewares b where
+    b.coursewares_id =a.coursewares_id and b.status =1 and b.reappear_id = #{reappearId,jdbcType=VARCHAR}
+    and a.school_id =#{schoolId,jdbcType=VARCHAR}  and b.coursewares_id in
+    <foreach collection="coursewaresIdList" item="coursewaresId" index="index" open="(" close=")" separator=",">
+      #{coursewaresId}
+    </foreach>
+  </select>
+
+  <select id="selectByPrimaryIdList" resultMap="BaseResultMap">
+    select coursewares_id, belong_type, content , school_id
+    from ct_teach_coursewares_content
+    where belong_type =#{belongType,jdbcType=INTEGER} and school_id =#{schoolId,jdbcType=VARCHAR} AND
+    coursewares_id  in
+    <foreach collection="coursewaresIdList" item="coursewaresId" index="index" open="(" close=")" separator=",">
+      #{coursewaresId,jdbcType=VARCHAR}
+    </foreach>
+  </select>
+
+
+  <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtTeachCoursewaresContent" >
+    update ct_teach_coursewares_content
+    set belong_type = #{belongType,jdbcType=INTEGER},
+      content = #{content,jdbcType=LONGVARCHAR}
+    where coursewares_id = #{coursewaresId,jdbcType=VARCHAR} and school_id =#{schoolId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    select coursewares_id, belong_type, content
+    from ct_teach_coursewares_content
+    where coursewares_id = #{coursewaresId,jdbcType=VARCHAR} and school_id =#{schoolId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select coursewares_id, belong_type, content
+    from ct_teach_coursewares_content
+    where  school_id =#{schoolId,jdbcType=VARCHAR}
+  </select>
+</mapper>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtBankItemShareStatisticsMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtBankItemShareStatistics" >
+    <id column="share_id" property="shareId" jdbcType="VARCHAR" />
+    <result column="collect_times" property="collectTimes" jdbcType="INTEGER" />
+    <result column="praise_times" property="praiseTimes" jdbcType="INTEGER" />
+    <result column="vewing_times" property="vewingTimes" jdbcType="INTEGER" />
+  </resultMap>
+  <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtBankItemShareStatistics" >
+    insert into ct_bank_item_share_statistics (share_id, collect_times, praise_times, 
+      vewing_times)
+    values (#{shareId,jdbcType=VARCHAR}, #{collectTimes,jdbcType=INTEGER}, #{praiseTimes,jdbcType=INTEGER}, 
+      #{vewingTimes,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtBankItemShareStatistics" >
+    update ct_bank_item_share_statistics
+    set collect_times = #{collectTimes,jdbcType=INTEGER},
+      praise_times = #{praiseTimes,jdbcType=INTEGER},
+      vewing_times = #{vewingTimes,jdbcType=INTEGER}
+    where share_id = #{shareId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select share_id, collect_times, praise_times, vewing_times
+    from ct_bank_item_share_statistics
+    where share_id = #{shareId,jdbcType=VARCHAR}
+  </select>
+  <!--更改统计表数量-->
+  <update id="updateCount" parameterType="net.xuele.cloudteach.domain.CtBankItemShareStatistics" >
+    update ct_bank_item_share_statistics
+    set collect_times = collect_times + ifnull(#{collectTimes,jdbcType=INTEGER},0),
+      praise_times = praise_times + ifnull(#{praiseTimes,jdbcType=INTEGER},0),
+      vewing_times = vewing_times + ifnull(#{vewingTimes,jdbcType=INTEGER},0)
+    where share_id = #{shareId,jdbcType=VARCHAR}
+  </update>
+</mapper>

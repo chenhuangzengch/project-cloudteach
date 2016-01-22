@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtSynclassWorkAnswerCommentMapper">
+    <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtSynclassWorkAnswerComment">
+        <id column="comment_id" property="commentId" jdbcType="VARCHAR"/>
+        <result column="work_user_id" property="workUserId" jdbcType="VARCHAR"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="user_type" property="userType" jdbcType="INTEGER"/>
+        <result column="context" property="context" jdbcType="VARCHAR"/>
+        <result column="comment_time" property="commentTime" jdbcType="TIMESTAMP"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR"/>
+    </resultMap>
+    <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtSynclassWorkAnswerComment">
+    insert into ct_synclass_work_answer_comment (comment_id, work_user_id, user_id, user_type,
+      context, comment_time, status,school_id
+      )
+    values (#{commentId,jdbcType=VARCHAR}, #{workUserId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{userType,jdbcType=INTEGER},
+      #{context,jdbcType=VARCHAR}, #{commentTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER},#{schoolId,jdbcType=VARCHAR}
+      )
+  </insert>
+    <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtSynclassWorkAnswerComment">
+    update ct_synclass_work_answer_comment
+    set work_user_id = #{workUserId,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=VARCHAR},
+      user_type = #{userType,jdbcType=INTEGER},
+      context = #{context,jdbcType=VARCHAR},
+      comment_time = #{commentTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER}
+    where comment_id = #{commentId,jdbcType=VARCHAR} and school_id = #{schoolId,jdbcType=VARCHAR}
+  </update>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    select comment_id, work_user_id, user_id, user_type, context, comment_time, status ,school_id
+    from ct_synclass_work_answer_comment
+    where comment_id = #{commentId,jdbcType=VARCHAR} and school_id = #{schoolId,jdbcType=VARCHAR}
+  </select>
+
+    <update id="updateStatus">
+    update ct_synclass_work_answer_comment
+    set
+    status = 0
+    where comment_id = #{commentId,jdbcType=VARCHAR} and school_id = #{schoolId,jdbcType=VARCHAR}
+  </update>
+
+    <!--通过answerId，查找出该ID下所有的评论信息-->
+    <select id="getAnswerCommentsInfo" resultType="net.xuele.cloudteach.view.WorkAnswerCommentView">
+        SELECT
+        t.comment_id commentId,
+        t.work_user_id answerId,
+        t.user_id userId,
+        t.context context,
+        t.comment_time commentTime,
+        t.real_name userName,
+        t.status status,
+        t.icon icon,
+        t.position_name positionName
+        FROM (SELECT a.comment_id,b.icon,
+        case b.identity_id when 'SCHOOL_MANAGER' then '学校管理员' else b.real_name end as real_name,
+        case b.identity_id when 'SCHOOL_MANAGER' then '学校管理员' else c.position_name end as position_name,
+        a.comment_time,a.context,a.work_user_id,a.status,a.user_id
+        FROM ct_synclass_work_answer_comment a,m_users b,m_teacher c
+        WHERE a.user_type = 1
+        AND a.user_id = b.user_id
+        AND a.user_id = c.user_id
+        and a.school_id = #{schoolId,jdbcType=VARCHAR}
+        and b.school_id = #{schoolId,jdbcType=VARCHAR}
+        and c.school_id = #{schoolId,jdbcType=VARCHAR}
+        UNION ALL
+        SELECT a.comment_id,b.icon, b.real_name,NULL AS position_name,a.comment_time,a.context,a.work_user_id,a.status,a.user_id
+        FROM ct_synclass_work_answer_comment a,m_users b
+        WHERE a.user_type = 2
+        AND a.user_id = b.user_id
+        and a.school_id = #{schoolId,jdbcType=VARCHAR}
+        and b.school_id = #{schoolId,jdbcType=VARCHAR}
+        ) t
+        WHERE t.status = 1
+        AND t.work_user_id = #{workUserId,jdbcType=VARCHAR}
+        ORDER BY t.comment_time DESC
+        limit #{limitRange,jdbcType=INTEGER}
+    </select>
+
+    <update id="deleteByWorkUserId">
+        update ct_synclass_work_answer_comment
+        set
+        status = 0
+        where work_user_id = #{workUserId,jdbcType=VARCHAR}
+        and school_id = #{schoolId,jdbcType=VARCHAR}
+    </update>
+
+</mapper>

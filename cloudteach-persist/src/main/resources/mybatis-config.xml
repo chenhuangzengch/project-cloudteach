@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+
+    <settings>
+        <!-- changes from the defaults for testing -->
+        <setting name="cacheEnabled" value="true"/>
+    </settings>
+
+
+    <mappers>
+        <!--课程目录-->
+        <mapper resource="META-INF/mybatis/CtUnitsMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtEditionsMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtBookMapper.xml"/>
+        <!--云盘-->
+        <mapper resource="META-INF/mybatis/CtCloudDiskMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtCloudDiskShareMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtCloudDiskShareStatisticsMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtDiskDownloadsMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtDiskSharePraiseMapper.xml"/>
+        <mapper resource="META-INF/mybatis/AcOfficialResourceMapper.xml"/>
+
+        <!--教师布置作业-->
+        <mapper resource="META-INF/mybatis/CtTeacherWorkClassMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtTeacherWorkItemAnswerCommentMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtTeacherWorkItemAnswerFileMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtTeacherWorkItemAnswerMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtTeacherWorkItemAnswerPraiseMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtTeacherWorkItemAnswerStatisticsMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtTeacherWorkItemMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtTeacherWorkMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtTeacherWorkStudentMapper.xml"/>
+
+        <!--提分宝作业-->
+        <mapper resource="META-INF/mybatis/CtMagicWorkAnswerCommentMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtMagicWorkAnswerFilesMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtMagicWorkAnswerMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtMagicWorkAnswerPraiseMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtMagicWorkAnswerStatisticsMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtMagicWorkClassMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtMagicWorkMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtMagicWorkChallengeMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtMagicWorkChallengeQueMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtMagicBankFinishMapper.xml"/>
+
+
+        <!--同步课堂作业-->
+        <mapper resource="META-INF/mybatis/CtSynclassWorkAnswerCommentMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtSynclassWorkAnswerPraiseMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtSynclassWorkClassMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtSynclassWorkGameMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtSynclassWorkMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtSynclassWorkPlayMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtSynclassWorkStudentMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtSynclassWorkStudentStatisticsMapper.xml"/>
+        <!--教师作业录音-->
+        <mapper resource="META-INF/mybatis/CtWorkTapeFilesMapper.xml"/>
+        <!--作业统计-->
+        <mapper resource="META-INF/mybatis/CtWorkStatisticsMapper.xml"/>
+        <!--作业汇总表-->
+        <mapper resource="META-INF/mybatis/CtWorkGatherMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtWorkClassGatherMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtWorkStudentGatherMapper.xml"/>
+        <!--教师云教学-->
+        <mapper resource="META-INF/mybatis/TeacherCloudTeachMapper.xml"/>
+        <!--家长云作业-->
+        <mapper resource="META-INF/mybatis/ParentCloudWorkManagerMapper.xml"/>
+        <!--教师作业管理-->
+        <mapper resource="META-INF/mybatis/TeacherWorkManageMapper.xml"/>
+        <!--授课课件-->
+        <mapper resource="META-INF/mybatis/CtTeachCoursewaresContentMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtTeachCoursewaresMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtTeachCoursewaresShareCollectMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtTeachCoursewaresShareMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtTeachCoursewaresSharePraiseMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtTeachCoursewaresShareStatisticsMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtTeachCoursewaresStatisticsMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtTeachCoursewaresShareContentMapper.xml"/>
+        <!--课件发布-->
+        <mapper resource="META-INF/mybatis/CtCourseReappearClassMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtCourseReappearCoursewaresMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtCourseReappearMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtCourseReappearStudentMapper.xml"/>
+        <!--板书发布-->
+        <mapper resource="META-INF/mybatis/CtBlackboardPublishClassMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtBlackboardPublishFilesMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtBlackboardPublishMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtBlackboardPublishStudentMapper.xml"/>
+        <!--提分宝题库-->
+        <mapper resource="META-INF/mybatis/CtMagicQuestionBankMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtMagicQuestionHistoryMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtMagicQuestionMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtMagicQuestionBankStatisticsMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtMagicQuestionVideoMapper.xml"/>
+
+        <!--学生作业管理-->
+        <mapper resource="META-INF/mybatis/StudentWorkListMapper.xml"/>
+        <mapper resource="META-INF/mybatis/StudentWorkDetailMapper.xml"/>
+
+        <!--提分宝2题库-->
+        <mapper resource="META-INF/mybatis/CtMagic2WorkChallengeMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtMagic2WorkChallengeQueAnswerMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtMagic2WorkChallengeQueMapper.xml"/>
+        <mapper resource="META-INF/mybatis/QAnswerMapper.xml"/>
+        <mapper resource="META-INF/mybatis/QQuestMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtMagic2WorkMaxPracticeMapper.xml"/>
+        <mapper resource="META-INF/mybatis/QQuestFeedbackMapper.xml"/>
+
+        <!--题目库-->
+        <mapper resource="META-INF/mybatis/CtBankItemMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtBankItemFilesMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtBankItemStatisticsMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtBankItemShareMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtBankItemShareCollectMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtBankItemShareFilesMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtBankItemSharePraiseMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtBankItemShareStatisticsMapper.xml"/>
+
+        <!--积分-->
+        <mapper resource="META-INF/mybatis/CTIntegrationMapper.xml"/>
+
+        <!--随堂反馈-->
+        <mapper resource="META-INF/mybatis/CtClassFeedbackMapper.xml"/>
+
+        <!--蓝色感恩月活动相关-->
+        <mapper resource="META-INF/mybatis/CTBlueActStatisticMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CTBlueActMapper.xml"/>
+
+        <!--聊城活动课件相关-->
+        <mapper resource="META-INF/mybatis/CtTeachchooseMapper.xml"/>
+
+        <!--课件打点-->
+        <mapper resource="META-INF/mybatis/CtCoursewareClassLogMapper.xml"/>
+        <mapper resource="META-INF/mybatis/CtCoursewareClassDetailLogMapper.xml"/>
+
+    </mappers>
+
+</configuration>

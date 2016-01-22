@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.cloudteach.persist.CtEditionsMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.cloudteach.domain.CtEditions" >
+    <id column="edition_id" property="editionId" jdbcType="VARCHAR" />
+    <result column="press_name" property="pressName" jdbcType="VARCHAR" />
+    <result column="edition_name" property="editionName" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from ct_editions
+    where edition_id = #{editionId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="net.xuele.cloudteach.domain.CtEditions" >
+    insert into ct_editions (edition_id, press_name, edition_name
+      )
+    values (#{editionId,jdbcType=VARCHAR}, #{pressName,jdbcType=VARCHAR}, #{editionName,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="net.xuele.cloudteach.domain.CtEditions" >
+    update ct_editions
+    set press_name = #{pressName,jdbcType=VARCHAR},
+      edition_name = #{editionName,jdbcType=VARCHAR}
+    where edition_id = #{editionId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select edition_id, press_name, edition_name
+    from ct_editions
+    where edition_id = #{editionId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select edition_id, press_name, edition_name
+    from ct_editions
+  </select>
+</mapper>
